@@ -24,5 +24,5 @@
 --  Execute any pre-deploy data changes
 IF  ( '$(PreDeployDataChanges)' = 'YES' )
 BEGIN 
-    :r  .\PreDeployDataChanges.sql
+    :r  .\PreDeployDataChanges.script.sql
 END

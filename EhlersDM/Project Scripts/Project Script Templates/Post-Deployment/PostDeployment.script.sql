@@ -24,5 +24,5 @@
 --  Execute any post-deploy data changes
 IF  ( '$(PostDeployDataChanges)' = 'YES' )
 BEGIN 
-    :r  .\PostDeployDataChanges.sql
+    :r  .\PostDeployDataChanges.script.sql
 END
