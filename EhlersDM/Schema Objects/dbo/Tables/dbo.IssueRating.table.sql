@@ -10,10 +10,10 @@
   , IsFitchShadowRated          BIT             NOT NULL    CONSTRAINT DF_IssueRating_IsFitchShadowRated  DEFAULT 0
   , IsNotRated                  BIT             NOT NULL    CONSTRAINT DF_IssueRating_IsNotRated          DEFAULT 0
   , IsNotRatedCreditEnhanced    BIT             NOT NULL    CONSTRAINT DF_IssueRating_IsCreditEnhanced    DEFAULT 0
-  , MoodyCreditEnhanced         VARCHAR (50)    NOT NULL    CONSTRAINT DF_IssueRating_MoodyCreditEnhanced DEFAULT ('')
-  , SPCreditEnhanced            VARCHAR (50)    NOT NULL    CONSTRAINT DF_IssueRating_SPCreditEnhanced    DEFAULT ('')
-  , ModifiedDate                DATE            NOT NULL    CONSTRAINT DF_IssueRating_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser                VARCHAR (20)    NOT NULL    CONSTRAINT DF_IssueRating_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , MoodyCreditEnhanced         VARCHAR (50)    NOT NULL    CONSTRAINT DF_IssueRating_MoodyCreditEnhanced DEFAULT ''
+  , SPCreditEnhanced            VARCHAR (50)    NOT NULL    CONSTRAINT DF_IssueRating_SPCreditEnhanced    DEFAULT ''
+  , ModifiedDate                DATETIME        NOT NULL    CONSTRAINT DF_IssueRating_ModifiedDate        DEFAULT GETDATE()
+  , ModifiedUser                VARCHAR (20)    NOT NULL    CONSTRAINT DF_IssueRating_ModifiedUser        DEFAULT dbo.udf_GetSystemUser()
   , CONSTRAINT PK_IssueRating PRIMARY KEY CLUSTERED ( IssueRatingID ASC )
   , CONSTRAINT FK_IssueRating_Issue
         FOREIGN KEY ( IssueID ) REFERENCES  dbo.Issue ( IssueID )
@@ -22,4 +22,4 @@
 ) ;
 GO
 
-CREATE INDEX IX_IssueRating_IssueID ON dbo.IssueRating ( IssueID ASC ) ; 
+CREATE INDEX IX_IssueRating_IssueID ON dbo.IssueRating ( IssueID ASC ) ;

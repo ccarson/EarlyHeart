@@ -2,8 +2,8 @@
     ClientAuditorFeeID  INT             NOT NULL    IDENTITY
   , ClientID            INT             NOT NULL
   , AuditorFeeTypeID    INT             NOT NULL
-  , Amount              DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_ClientAuditorFee_Amount DEFAULT 0
-  , ModifiedDate        DATE            NOT NULL    CONSTRAINT DF_ClientAuditorFee_ModifiedDate DEFAULT GETDATE()
+  , Amount              DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_ClientAuditorFee_Amount       DEFAULT 0
+  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_ClientAuditorFee_ModifiedDate DEFAULT GETDATE()
   , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientAuditorFee_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
   , CONSTRAINT PK_ClientAuditorFee PRIMARY KEY CLUSTERED ( ClientAuditorFeeID ASC )
   , CONSTRAINT FK_ClientAuditorFee_Client

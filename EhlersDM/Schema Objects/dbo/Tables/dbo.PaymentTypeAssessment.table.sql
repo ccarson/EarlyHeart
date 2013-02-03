@@ -10,8 +10,8 @@
   , Terms                   INT             NOT NULL    CONSTRAINT DF_PaymentTypeAssessment_Terms             DEFAULT 0
   , CalculationMethod       VARCHAR (100)   NOT NULL    CONSTRAINT DF_PaymentTypeAssessment_CalculationMethod DEFAULT ('')
   , FirstLevyYear           INT             NOT NULL    CONSTRAINT DF_PaymentTypeAssessment_FirstLevyYear     DEFAULT 0
-  , ModifiedDate            DATE            NOT NULL    CONSTRAINT DF_PaymentTypeAssessment_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser            VARCHAR (20)    NOT NULL    CONSTRAINT DF_PaymentTypeAssessment_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate            DATETIME        NOT NULL    CONSTRAINT DF_PaymentTypeAssessment_ModifiedDate      DEFAULT GETDATE()
+  , ModifiedUser            VARCHAR (20)    NOT NULL    CONSTRAINT DF_PaymentTypeAssessment_ModifiedUser      DEFAULT dbo.udf_GetSystemUser()
   , CONSTRAINT PK_PaymentTypeAssessment PRIMARY KEY CLUSTERED ( PaymentTypeAssessmentID ASC )
   , CONSTRAINT FK_PaymentTypeAssessment_PaymentType FOREIGN KEY ( PaymentTypeID ) REFERENCES dbo.PaymentType ( PaymentTypeID )
   , CONSTRAINT FK_PaymentTypeAssessment_Purpose FOREIGN KEY ( PurposeID ) REFERENCES dbo.Purpose ( PurposeID )
