@@ -10,6 +10,7 @@
     revisor         date                description
     ---------       -----------         ----------------------------
     ccarson         2013-01-24          created
+    ccarson         2013-01-30          changed IssueStatus to ISNULL so view returns '' rather than NULL for Issues with NULL Status 
 
     Notes:
 
@@ -22,7 +23,7 @@ AS
           , ClientID                =  i.ClientID
           , IssueName               =  i.IssueName
           , ShortName               =  shn.LegacyValue
-          , IssueStatus             =  sta.LegacyValue
+          , IssueStatus             =  ISNULL( sta.LegacyValue, '' )
           , cusip6                  =  i.Cusip6
           , IssueType               =  ist.LegacyValue
           , SaleType                =  mos.LegacyValue
