@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SqlCommandVariables xmlns="urn:Microsoft.VisualStudio.Data.Schema.Package.SqlCmdVars">
+  <Version>1.0</Version>
+  <Properties>
+    <Property>
+      <PropertyName>edata</PropertyName>
+      <PropertyValue>edata</PropertyValue>
+    </Property>
+    <Property>
+      <PropertyName>KKRSS3</PropertyName>
+      <PropertyValue>KKRSS3</PropertyValue>
+    </Property>
+  </Properties>
+</SqlCommandVariables>

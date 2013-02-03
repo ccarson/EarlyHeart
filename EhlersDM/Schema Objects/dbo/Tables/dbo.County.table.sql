@@ -1,0 +1,6 @@
+﻿CREATE TABLE dbo.County (
+    CountyID INT          NOT NULL  IDENTITY
+  , Name     VARCHAR (50) NOT NULL
+  , CONSTRAINT PK_County PRIMARY KEY CLUSTERED ( CountyID ASC )
+  , CONSTRAINT UX_County_Name UNIQUE NONCLUSTERED ( Name ASC )
+) ;

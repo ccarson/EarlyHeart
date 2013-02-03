@@ -1,0 +1,638 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">10.0</VisualStudioVersion>
+    <PostConversionRemoveFromScc>
+    </PostConversionRemoveFromScc>
+    <PostConversionAddToScc>
+    </PostConversionAddToScc>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <TargetDatabase>Ehlers</TargetDatabase>
+    <DacApplicationName>Ehlers</DacApplicationName>
+    <AssemblyName>Ehlers</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Name>EhlersDM</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.0</ProjectVersion>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql100DatabaseSchemaProvider</DSP>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <ShowWizard>False</ShowWizard>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <IncludeSchemaNameInFileName>True</IncludeSchemaNameInFileName>
+    <ModelCollation>1033,CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <LoadSqlClrTypes>True</LoadSqlClrTypes>
+    <RootNamespace>Ehlers</RootNamespace>
+    <DefaultSchema>dbo</DefaultSchema>
+    <PreviousProjectVersion>4.0</PreviousProjectVersion>
+    <ValidateCasingOnIdentifiers>False</ValidateCasingOnIdentifiers>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{b84486e7-3532-4849-8787-fcd097b4b52d}</ProjectGuid>
+    <GenerateDatabaseFile>False</GenerateDatabaseFile>
+    <GenerateCreateScript>True</GenerateCreateScript>
+    <SqlServerVerification>False</SqlServerVerification>
+    <TargetLanguage>CS</TargetLanguage>
+    <AllowSnapshotIsolation>False</AllowSnapshotIsolation>
+    <AnsiNullDefault>True</AnsiNullDefault>
+    <AnsiNulls>True</AnsiNulls>
+    <AnsiPadding>True</AnsiPadding>
+    <AnsiWarnings>True</AnsiWarnings>
+    <ArithAbort>True</ArithAbort>
+    <AutoClose>False</AutoClose>
+    <AutoCreateStatistics>True</AutoCreateStatistics>
+    <AutoShrink>False</AutoShrink>
+    <AutoUpdateStatistics>True</AutoUpdateStatistics>
+    <AutoUpdateStatisticsAsynchronously>False</AutoUpdateStatisticsAsynchronously>
+    <ChangeTrackingRetentionPeriod>2</ChangeTrackingRetentionPeriod>
+    <ChangeTrackingRetentionUnit>Days</ChangeTrackingRetentionUnit>
+    <CloseCursorOnCommitEnabled>False</CloseCursorOnCommitEnabled>
+    <ConcatNullYieldsNull>True</ConcatNullYieldsNull>
+    <DatabaseAccess>MULTI_USER</DatabaseAccess>
+    <DatabaseChaining>False</DatabaseChaining>
+    <DatabaseState>ONLINE</DatabaseState>
+    <DateCorrelationOptimizationOn>False</DateCorrelationOptimizationOn>
+    <DefaultCollation>SQL_Latin1_General_CP1_CI_AS</DefaultCollation>
+    <DefaultCursor>GLOBAL</DefaultCursor>
+    <DefaultFilegroup>PRIMARY</DefaultFilegroup>
+    <EnableFullTextSearch>True</EnableFullTextSearch>
+    <IsBrokerPriorityHonored>False</IsBrokerPriorityHonored>
+    <IsChangeTrackingAutoCleanupOn>True</IsChangeTrackingAutoCleanupOn>
+    <IsChangeTrackingOn>False</IsChangeTrackingOn>
+    <IsEncryptionOn>False</IsEncryptionOn>
+    <NumericRoundAbort>False</NumericRoundAbort>
+    <PageVerify>CHECKSUM</PageVerify>
+    <Parameterization>SIMPLE</Parameterization>
+    <QuotedIdentifier>True</QuotedIdentifier>
+    <ReadCommittedSnapshot>False</ReadCommittedSnapshot>
+    <Recovery>FULL</Recovery>
+    <RecursiveTriggersEnabled>False</RecursiveTriggersEnabled>
+    <ServiceBrokerOption>DisableBroker</ServiceBrokerOption>
+    <SupplementalLoggingOn>False</SupplementalLoggingOn>
+    <TornPageDetection>False</TornPageDetection>
+    <Trustworthy>False</Trustworthy>
+    <UpdateOptions>READ_WRITE</UpdateOptions>
+    <VardecimalStorageFormatOn>True</VardecimalStorageFormatOn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>.\sql\release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TargetDatabase>
+    </TargetDatabase>
+    <TreatTSqlWarningsAsErrors>False</TreatTSqlWarningsAsErrors>
+    <SuppressTSqlWarnings />
+    <SqlCodeAnalysisRules>-Microsoft.Rules.Data.SR0014;-Microsoft.Rules.Data.SR0008;-Microsoft.Rules.Data.SR0010;-Microsoft.Rules.Data.SR0013;-Microsoft.Rules.Data.SR0001;-Microsoft.Rules.Data.SR0009;-Microsoft.Rules.Data.SR0012;-Microsoft.Rules.Data.SR0011;-Microsoft.Rules.Data.SR0016;-Microsoft.Rules.Data.SR0015;-Microsoft.Rules.Data.SR0005;-Microsoft.Rules.Data.SR0006;-Microsoft.Rules.Data.SR0004;-Microsoft.Rules.Data.SR0007</SqlCodeAnalysisRules>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>.\sql\debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TargetDatabase>Ehlers</TargetDatabase>
+    <TreatTSqlWarningsAsErrors>False</TreatTSqlWarningsAsErrors>
+    <SuppressTSqlWarnings />
+    <RunSqlCodeAnalysis>False</RunSqlCodeAnalysis>
+    <SqlCodeAnalysisRules>-Microsoft.Rules.Data.SR0014;-Microsoft.Rules.Data.SR0008;-Microsoft.Rules.Data.SR0010;-Microsoft.Rules.Data.SR0013;-Microsoft.Rules.Data.SR0001;-Microsoft.Rules.Data.SR0009;-Microsoft.Rules.Data.SR0012;-Microsoft.Rules.Data.SR0011;-Microsoft.Rules.Data.SR0016;-Microsoft.Rules.Data.SR0015;-Microsoft.Rules.Data.SR0005;-Microsoft.Rules.Data.SR0006;-Microsoft.Rules.Data.SR0004;-Microsoft.Rules.Data.SR0007</SqlCodeAnalysisRules>
+    <SqlTargetName>Ehlers</SqlTargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Publish|AnyCPU' ">
+    <OutputPath>bin\Publish\</OutputPath>
+    <SqlTargetName>Ehlers</SqlTargetName>
+    <SqlCodeAnalysisRules>-Microsoft.Rules.Data.SR0014;-Microsoft.Rules.Data.SR0008;-Microsoft.Rules.Data.SR0010;-Microsoft.Rules.Data.SR0013;-Microsoft.Rules.Data.SR0001;-Microsoft.Rules.Data.SR0009;-Microsoft.Rules.Data.SR0012;-Microsoft.Rules.Data.SR0011;-Microsoft.Rules.Data.SR0016;-Microsoft.Rules.Data.SR0015;-Microsoft.Rules.Data.SR0005;-Microsoft.Rules.Data.SR0006;-Microsoft.Rules.Data.SR0004;-Microsoft.Rules.Data.SR0007</SqlCodeAnalysisRules>
+  </PropertyGroup>
+  <!--Import the settings-->
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties\" />
+    <Folder Include="Database Objects" />
+    <Folder Include="Database Objects\Database Triggers" />
+    <Folder Include="Schema Objects" />
+    <Folder Include="Schema Objects\Conversion" />
+    <Folder Include="Schema Objects\Conversion\Programmability" />
+    <Folder Include="Schema Objects\Conversion\Programmability\Functions" />
+    <Folder Include="Schema Objects\Conversion\Programmability\Stored Procedures" />
+    <Folder Include="Schema Objects\Conversion\Tables" />
+    <Folder Include="Schema Objects\Conversion\Tables\Triggers" />
+    <Folder Include="Schema Objects\Conversion\Views" />
+    <Folder Include="Schema Objects\dbo" />
+    <Folder Include="Schema Objects\dbo\Programmability" />
+    <Folder Include="Schema Objects\dbo\Programmability\Functions" />
+    <Folder Include="Schema Objects\dbo\Programmability\Stored Procedures" />
+    <Folder Include="Schema Objects\dbo\Tables" />
+    <Folder Include="Schema Objects\dbo\Tables\Triggers" />
+    <Folder Include="Schema Objects\dbo\Views" />
+    <Folder Include="Schema Objects\dbo\Views\Triggers" />
+    <Folder Include="Schema Objects\Documents" />
+    <Folder Include="Schema Objects\Documents\Programmability" />
+    <Folder Include="Schema Objects\Documents\Programmability\Functions" />
+    <Folder Include="Schema Objects\Documents\Programmability\Stored Procedures" />
+    <Folder Include="Schema Objects\Documents\Tables" />
+    <Folder Include="Schema Objects\Documents\Tables\Triggers" />
+    <Folder Include="Schema Objects\Documents\Views" />
+    <Folder Include="Schema Objects\Documents\Views\Triggers" />
+    <Folder Include="Schema Objects\Conversion\Views\Triggers" />
+    <Folder Include="Database Security" />
+    <Folder Include="Schema Objects\Meta" />
+    <Folder Include="Schema Objects\Meta\Tables" />
+    <Folder Include="Database Security\Database Roles" />
+    <Folder Include="Database Security\Schemas" />
+    <Folder Include="Database Security\Users" />
+    <Folder Include="Database Security\Service Broker" />
+    <Folder Include="Database Security\Service Broker\Routes" />
+    <Folder Include="Project Scripts" />
+    <Folder Include="Project Scripts\InitialConversion" />
+    <Folder Include="Project Scripts\InitialConversion\Publish XML" />
+    <Folder Include="Database References" />
+    <Folder Include="Storage" />
+    <Folder Include="Project Scripts\InitialConversion\DataChanges" />
+    <Folder Include="Project Scripts\InitialConversion\PowerShell Scripts" />
+    <Folder Include="Project Scripts\InitialConversion\Post-Deployment" />
+    <Folder Include="Project Scripts\InitialConversion\Pre-Deployment" />
+    <Folder Include="Project Scripts\Project Script Templates" />
+    <Folder Include="Project Scripts\Project Script Templates\DataChanges" />
+    <Folder Include="Project Scripts\Project Script Templates\Post-Deployment" />
+    <Folder Include="Project Scripts\Project Script Templates\Pre-Deployment" />
+    <Folder Include="Project Scripts\Project Script Templates\Publish XML" />
+    <Folder Include="Project Scripts\Project Script Templates\OtherChanges" />
+    <Folder Include="Project Scripts\InitialConversion\OtherChanges" />
+  </ItemGroup>
+  <ItemGroup>
+    <BuildContributorArgument Include="OutDir=$(OutDir)" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Project Scripts\InitialConversion\Publish XML\CreateEhlersOnTest.publish.xml" />
+    <None Include="Project Scripts\InitialConversion\Publish XML\CreateOnLocal.publish.xml" />
+    <None Include="Project Scripts\InitialConversion\Publish XML\UpdateEhlersOnProd.publish.xml" />
+    <None Include="Project Scripts\InitialConversion\Publish XML\UpdateEhlersOnStage.publish.xml" />
+    <None Include="Project Scripts\InitialConversion\Publish XML\UpdateEhlersOnTest.publish.xml" />
+    <None Include="Project Scripts\InitialConversion\Publish XML\UpdateOnLocal.publish.xml" />
+    <None Include="Database References\edata.dacpac" />
+    <None Include="Database References\ServerLogins.dacpac" />
+    <None Include="Project Scripts\InitialConversion\PowerShell Scripts\ScriptStaticListDrops.ps1" />
+    <None Include="Project Scripts\InitialConversion\PowerShell Scripts\ScriptStaticListLoads.ps1" />
+    <None Include="Project Scripts\Project Script Templates\Publish XML\CreateEhlersOnTest.publish.xml" />
+    <None Include="Project Scripts\Project Script Templates\Publish XML\CreateOnLocal.publish.xml" />
+    <None Include="Project Scripts\Project Script Templates\Publish XML\UpdateEhlersOnProd.publish.xml" />
+    <None Include="Project Scripts\Project Script Templates\Publish XML\UpdateEhlersOnStage.publish.xml" />
+    <None Include="Project Scripts\Project Script Templates\Publish XML\UpdateEhlersOnTest.publish.xml" />
+    <None Include="Project Scripts\Project Script Templates\Publish XML\UpdateOnLocal.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_AddressChecksum.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ArbitrageServiceChecksum.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_BiddingParameterChecksum.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_BondAttorney.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ClientChecksum.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ClientCPAs.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ClientDisclosureChecksum.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ContactChecksum.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedAnalysts.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedCounties.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedDCs.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedFirmCategories.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedJobFunctions.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedMailings.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ElectionChecksum.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_FirmCategories.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_FirmChecksum.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_IssueCallChecksum.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_IssueChecksum.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_IssueFirms.Function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyAnalysts.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyCounties.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyDCs.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyFirmCategories.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyJobFunctions.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyMailings.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LocalAttorney.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_transformInsurance.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_transformPercentage.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processAddresses.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processArbitrageService.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processBiddingHistories.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processBiddingParameters.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processBondAttorney.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processCalls.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processClientAnalysts.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processClientCounties.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processClientCPAs.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processClientDCs.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processClientDisclosure.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processClients.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processClientServices.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processClientsRating.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processContactJobFunctions.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processContactMailings.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processContacts.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processElections.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processFirmCategories.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processFirms.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssueFirms.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssueMaturities.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssues.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processLocalAttorney.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.reportBondAttorneyErrors.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.reportClientCPAErrors.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.reportIssuesErrors.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.reportLocalAttorneyErrors.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Tables\Conversion.LegacyAddresses.table.sql" />
+    <Build Include="Schema Objects\Conversion\Tables\Conversion.LegacyContacts.table.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedAddress.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedArbitrageService.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedBiddingParameter.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedCalls.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedClientDisclosure.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedClients.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedClientServices.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedContacts.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedElections.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedFirms.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedIssues.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyAddress.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyArbitrageService.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyBidAnnual.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyBidders.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyBiddingParameter.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyCalls.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyClientDisclosure.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyClients.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyClientServices.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyContacts.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyElections.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyFirms.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyIssueFees.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyIssues.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyMaturities.view.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Functions\dbo.tvf_CSVSort.function.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Functions\dbo.tvf_CSVSplit.function.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Functions\dbo.tvf_TableCounts.function.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Functions\dbo.udf_CurrencyFormatter.function.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Functions\dbo.udf_GetGoodFaithAmount.function.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Functions\dbo.udf_GetSystemUser.function.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Functions\dbo.udf_MaturityTable.function.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.AppEmployeeAddUpdate.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.AppEmployeeDelete.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.ClientAddUpdate.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.IssueAddUpdate.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.IssueAddUpdateII.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.IssueMeetingAddUpdate.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.processEhlersError.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.ProjectAddUpdate.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_Document_CreateDocument.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_Document_GetSectionPath.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_Document_GetSectionPathByCode.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_Document_GetTemplateContent.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_Document_GetTemplateInfo.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_Document_MaturityDoc.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_Document_MaturityDocPurposes.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_Document_MaturityPurposeTable.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_Document_SaveDocumentPath.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_Document_SaveTemplateContent.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_Document_SaveTemplateInfo.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_DocumentDatabaseFieldList.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_DocumentList.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_DocumentMergeFieldDelete.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_DocumentMergeFieldList.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_DocumentMergeFieldSave.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_DocumentSectionList.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_DocumentSectionListForSection.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_DocumentSectionSave.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_DocumentTemplateList.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_DocumentTemplatesInSectionList.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_EstablishDirectAssociation.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_GetTemplatesForSection.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_WordDocument_MyNewDocument_Data.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_WordDocument_MyNewDocument_PurposeData.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_WordDocument_MyNewDocument_SubIssueData.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_WordDocument_PreSaleReport_ConstituentIssues.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_WordDocument_PreSaleReport_Data.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.usp_InsertRatingFirmsForIssue.proc.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.Address.tr_Address_Delete.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.Address.tr_Address_Insert.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.Address.tr_Address_Update.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ArbitrageService.tr_ArbitrageService_Delete.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ArbitrageService.tr_ArbitrageService_Insert.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ArbitrageService.tr_ArbitrageService_Update.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.BiddingParameter.tr_BiddingParameter.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.Client.tr_Client.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ClientAddresses.tr_ClientAddresses_Delete.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ClientAddresses.tr_ClientAddresses_Insert.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ClientAddresses.tr_ClientAddresses_Update.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ClientAnalysts.tr_ClientAnalysts.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ClientContacts.tr_ClientContacts_Delete.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ClientContacts.tr_ClientContacts_Insert.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ClientContacts.tr_ClientContacts_Update.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ClientDocument.tr_ClientDocument.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ClientEmployers.tr_ClientEmployers_Delete.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ClientEmployers.tr_ClientEmployers_Insert.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ClientEmployers.tr_ClientEmployers_Update.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ClientFirms.tr_ClientFirms.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ClientOverlap.tr_ClientOverlap.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ClientServices.tr_ClientServices.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.Contact.tr_Contact_Update.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ContactAddresses.tr_ContactAddresses_Delete.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ContactAddresses.tr_ContactAddresses_Insert.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ContactAddresses.tr_ContactAddresses_Update.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ContactJobFunctions.tr_ContactJobFunctions.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.ContactMailings.tr_ContactMailings.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.EhlersEmployee.tr_EhlersEmployee.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.Election.tr_Election.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.EmployerAddresses.tr_EmployerAddresses_Delete.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.EmployerAddresses.tr_EmployerAddresses_Insert.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.EmployerAddresses.tr_EmployerAddresses_Update.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.EmployerContacts.tr_EmployerContacts_Delete.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.EmployerContacts.tr_EmployerContacts_Insert.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.EmployerContacts.tr_EmployerContacts_Update.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.Firm.tr_Firm.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.Firm.tr_Firm_Update.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.FirmAddresses.tr_FirmAddresses_Delete.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.FirmAddresses.tr_FirmAddresses_Insert.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.FirmCategories.tr_FirmCategories.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.FirmContacts.tr_FirmContacts_Delete.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.FirmContacts.tr_FirmContacts_Insert.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.FirmContacts.tr_FirmContacts_Update.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.Issue.tr_Issue.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.IssueCall.tr_IssueCall.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.IssueFirms.tr_IssueFirms.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.Address.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.AddressAudit.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.AddressType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.Arbitrage.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ArbitrageCategory.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ArbitrageComputationType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ArbitrageException.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ArbitrageRecordStatus.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ArbitrageRecordType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ArbitrageService.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ArbitrageStatus.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ARRABond.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ARRAType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.AuditorFeeType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.BargainingUnit.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.Bidder.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.BiddingParameter.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.BidMaturity.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.BidSource.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.BondFormType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.CallFrequency.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.CallType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.Client.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientAddresses.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientAddressesAudit.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientAnalysts.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientAuditCafr.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientAuditCafrIssues.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientAuditorFee.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientContacts.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientContactsAudit.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientDebt.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientDemographic.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientDocument.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientDocumentName.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientDocumentType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientEmployers.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientEmployersAudit.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientFinancial.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientFirms.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientFirmsAudit.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientMaterialEvent.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientMaterialEventIssues.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientOverlap.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientPrefix.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientRating.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientReport.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientReportFee.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientReportIssues.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientService.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientServices.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientStatus.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ClientWireInstruction.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.CommissionType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.Contact.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ContactAddresses.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ContactAddressesAudit.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ContactJobFunctions.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ContactMailings.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ContractStatus.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.County.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.CreditEnhancementType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.DeliveryMethod.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.DisclosureReportType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.DisclosureType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.DocumentParagraph.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.DocumentType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.EhlersEmployee.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.EhlersEmployeeJobGroups.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.EhlersEmployeeJobTeams.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.EhlersJobGroup.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.EhlersJobTeam.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.EhlersOffice.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.Election.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ElectionType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.Employer.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.EmployerAddresses.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.EmployerAddressesAudit.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.EmployerContacts.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.EmployerContactsAudit.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.EmployerLocation.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ErrorLog.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.FeeBasis.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.FeeType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.FinanceType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.Firm.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.FirmAddresses.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.FirmAddressesAudit.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.FirmCategories.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.FirmCategory.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.FirmContacts.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.FirmContactsAudit.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.FirmNameHistory.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.FirmRating.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.FirmSpeciality.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.FormOfGovernment.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.FundingSourceType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.FundsOnHand.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.GoverningBoard.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.InitialOfferingDocument.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.InterestCalcMethod.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.InterestPaymentFreq.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.InterestType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.InternetBiddingType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.Issue.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueCall.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueClientsContacts.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueEhlersEmployees.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueElections.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueFee.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueFeeCounty.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueFeeEhlers.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueFirms.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueFirmsContacts.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueJointClient.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueJointClientContacts.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueMaturity.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueMeeting.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssuePostBond.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueRating.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueShortName.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueStatus.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.IssueType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.JobFunction.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.JurisdictionType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ListCategory.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.MailingType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.MaterialEventType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.MeetingPurpose.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.MeetingType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.MethodOfSale.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.MSA.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.OverlapType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.PaymentMethod.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.PaymentType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.PaymentTypeAssessment.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.PaymentTypeEqualSingle.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.PaymentTypeVarying.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.PaymentTypeVaryingAmount.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.PotentialRefunding.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.PotentialRefundType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.Project.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ProjectService.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ProjectServiceJobTeams.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.Purpose.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.PurposeMaturity.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.PurposeMaturityInterest.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.PurposeMaturityRefunding.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.PurposeSource.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.PurposeUse.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.Rate.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.Rating.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.RatingType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.RefundType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.SchoolBuilding.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.SchoolEnrollment.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.SecurityType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ServiceCategory.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.SQLErrorLog.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.StatAuthorityGroup.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.StatAuthorityGroupTypes.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.StatAuthorityType.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.States.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.StatesCounties.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.StaticList.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.StaticListTables.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.TopTaxpayer.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.UnusedChoice.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.UseProceed.table.sql" />
+    <Build Include="Schema Objects\dbo\Views\dbo.v_Clients.view.sql" />
+    <Build Include="Schema Objects\dbo\Views\dbo.v_Issues.view.sql" />
+    <Build Include="Schema Objects\dbo\Views\dbo.v_Projects.view.sql" />
+    <Build Include="Schema Objects\dbo\Views\dbo.vw_DropDownListValues.view.sql" />
+    <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_BeforeSale.function.sql" />
+    <Build Include="Schema Objects\Documents\Tables\Documents.DatabaseFields.table.sql" />
+    <Build Include="Schema Objects\Documents\Tables\Documents.DocumentContent.table.sql" />
+    <Build Include="Schema Objects\Documents\Tables\Documents.Documents.table.sql" />
+    <Build Include="Schema Objects\Documents\Tables\Documents.DocumentSections.table.sql" />
+    <Build Include="Schema Objects\Documents\Tables\Documents.MergeFields.table.sql" />
+    <Build Include="Schema Objects\Documents\Tables\Documents.Templates.table.sql" />
+    <Build Include="Schema Objects\Documents\Tables\Documents.TemplateVersions.table.sql" />
+    <Build Include="Database Security\Users\EhlersWB2.user.sql" />
+    <Build Include="Schema Objects\Conversion.schema.sql" />
+    <Build Include="Schema Objects\Documents.schema.sql" />
+    <Build Include="Schema Objects\Meta.schema.sql" />
+    <Build Include="Database Security\Database Roles\RoleMemberships.sql" />
+    <None Include="Project Scripts\InitialConversion\DataChanges\LoadOfficeAddresses.script.sql" />
+    <None Include="Project Scripts\InitialConversion\DataChanges\LoadStaticLists.script.sql" />
+    <None Include="Project Scripts\InitialConversion\Post-Deployment\PostDeployDataChanges.script.sql" />
+    <None Include="Project Scripts\InitialConversion\Pre-Deployment\PreDeployDataChanges.script.sql" />
+    <None Include="Project Scripts\Project Script Templates\DataChanges\DataChangesTemplate.script.sql" />
+    <None Include="Project Scripts\Project Script Templates\Post-Deployment\PostDeployDataChanges.script.sql" />
+    <None Include="Project Scripts\Project Script Templates\Pre-Deployment\PreDeployDataChanges.script.sql" />
+    <None Include="Project Scripts\Project Script Templates\Post-Deployment\PostDeployment.script.sql" />
+    <PreDeploy Include="Project Scripts\InitialConversion\Pre-Deployment\PreDeployment.script.sql" />
+    <None Include="Project Scripts\Project Script Templates\OtherChanges\OtherChangesTemplate.script.sql" />
+    <None Include="Project Scripts\InitialConversion\OtherChanges\CreateDataConversionJob.script.sql" />
+    <None Include="Project Scripts\InitialConversion\OtherChanges\CreateErrorReportingJob.script.sql" />
+    <None Include="Project Scripts\InitialConversion\OtherChanges\DropDataConversionJob.script.sql" />
+    <None Include="Project Scripts\InitialConversion\OtherChanges\DropErrorReportingJob.script.sql" />
+    <None Include="Project Scripts\InitialConversion\OtherChanges\SetSQLUsersGroupPermissions.script.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.buildDataConversionAgentJob.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.buildErrorReportingAgentJob.proc.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <SqlCmdVariable Include="ProductionServer">
+      <DefaultValue>EHLERS-SS3</DefaultValue>
+      <Value>$(SqlCmdVar__19)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="TargetServer">
+      <DefaultValue>EHLERS-SS4</DefaultValue>
+      <Value>$(SqlCmdVar__13)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="PreDeployDataChanges">
+      <DefaultValue>None</DefaultValue>
+      <Value>$(SqlCmdVar__16)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="PostDeployDataChanges">
+      <DefaultValue>None</DefaultValue>
+      <Value>$(SqlCmdVar__18)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="edata">
+      <DefaultValue>edata</DefaultValue>
+      <Value>$(SqlCmdVar__10)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="EnableRI">
+      <DefaultValue>YES</DefaultValue>
+      <Value>$(SqlCmdVar__6)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="EnableTriggers">
+      <DefaultValue>YES</DefaultValue>
+      <Value>$(SqlCmdVar__7)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="BuildSQLAgentJobs">
+      <DefaultValue>YES/NO</DefaultValue>
+      <Value>$(SqlCmdVar__12)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="AgentJobOwner">
+      <DefaultValue>EHLERS\Admin</DefaultValue>
+      <Value>$(SqlCmdVar__11)</Value>
+    </SqlCmdVariable>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Project Scripts\Project Script Templates\Pre-Deployment\PreDeployment.script.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Project Scripts\InitialConversion\Post-Deployment\PostDeployment.script.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Schema Objects\Meta\Tables\Meta.DatabaseChangeLog.sql" />
+    <Build Include="Database Objects\Database Triggers\ddlDatabaseChangeLog.sql" />
+    <Build Include="Database Security\Database Roles\DocumentGeneration.role.sql" />
+    <Build Include="Database Security\Users\EhlersApp.user.sql" />
+    <Build Include="Database Security\Service Broker\Routes\AutoCreatedLocal.route.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\100\SqlSchemas\msdb.dacpac">
+      <HintPath>$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\100\SqlSchemas\msdb.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>msdb</DatabaseVariableLiteralValue>
+    </ArtifactReference>
+    <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\100\SqlSchemas\master.dacpac">
+      <HintPath>$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\100\SqlSchemas\master.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
+    <ArtifactReference Include="Database References\edata.dacpac">
+      <HintPath>Database References\edata.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>edata</DatabaseVariableLiteralValue>
+    </ArtifactReference>
+    <ArtifactReference Include="Database References\ServerLogins.dacpac">
+      <HintPath>Database References\ServerLogins.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
+  </ItemGroup>
+</Project>
