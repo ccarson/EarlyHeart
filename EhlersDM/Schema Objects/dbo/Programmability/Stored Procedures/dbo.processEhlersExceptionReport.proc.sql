@@ -1,23 +1,24 @@
-﻿CREATE PROCEDURE dbo.processEhlersError( @processName   AS VARCHAR(100)  = NULL
-                                       , @errorMessage  AS NVARCHAR(MAX) = NULL
-                                       , @errorQuery    AS NVARCHAR(MAX) = NULL )
+﻿CREATE PROCEDURE dbo.processEhlersExceptionReport ( @processName   AS VARCHAR(100)  = NULL
+                                                  , @reportType    AS INT           = NULL
+                                                  , @errorMessage  AS NVARCHAR(MAX) = NULL
+                                                  , @errorQuery    AS NVARCHAR(MAX) = NULL )
 
 AS
 /*
 ************************************************************************************************************************************
 
-  Procedure:    dbo.processEhlersError
-     Author:    Chris Carson
-                Original Code: Microsoft ( AdventureWorks )
-    Purpose:    log error data to ErrorLog table
+  Procedure:    dbo.processEhlersExceptionReport
+     Author:    Chris Carson            
+ Additional:    Microsoft ( AdventureWorks sample code )
+    Purpose:    create email notification of processing errors
 
 
     revisor         date                description
     ---------       -----------         ----------------------------
-    ccarson         2013-01-24          adapted from AdventureWorks2008R2.dbo.uspLogError and AdventureWorks2008R2.dbo.uspPrintError
-    ccarson         ###DATE###          format additional SQL Server error data 
-    
+    ccarson         2013-02-10          created as extension of dbo.processEhlersError
+
     Logic Summary:
+    
 
     Notes:
 
@@ -26,7 +27,7 @@ AS
 BEGIN
     SET NOCOUNT ON ;
 
---  Constants
+--  Constants for email formatting
     DECLARE @body_format        AS VARCHAR (20)     = 'HTML'
           , @errorTime          AS VARCHAR (30)     = CONVERT( VARCHAR(30), SYSDATETIME(), 121 )
           , @databaseName       AS NVARCHAR(128)    = DB_NAME()

@@ -1,0 +1,10 @@
+Error Reporting changes
+
+New error handling reporting process
+
+1)  calling programs format error message and error data if required
+2)  calling program invokes dbo.processEhlersError
+3)  dbo.processEhlersError logs error on database
+4)  dbo.processEhlersError sends dbmail notification to each recipient defined for the specified error type
+5)  calling program invokes RAISERROR to stop execution
+

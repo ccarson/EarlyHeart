@@ -11,6 +11,7 @@ AS
     revisor         date                description
     ---------       ----------          ----------------------------
     ccarson         2013-01-24          created
+    ccarson         2013-02-100         revised error reporting
 
     Logic Summary:
     1)  SET CONTEXT_INFO prevents related converted tables from firing triggers caused by changes from proc
@@ -206,6 +207,7 @@ BEGIN TRY
 
 END TRY
 BEGIN CATCH
+    
     EXECUTE dbo.processEhlersError ;
 END CATCH
 

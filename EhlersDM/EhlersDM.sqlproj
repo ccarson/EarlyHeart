@@ -150,7 +150,6 @@
     <Folder Include="Database\Security" />
     <Folder Include="Database\Security\Database Roles" />
     <Folder Include="Database\Security\Users" />
-    <Folder Include="Notes" />
   </ItemGroup>
   <ItemGroup>
     <BuildContributorArgument Include="OutDir=$(OutDir)" />
@@ -160,7 +159,8 @@
     <None Include="Database References\ServerLogins.dacpac" />
     <None Include="Project Scripts\Error Reporting\Publish XML\LocalCreate.publish.xml" />
     <None Include="Project Scripts\Error Reporting\Publish XML\LocalUpdate.publish.xml" />
-    <None Include="Notes\Summary of changes.txt" />
+    <None Include="Project Scripts\Error Reporting\Summary of changes.txt" />
+    <None Include="Project Scripts\SetRevisionDate.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_AddressChecksum.function.sql" />
@@ -537,6 +537,7 @@
     <None Include="Project Scripts\Error Reporting\PostDeployChanges\EnableRI.script.sql" />
     <None Include="Project Scripts\Error Reporting\PostDeployChanges\EnableTriggers.script.sql" />
     <None Include="Project Scripts\Error Reporting\PostDeployChanges\BuildSQLAgentJobs.script.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.processEhlersExceptionReport.proc.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="EnableRI">
@@ -598,4 +599,7 @@
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
   </ItemGroup>
+  <PropertyGroup>
+    <PreBuildEvent>powershell "&amp; '$(ProjectDir)\Project Scripts\SetRevisionDate.ps1'"</PreBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿$sqlFiles = get-childitem '..\..\Schema Objects'  *.sql -rec
+$sqlFiles = get-childitem '..\..\Schema Objects'  *.sql -rec
 $revDate = Get-Date
 foreach ($file in $sqlFiles)
 {
