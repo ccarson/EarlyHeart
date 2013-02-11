@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseName>Ehlers</TargetDatabaseName>
+    <DeployScriptFileName>Ehlers.sql</DeployScriptFileName>
+    <TargetConnectionString>Data Source=MNDT0368;Integrated Security=True;Pooling=False</TargetConnectionString>
+    <ProfileVersionNumber>1</ProfileVersionNumber>
+    <ScriptDatabaseOptions>True</ScriptDatabaseOptions>
+    <BlockOnPossibleDataLoss>False</BlockOnPossibleDataLoss>
+    <CreateNewDatabase>False</CreateNewDatabase>
+    <IgnoreAnsiNulls>False</IgnoreAnsiNulls>
+    <DoNotAlterChangeDataCaptureObjects>False</DoNotAlterChangeDataCaptureObjects>
+    <DoNotAlterReplicatedObjects>False</DoNotAlterReplicatedObjects>
+    <DropConstraintsNotInSource>False</DropConstraintsNotInSource>
+    <DropDmlTriggersNotInSource>False</DropDmlTriggersNotInSource>
+    <DropExtendedPropertiesNotInSource>False</DropExtendedPropertiesNotInSource>
+    <DropIndexesNotInSource>False</DropIndexesNotInSource>
+    <IgnoreFillFactor>False</IgnoreFillFactor>
+    <IgnoreIdentitySeed>True</IgnoreIdentitySeed>
+    <IgnoreIncrement>True</IgnoreIncrement>
+    <IgnoreIndexPadding>False</IgnoreIndexPadding>
+    <IgnoreKeywordCasing>False</IgnoreKeywordCasing>
+    <IgnoreObjectPlacementOnPartitionScheme>False</IgnoreObjectPlacementOnPartitionScheme>
+    <IgnorePermissions>True</IgnorePermissions>
+    <IgnoreQuotedIdentifiers>False</IgnoreQuotedIdentifiers>
+    <IgnoreRoleMembership>True</IgnoreRoleMembership>
+    <IgnoreRouteLifetime>False</IgnoreRouteLifetime>
+    <IgnoreWithNocheckOnCheckConstraints>False</IgnoreWithNocheckOnCheckConstraints>
+    <PopulateFilesOnFileGroups>False</PopulateFilesOnFileGroups>
+    <ScriptDeployStateChecks>True</ScriptDeployStateChecks>
+    <BackupDatabaseBeforeChanges>True</BackupDatabaseBeforeChanges>
+    <GenerateSmartDefaults>True</GenerateSmartDefaults>
+    <DropObjectsNotInSource>True</DropObjectsNotInSource>
+    <IgnoreSemicolonBetweenStatements>False</IgnoreSemicolonBetweenStatements>
+    <IgnoreWhitespace>False</IgnoreWhitespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <SqlCmdVariable Include="AgentJobOwner">
+      <Value>EHLERS\Admin</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="BuildSQLAgentJobs">
+      <Value>NO</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="EnableRI">
+      <Value>YES</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="EnableTriggers">
+      <Value>YES</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="PostDeployChanges">
+      <Value>YES</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="PreDeployChanges">
+      <Value>NO</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="ProductionServer">
+      <Value>EHLERS-SS3</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="TargetServer">
+      <Value>MNDT0368</Value>
+    </SqlCmdVariable>
+  </ItemGroup>
+</Project>
