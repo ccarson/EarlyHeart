@@ -17,7 +17,7 @@
 */
 AS
     SELECT  ClientID              = c.ClientID
-          , ClientDescriptiveName = ISNULL( c.ClientName, '' ) + '|' + ISNULL( cp.LegacyValue, '' ) + '|' + ISNULL ( a.State, '' )
+          , ClientDescriptiveName = ISNULL( c.ClientName, '' ) + ' | ' + ISNULL( cp.LegacyValue, '' ) + ' | ' + ISNULL ( a.State, '' )
           , ClientName            = c.ClientName
           , InformalName          = c.InformalName
           , Prefix                = cp.LegacyValue
