@@ -529,33 +529,15 @@
     <PostDeploy Include="Project Scripts\Error Reporting\PostDeploy\PostDeployment.script.sql" />
     <None Include="Project Scripts\Error Reporting\PreDeploy\PreDeployChanges.script.sql" />
     <None Include="Project Scripts\Error Reporting\PreDeploy\PreDeployment.script.sql" />
-    <None Include="Project Scripts\Error Reporting\PreDeployChanges\PreDeployChangesTemplate.script.sql" />
     <Build Include="Database\Routes\AutoCreatedLocal.route.sql" />
     <Build Include="Database\Security\Database Roles\DocumentGeneration.role.sql" />
     <Build Include="Database\Security\Database Roles\RoleMemberships.sql" />
     <Build Include="Database\Security\Users\EhlersApp.user.sql" />
-    <None Include="Project Scripts\Error Reporting\PostDeployChanges\EnableRI.script.sql" />
-    <None Include="Project Scripts\Error Reporting\PostDeployChanges\EnableTriggers.script.sql" />
-    <None Include="Project Scripts\Error Reporting\PostDeployChanges\BuildSQLAgentJobs.script.sql" />
-    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.processEhlersExceptionReport.proc.sql" />
+    <Build Include="Schema Objects\Meta\Tables\Meta.ErrorType.table.sql" />
+    <Build Include="Schema Objects\Meta\Tables\Meta.ErrorTypeRecipient.table.sql" />
+    <None Include="Project Scripts\Error Reporting\PostDeployChanges\LoadErrorTypeAndRecipients.script.sql" />
   </ItemGroup>
   <ItemGroup>
-    <SqlCmdVariable Include="EnableRI">
-      <DefaultValue>YES</DefaultValue>
-      <Value>$(SqlCmdVar__21)</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="EnableTriggers">
-      <DefaultValue>YES</DefaultValue>
-      <Value>$(SqlCmdVar__20)</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="ProductionServer">
-      <DefaultValue>EHLERS-SS3</DefaultValue>
-      <Value>$(SqlCmdVar__19)</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="TargetServer">
-      <DefaultValue>MNDT0368</DefaultValue>
-      <Value>$(SqlCmdVar__13)</Value>
-    </SqlCmdVariable>
     <SqlCmdVariable Include="PreDeployChanges">
       <DefaultValue>NO</DefaultValue>
       <Value>$(SqlCmdVar__16)</Value>
@@ -563,14 +545,6 @@
     <SqlCmdVariable Include="PostDeployChanges">
       <DefaultValue>YES</DefaultValue>
       <Value>$(SqlCmdVar__18)</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="BuildSQLAgentJobs">
-      <DefaultValue>YES/NO</DefaultValue>
-      <Value>$(SqlCmdVar__12)</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="AgentJobOwner">
-      <DefaultValue>EHLERS\Admin</DefaultValue>
-      <Value>$(SqlCmdVar__11)</Value>
     </SqlCmdVariable>
   </ItemGroup>
   <ItemGroup>
@@ -599,7 +573,7 @@
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
   </ItemGroup>
-  <PropertyGroup>
-    <PreBuildEvent>powershell "&amp; '$(ProjectDir)\Project Scripts\SetRevisionDate.ps1'"</PreBuildEvent>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Publish' ">
+    <PreBuildEvent>powershell  -File "$(ProjectDir)Project Scripts\SetRevisionDate.ps1"</PreBuildEvent>
   </PropertyGroup>
 </Project>

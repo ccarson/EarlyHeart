@@ -1,6 +1,13 @@
-﻿CREATE PROCEDURE dbo.processEhlersError( @processName   AS VARCHAR(100)  = NULL
-                                       , @errorMessage  AS NVARCHAR(MAX) = NULL
-                                       , @errorQuery    AS NVARCHAR(MAX) = NULL )
+CREATE PROCEDURE dbo.processEhlersError ( @errorTypeID      AS INT
+                                        , @codeBlockNum     AS INT
+                                        , @codeBlockDesc    AS VARCHAR (128)
+                                        , @errorNumber      AS INT
+                                        , @errorSeverity    AS INT
+                                        , @errorState       AS INT
+                                        , @errorProcedure   AS VARCHAR (128)
+                                        , @errorLine        AS INT
+                                        , @errorMessage     AS VARCHAR (4000) 
+                                        , @errorData        AS VARCHAR (MAX) )
 
 AS
 /*
@@ -8,15 +15,14 @@ AS
 
   Procedure:    dbo.processEhlersError
      Author:    Chris Carson
-                Original Code: Microsoft ( AdventureWorks )
-    Purpose:    log error data to ErrorLog table
+    Purpose:    logs error data and sends out notification
 
 
     revisor         date                description
     ---------       -----------         ----------------------------
     ccarson         2013-01-24          adapted from AdventureWorks2008R2.dbo.uspLogError and AdventureWorks2008R2.dbo.uspPrintError
-    ccarson         ###DATE###          format additional SQL Server error data 
-    
+    ccarson         ###DATE###          format additional SQL Server error data
+
     Logic Summary:
 
     Notes:
@@ -24,125 +30,134 @@ AS
 ************************************************************************************************************************************
 */
 BEGIN
+BEGIN TRY
+
     SET NOCOUNT ON ;
 
---  Constants
     DECLARE @body_format        AS VARCHAR (20)     = 'HTML'
-          , @errorTime          AS VARCHAR (30)     = CONVERT( VARCHAR(30), SYSDATETIME(), 121 )
+          , @errorTime          AS DATETIME2 (7)    = SYSDATETIME() 
           , @databaseName       AS NVARCHAR(128)    = DB_NAME()
           , @profile_name       AS SYSNAME          = 'Ehlers SQL Server Data Manager'
-          , @recipients         AS VARCHAR (100)    = 'ccarson@ehlers-inc.com'
+          , @recipientEmail     AS VARCHAR (100) 
           , @serverName         AS NVARCHAR(128)    = @@SERVERNAME
           , @userName           AS SYSNAME          = dbo.udf_GetSystemUser() ;
 
---  Formatted by CATCH block on SQL Server errors
-    DECLARE @errorLine          AS VARCHAR (20)
-          , @errorNumber        AS VARCHAR (20)
-          , @errorProcedure     AS SYSNAME
-          , @errorSeverity      AS VARCHAR (20)
-          , @errorState         AS VARCHAR (20)
-          , @SQLErrorMessage    AS NVARCHAR(4000) ;
 
---  Formatted by error-handling routine
     DECLARE @body               AS NVARCHAR(MAX)
           , @errorLogID         AS INT
-          , @rc                 AS INT              = 0
           , @subject            AS VARCHAR (100) ;
+          
+    DECLARE @recipients         AS TABLE ( RecipientEMail VARCHAR (50) ) ; 
+    
+    INSERT  @recipients
+    SELECT  RecipientEMail
+      FROM  Meta.ErrorTypeRecipient
+     WHERE  ErrorTypeID = @errorTypeID ;
 
 
-    BEGIN TRY
---  1)  Load SQL Server error values ( will be NULL if the error is an application error )
-    SELECT  @errorLine       = CAST( ERROR_LINE()     AS VARCHAR(20) )
-          , @errorNumber     = CAST( ERROR_NUMBER()   AS VARCHAR(20) )
-          , @errorProcedure  = ERROR_PROCEDURE()
-          , @errorSeverity   = CAST( ERROR_SEVERITY() AS VARCHAR(20) )
-          , @errorState      = CAST( ERROR_STATE()    AS VARCHAR(20) )
-          , @SQLErrorMessage = ERROR_MESSAGE() ;
-
---  2)  Format Database Mail depending on processing either application error or SQL Server error
-    IF  @errorNumber IS NULL
-        SELECT  @subject    = QUOTENAME( @serverName ) + N' reports a processing error in ' + @processName
-              , @body       = N'<H1>Ehlers Database Application Error</H1>'
-                            + N'<TABLE border="0">'
-                            + N'<tr><td>Process:</td><td></td><td>'       + @processName  + '</td></tr>'
-                            + N'<tr><td>SQL Server:</td><td></td><td>'    + @serverName   + '</td></tr>'
-                            + N'<tr><td>Database:</td><td></td><td>'      + @databaseName + '</td></tr>'
-                            + N'<tr><td>Occurred:</td><td></td><td>'      + @errorTime    + '</td></tr>'
-                            + N'<tr><td>Error Message:</td><td></td><td>' + @errorMessage + '</td></tr>'
-                            + N'</TABLE>' ;
-    ELSE
-        SELECT  @subject    = QUOTENAME( @serverName ) + N'reports a SQL Server error on ' + @databaseName
-              , @body       = N'<H1>SQL Server Error on ' + QUOTENAME( @serverName ) + '</H1>'
-                            + N'<TABLE border="0">'
-                            + N'<tr><td>Error Timestamp:</td><td></td><td>'  + @errorTime       + '</td></tr>'
-                            + N'<tr><td>SQL Server:</td><td></td><td>'       + @serverName      + '</td></tr>'
-                            + N'<tr><td>Database:</td><td></td><td>'         + @databaseName    + '</td></tr>'
-                            + N'<tr><td>Procedure:</td><td></td><td>'        + @errorProcedure  + '</td></tr>'
-                            + N'<tr><td>Error Line:</td><td></td><td>Line: ' + @errorLine       + '</td></tr>'
-                            + N'<tr><td>Error Code:</td><td></td><td>'       + @errorNumber     + '</td></tr>'
-                            + N'<tr><td>Error Message:</td><td></td><td>'    + @SQLErrorMessage + '</td></tr>'
-                            + N'<tr></tr>'
-                            + N'<tr><b>Any transactions related to this error have been rolled back.</b></tr>'
-                            + N'</TABLE>' ;
-
---  3)  When calling application includes query results, append query results to the formatted database mail
-    SELECT  @body = ISNULL( @body + N'<H2>See attached query results for details</H2>' + @errorQuery, @body ) ;
-
---  4)  Throw application error when transaction is in an uncommitable state
+--  1)  Throw application error when transaction is in an uncommitable state
     IF  XACT_STATE() = -1
-        SELECT  @processName  = 'logEhlersSQLError'
-              , @subject      = QUOTENAME( @serverName ) + N' reports a processing error in ' + @processName
-              , @body         = @serverName + ' is trying to log an error, but the current transaction is in '
-                              + 'an uncommittable state. '
-                              + 'Application code needs to execute a ROLLBACK before invoking logEhlersSQLError.' ;
-    ELSE
---  5)  Log SQL Server database errors
+    BEGIN
+        SELECT  @errorProcedure = 'processEhlersError'
+              , @subject        = @serverName + '.' + @databaseName + N' reports a processing error in ' + @errorProcedure
+              , @body           = @serverName + '.' + @databaseName + N' cannot log the error because the current transaction is in '
+                                + 'an uncommittable state. '
+                                + @errorProcedure + ' code needs to execute a ROLLBACK before invoking processEhlersError.' ;
+    END
+        ELSE
+    BEGIN 
+--  2)  write error to log
         INSERT  dbo.SQLErrorLog (
-                ErrorTime, UserName, ErrorNumber, ErrorSeverity, ErrorState, ErrorProcedure, ErrorLine, ErrorMessage )
-        SELECT  SYSDATETIME(), @userName, @errorState, @errorNumber, @errorSeverity, @errorProcedure, @errorLine, @SQLErrorMessage
-         WHERE  @errorNumber IS NOT NULL ;
+                CodeBlockNum, CodeBlockDesc, ErrorNumber, ErrorSeverity, ErrorState, ErrorProcedure
+                    , ErrorLine, ErrorMessage, ErrorData, ModifiedDate, ModifiedUser )
+        SELECT  @codeBlockNum, @codeBlockDesc, @errorNumber, @errorSeverity, @errorState, @errorProcedure
+                    , @errorLine, @errorMessage, @errorData, @errorTime, @userName ; 
 
-    SELECT  @errorLogID = @@IDENTITY ;
+        SELECT  @errorLogID = @@IDENTITY ;
 
-    IF  @errorNumber IS NULL
-        PRINT   'Application Error thrown by ' + @processName + ' check with system administrators.' ;
-    ELSE
-        PRINT   'SQL Server Error Log Entry # ' + CAST( @ErrorLogID AS VARCHAR(20) ) + ' recorded.' ;
 
---  6)  Send Database Mail with formatted error information
-    EXECUTE msdb.dbo.sp_send_dbmail  @profile_name  =  @profile_name
-                                   , @recipients    =  @recipients
-                                   , @subject       =  @subject
-                                   , @body          =  @body
-                                   , @body_format   =  @body_format ;
+--  3)  format DB mail documenting the error
+        SELECT  @subject = @serverName + '.' + @databaseName + N' reports a processing error in ' + @errorProcedure
+              , @body    = N'<H1>Database Error on ' + @serverName + '.' + @databaseName + '</H1>'
+                         + N'<TABLE border="0">'
+                         + N'<tr><td>Error Log Number:</td><td></td><td>'   + CAST( @errorLogID   AS VARCHAR(20) )    + '</td></tr>'
+                         + N'<tr><td>Error Timestamp:</td><td></td><td>'    + CONVERT( VARCHAR(30), @errorTime, 121 ) + '</td></tr>'
+                         + N'<tr><td>Procedure:</td><td></td><td>'          + @errorProcedure                         + '</td></tr>'
+                         + N'<tr><td>Code Block:</td><td></td><td>'         + CAST( @codeBlockNum AS VARCHAR(20) )    + '</td></tr>'
+                         + N'<tr><td>Code Description:</td><td></td><td>'   + @codeBlockDesc                          + '</td></tr>'
+                         + N'<tr><td>Error Line:</td><td></td><td>'         + CAST( @errorLine    AS VARCHAR(20) )    + '</td></tr>'
+                         + N'<tr><td>Error Code:</td><td></td><td><b>'      + CAST( @errorNumber  AS VARCHAR(20) )    + '</b></td></tr>'
+                         + N'<tr><td>Error Message:</td><td></td><td><b>'   + @errorMessage                           + '</b></td></tr>'
+                         + N'<tr></tr>'
+                         + N'</TABLE></br>'
+                         + N'<H2>All work from ' + @errorProcedure + ' has been rolled back.</H2>' ;
 
-    END TRY
-    BEGIN CATCH
-        SELECT  @errorNumber     = CAST( ERROR_NUMBER()   AS VARCHAR(20) )
-              , @errorProcedure  = ERROR_PROCEDURE()
-              , @errorLine       = CAST( ERROR_LINE()     AS VARCHAR(20) )
-              , @SQLErrorMessage = ERROR_MESSAGE()
-              , @processName     = 'logEhlersSQLError'
-              , @subject         = QUOTENAME( @serverName ) + N' reports a processing error in ' + @processName
-              , @body = N'<H1>SQL Server Error</H1>'
-                      + N'<TABLE border="0">'
-                      + N'<tr><td>Error Timestamp:</td><td></td><td>'   + @errorTime       + '</td></tr>'
-                      + N'<tr><td>SQL Server:</td><td></td><td>'        + @serverName      + '</td></tr>'
-                      + N'<tr><td>Database:</td><td></td><td>'          + @databaseName    + '</td></tr>'
-                      + N'<tr><td>Procedure:</td><td></td><td>'         + @errorProcedure  + '</td></tr>'
-                      + N'<tr><td>Error Line:</td><td></td><td>Line: '  + @errorLine       + '</td></tr>'
-                      + N'<tr><td>Error Code:</td><td></td><td>'        + @errorNumber     + '</td></tr>'
-                      + N'<tr><td>Error Message:</td><td></td><td>'     + @SQLErrorMessage + '</td></tr>'
-                      + N'</TABLE>' ;
+--  4)  attach supporting data if it's available
+        IF  ( @errorData IS NULL )
+            SELECT  @body = @body + N'<H2>' + @errorProcedure + N' did not return any supporting error data</H2>' ;
+        ELSE
+            SELECT  @body = @body + N'<H3>Here is the data from the error: </H3>' + @errorData ;
+    END 
+    
+--  5)  Send Database Mail with formatted error information
+    INSERT  @recipients
+    SELECT  RecipientEMail
+      FROM  Meta.ErrorTypeRecipient
+     WHERE  ErrorTypeID = @errorTypeID ;
+     
+    WHILE EXISTS ( SELECT 1 FROM @recipients )
+    BEGIN 
+        SELECT  TOP 1 
+                @recipientEmail = RecipientEMail
+          FROM  @recipients ;
+          
+        EXECUTE msdb.dbo.sp_send_dbmail  @profile_name          =  @profile_name
+                                       , @recipients            =  @recipientEmail
+                                       , @subject               =  @subject
+                                       , @body                  =  @body
+                                       , @body_format           =  @body_format 
+                                       , @exclude_query_output  = 1 ;
+        
+        DELETE @recipients WHERE RecipientEMail = @recipientEmail ;
+    END
+    
 
+END TRY
+BEGIN CATCH
+    SELECT  @errorTime      = SYSDATETIME()
+          , @subject        = @serverName + '.' + @databaseName + N' reports a processing error in ' + ERROR_PROCEDURE()
+          , @body = N'<H1>Database Error on ' + @serverName + '.' + @databaseName + '</H1>'
+                  + N'<TABLE border="0">'
+                  + N'<tr><td>Error Timestamp:</td><td></td><td>'   + CONVERT( VARCHAR(30), @errorTime, 121 ) + '</td></tr>'
+                  + N'<tr><td>Procedure:</td><td></td><td>'         + ERROR_PROCEDURE()                       + '</td></tr>'
+                  + N'<tr><td>Error Line:</td><td></td><td>Line: '  + CAST( ERROR_LINE() AS VARCHAR(20) )     + '</td></tr>'
+                  + N'<tr><td>Error Code:</td><td></td><td>'        + CAST( ERROR_NUMBER() AS VARCHAR(20) )   + '</td></tr>'
+                  + N'<tr><td>Error Message:</td><td></td><td>'     + ERROR_MESSAGE()                         + '</td></tr>'
+                  + N'</TABLE>' ;
+                  
+    DELETE  @recipients ;
+    
+    INSERT  @recipients
+    SELECT  RecipientEMail
+      FROM  Meta.ErrorTypeRecipient
+     WHERE  ErrorTypeID = 1 ;
+     
+    WHILE EXISTS ( SELECT 1 FROM @recipients )
+    BEGIN 
+        SELECT  TOP 1 
+                @recipientEmail = RecipientEMail
+          FROM  @recipients ;
+          
         EXECUTE msdb.dbo.sp_send_dbmail  @profile_name  =  @profile_name
-                                       , @recipients    =  @recipients
+                                       , @recipients    =  @recipientEmail
                                        , @subject       =  @subject
                                        , @body          =  @body
-                                       , @body_format   =  @body_format ;
+                                       , @body_format   =  @body_format 
+                                       , @exclude_query_output  = 1 ;                                       
+        
+        DELETE @recipients WHERE RecipientEMail = @recipientEmail ;
+    END    
+        
+END CATCH
 
-        RETURN - 1 ;
-    END CATCH
-
-    RETURN 0 ;
 END

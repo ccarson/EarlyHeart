@@ -36,29 +36,11 @@
     <IgnoreWhitespace>False</IgnoreWhitespace>
   </PropertyGroup>
   <ItemGroup>
-    <SqlCmdVariable Include="AgentJobOwner">
-      <Value>EHLERS\Admin</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="BuildSQLAgentJobs">
-      <Value>NO</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="EnableRI">
-      <Value>YES</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="EnableTriggers">
-      <Value>YES</Value>
-    </SqlCmdVariable>
     <SqlCmdVariable Include="PostDeployChanges">
       <Value>YES</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="PreDeployChanges">
       <Value>NO</Value>
     </SqlCmdVariable>
-    <SqlCmdVariable Include="ProductionServer">
-      <Value>EHLERS-SS3</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="TargetServer">
-      <Value>MNDT0368</Value>
-    </SqlCmdVariable>
-  </ItemGroup>
+    </ItemGroup>
 </Project>
