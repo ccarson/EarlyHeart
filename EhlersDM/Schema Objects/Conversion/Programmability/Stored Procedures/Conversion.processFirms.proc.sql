@@ -11,20 +11,21 @@ AS
     revisor         date                description
     ---------       ----------          ----------------------------
     ccarson         2013-01-24          created
-    ccarson         2013-02-100         revised error reporting
+    ccarson         ###DATE###          revised error reporting
 
     Logic Summary:
-    1)  SET CONTEXT_INFO prevents related converted tables from firing triggers caused by changes from proc
-    2)  Create temp storage for changed data from source tables
+    1)  Validate input parameters
+    2)  SET CONTEXT_INFO, inhibiting triggers when invoked
     3)  SELECT initial control counts
-    4)  INSERT changed Firms data into @changedFirmIDs
-    5)  Exit procedure if there are no changes on edata.Firms
-    6)  INSERT new firms data into #convertingFirms
-    7)  INSERT updated Firms data into #convertingFirms
-    8)  MERGE #processFirmsData with dbo.Firm
-    9)  SELECT control counts and validate
-   10)  Reset CONTEXT_INFO to re-enable converted table triggers
-   11)  Print control totals
+    4)  INSERT changed data into temp storage
+    5)  Stop processing if there are no data changes
+    6)  INSERT new data into temp storage
+    7)  INSERT updated data into temp storage
+    8)  MERGE temp storage into dbo.Firm
+    9)  SELECT final control counts
+   10)  Control Count Validation
+   11)  Reset CONTEXT_INFO, allowing triggers to fire when invoked
+   12)  Print control totals
 
 
     Notes:
@@ -32,68 +33,105 @@ AS
 ************************************************************************************************************************************
 */
 BEGIN
+BEGIN TRY
     SET NOCOUNT ON ;
 
 
-    DECLARE @processName            AS VARCHAR (100)    = 'processFirms'
-          , @errorMessage           AS VARCHAR (MAX)    = NULL
-          , @errorQuery             AS VARCHAR (MAX)    = NULL
-          , @processFirms           AS VARBINARY (128)  = CAST( 'processFirms' AS VARBINARY(128) )
-          , @processStartTime       AS DATETIME         = GETDATE()
-          , @processEndTime         AS DATETIME         = NULL
+    DECLARE @processFirms           AS VARBINARY (128)  = CAST( 'processFirms' AS VARBINARY(128) )
+          , @processStartTime       AS VARCHAR (30)     = CONVERT( VARCHAR(30), GETDATE(), 121 )
+          , @processEndTime         AS VARCHAR (30)     = NULL
           , @processElapsedTime     AS INT              = 0 ;
 
 
-    DECLARE @changesCount           AS INT = 0
-          , @convertedActual        AS INT = 0
-          , @convertedCount         AS INT = 0
-          , @legacyCount            AS INT = 0
-          , @newCount               AS INT = 0
-          , @recordUPDATEs          AS INT = 0
-          , @recordINSERTs          AS INT = 0
-          , @recordMERGEs           AS INT = 0
-          , @updatedCount           AS INT = 0 ;
+    DECLARE @codeBlockDesc01        AS VARCHAR (128)    = 'Validate input parameters'
+          , @codeBlockDesc02        AS VARCHAR (128)    = 'SET CONTEXT_INFO, inhibiting triggers when invoked'
+          , @codeBlockDesc03        AS VARCHAR (128)    = 'SELECT initial control counts'
+          , @codeBlockDesc04        AS VARCHAR (128)    = 'INSERT changed data into temp storage'
+          , @codeBlockDesc05        AS VARCHAR (128)    = 'Stop processing if there are no data changes'
+          , @codeBlockDesc06        AS VARCHAR (128)    = 'INSERT new data into temp storage'
+          , @codeBlockDesc07        AS VARCHAR (128)    = 'INSERT updated data into temp storage'
+          , @codeBlockDesc08        AS VARCHAR (128)    = 'MERGE temp storage into dbo.Firm'
+          , @codeBlockDesc09        AS VARCHAR (128)    = 'SELECT final control counts'
+          , @codeBlockDesc10        AS VARCHAR (128)    = 'Control Total Validation'
+          , @codeBlockDesc11        AS VARCHAR (128)    = 'Reset CONTEXT_INFO, allowing triggers to fire when invoked'
+          , @codeBlockDesc12        AS VARCHAR (128)    = 'Print control totals' ;
 
 
-    DECLARE @changedFirmIDs         AS TABLE ( FirmID   INT
-                                             , LegacyChecksum      VARBINARY (128)
-                                             , ConvertedChecksum   VARBINARY (128) ) ;
+    DECLARE @codeBlockNum           AS INT
+          , @codeBlockDesc          AS VARCHAR (128)
+          , @errorTypeID            AS INT
+          , @errorSeverity          AS INT
+          , @errorState             AS INT
+          , @errorNumber            AS INT
+          , @errorLine              AS INT
+          , @errorProcedure         AS VARCHAR (128)
+          , @errorMessage           AS VARCHAR (MAX) = NULL
+          , @errorData              AS VARCHAR (MAX) = NULL ;
 
 
-    DECLARE @firmMergeResults       AS TABLE( Action  NVARCHAR (10)
-                                            , FirmID  INT ) ;
+    DECLARE @changesCount           AS INT  = 0
+          , @convertedActual        AS INT  = 0
+          , @convertedCount         AS INT  = 0
+          , @legacyCount            AS INT  = 0
+          , @newCount               AS INT  = 0
+          , @recordUPDATEs          AS INT  = 0
+          , @recordINSERTs          AS INT  = 0
+          , @recordMERGEs           AS INT  = 0
+          , @updatedCount           AS INT  = 0
+          , @total                  AS INT  = 0 ;
 
 
---  1)  SET CONTEXT_INFO prevents related converted tables from firing triggers caused by changes from proc
-BEGIN TRY
+    DECLARE @controlTotalsError     AS VARCHAR (200)    = N'Control Total Failure:  %s = %d, %s = %d' ;
+
+
+    DECLARE @changedFirmData        AS TABLE ( FirmID               INT     NOT NULL    PRIMARY KEY CLUSTERED
+                                             , Firm                 VARCHAR (125)
+                                             , ShortName            VARCHAR (50)
+                                             , FirmStatus           BIT
+                                             , Phone                VARCHAR (20)
+                                             , Fax                  VARCHAR (20)
+                                             , TollFree             VARCHAR (20)
+                                             , WebSite              VARCHAR (50)
+                                             , GoodFaith            VARCHAR (MAX)
+                                             , Notes                VARCHAR (MAX)
+                                             , ChangeDate           DATETIME
+                                             , ChangeBy             VARCHAR (50) ) ;
+
+
+    DECLARE @changedFirmIDs         AS TABLE ( FirmID               INT     NOT NULL    PRIMARY KEY CLUSTERED
+                                             , LegacyChecksum       VARBINARY (128)
+                                             , ConvertedChecksum    VARBINARY (128) ) ;
+
+
+    DECLARE @firmMergeResults       AS TABLE ( Action  NVARCHAR (10)
+                                             , FirmID  INT ) ;
+
+
+/**/SELECT  @codeBlockNum   = 1
+/**/      , @codeBlockDesc  = @codeBlockDesc01 ; --  Validate input parameters
+--  No input validation
+
+
+
+/**/SELECT  @codeBlockNum   = 2
+/**/      , @codeBlockDesc  = @codeBlockDesc02 ; --  SET CONTEXT_INFO, inhibiting triggers when invoked
+
     SET CONTEXT_INFO @processFirms ;
 
 
---  2)  Create temp storage for changed data from source tables
-    IF  OBJECT_ID('tempdb..#convertingFirms') IS NOT NULL
-        DROP TABLE  #convertingFirms ;
-    CREATE TABLE    #convertingFirms (
-        FirmID          INT     NOT NULL    PRIMARY KEY CLUSTERED
-      , Firm            VARCHAR (125)
-      , ShortName       VARCHAR (50)
-      , FirmStatus      BIT
-      , Phone           VARCHAR (20)
-      , Fax             VARCHAR (20)
-      , TollFree        VARCHAR (20)
-      , WebSite         VARCHAR (50)
-      , GoodFaith       VARCHAR (MAX)
-      , Notes           VARCHAR (MAX)
-      , ChangeDate      DATETIME
-      , ChangeBy        VARCHAR (50) ) ;
 
+/**/SELECT  @codeBlockNum   = 3
+/**/      , @codeBlockDesc  = @codeBlockDesc03 ; --  SELECT initial control counts
 
---  3)  SELECT initial control counts
     SELECT  @legacyCount        = COUNT(*) FROM Conversion.vw_LegacyFirms ;
     SELECT  @convertedCount     = COUNT(*) FROM Conversion.vw_ConvertedFirms ;
     SELECT  @convertedActual    = @convertedCount ;
 
 
---  4)  INSERT changed Firms data into @changedFirmIDs
+
+/**/SELECT  @codeBlockNum   = 4
+/**/      , @codeBlockDesc  = @codeBlockDesc04 ; --  INSERT changed data into temp storage
+
     INSERT  @changedFirmIDs
     SELECT  FirmID            = l.FirmID
           , legacyChecksum    = l.FirmChecksum
@@ -104,13 +142,18 @@ BEGIN TRY
     SELECT  @changesCount = @@ROWCOUNT ;
 
 
---  5)  Exit procedure if there are no changes on edata.Firms
-    IF  ( @changesCount = 0 )
-        GOTO  endOfProc ;
+
+/**/SELECT  @codeBlockNum   = 5
+/**/      , @codeBlockDesc  = @codeBlockDesc05 ; --  Stop processing if there are no data changes
+
+    IF  @changesCount = 0 GOTO endOfProc ;
 
 
---  6)  INSERT new firms data into #convertingFirms
-    INSERT  #convertingFirms
+
+/**/SELECT  @codeBlockNum   = 6
+/**/      , @codeBlockDesc  = @codeBlockDesc06 ; --  INSERT new data into temp storage
+
+    INSERT  @changedFirmData
     SELECT  FirmID, Firm, ShortName
                 , FirmStatus, Phone, Fax
                 , TollFree, WebSite
@@ -122,8 +165,11 @@ BEGIN TRY
     SELECT  @newCount = @@ROWCOUNT ;
 
 
---  7)  INSERT updated Firms data into #convertingFirms
-    INSERT  #convertingFirms
+
+/**/SELECT  @codeBlockNum   = 7
+/**/      , @codeBlockDesc  = @codeBlockDesc07 ; --  INSERT updated data into temp storage
+
+    INSERT  @changedFirmData
     SELECT  FirmID, Firm, ShortName
                 , FirmStatus, Phone, Fax
                 , TollFree, WebSite
@@ -135,11 +181,16 @@ BEGIN TRY
     SELECT  @updatedCount = @@ROWCOUNT ;
 
 
---  8)  MERGE #processFirmsData with dbo.Firm
+
+/**/SELECT  @codeBlockNum   = 8
+/**/      , @codeBlockDesc  = @codeBlockDesc08 ; --  MERGE temp storage into dbo.Firm
+
+    BEGIN TRANSACTION ;
+
     SET IDENTITY_INSERT dbo.Firm ON ;
 
      MERGE  dbo.Firm            AS tgt
-     USING  #convertingFirms    AS src ON tgt.FirmID = src.FirmID
+     USING  @changedFirmData    AS src ON tgt.FirmID = src.FirmID
       WHEN  MATCHED THEN
             UPDATE  SET   FirmName      = src.Firm
                         , ShortName     = src.ShortName
@@ -163,84 +214,145 @@ BEGIN TRY
     SET IDENTITY_INSERT dbo.Firm OFF ;
 
 
---  9)  SELECT control counts and validate
+
+/**/SELECT  @codeBlockNum   = 9
+/**/      , @codeBlockDesc  = @codeBlockDesc09 ; --  SELECT final control counts
+
     SELECT  @recordINSERTs   = COUNT(*) FROM @firmMergeResults WHERE  Action = 'INSERT' ;
     SELECT  @recordUPDATEs   = COUNT(*) FROM @firmMergeResults WHERE  Action = 'UPDATE' ;
     SELECT  @convertedActual = COUNT(*) FROM Conversion.vw_ConvertedFirms ;
 
-    IF  ( @convertedActual <> ( @convertedCount + @recordINSERTs ) )
-        OR
-        ( @convertedActual <> @legacyCount )
-        OR
-        ( @recordINSERTs <> @newCount )
-        OR
-        ( @recordUPDATEs <> @updatedCount )
-        OR
-        ( @recordMERGEs <> @changesCount )
-        OR
-        ( @changesCount <> ( @recordINSERTs + @recordUPDATEs ) )
 
-    BEGIN
-        PRINT 'Control Totals Error!  Please review counts and processing!' ;
-        PRINT '' ;
-        PRINT '@convertedActual = ' + STR( @convertedActual, 8 ) ;
-        PRINT '@convertedCount  = ' + STR( @convertedCount, 8 ) ;
-        PRINT '@recordINSERTs   = ' + STR( @recordINSERTs, 8 ) ;
-        PRINT '' ;
-        PRINT '@convertedActual = ' + STR( @convertedActual, 8 ) ;
-        PRINT '@legacyCount     = ' + STR( @legacyCount, 8 ) ;
-        PRINT '' ;
-        PRINT '@recordINSERTs   = ' + STR( @recordINSERTs, 8 ) ;
-        PRINT '@newCount        = ' + STR( @newCount, 8 ) ;
-        PRINT '' ;
-        PRINT '@recordUPDATEs   = ' + STR( @recordUPDATEs, 8 ) ;
-        PRINT '@updatedCount    = ' + STR( @updatedCount, 8 ) ;
-        PRINT '' ;
-        PRINT '@recordMERGEs    = ' + STR( @recordMERGEs, 8 ) ;
-        PRINT '@changesCount    = ' + STR( @changesCount, 8 ) ;
-        PRINT '' ;
-        PRINT '@changesCount    = ' + STR( @changesCount, 8 ) ;
-        PRINT '@recordINSERTs   = ' + STR( @recordINSERTs, 8 ) ;
-        PRINT '@recordUPDATEs   = ' + STR( @recordUPDATEs, 8 ) ;
-    END
+
+/**/SELECT  @codeBlockNum   = 10
+/**/      , @codeBlockDesc  = @codeBlockDesc10 ; --  Control Total Validation
+
+    SELECT @total =  @convertedCount + @recordINSERTs
+    IF  ( @convertedActual <> ( @convertedCount + @recordINSERTs ) )
+        RAISERROR( @controlTotalsError, 16, 1, 'Converted Firms', @convertedActual, 'Existing Firms + Inserted Firms', @total ) ;
+
+    IF  ( @convertedActual <> @legacyCount )
+        RAISERROR( @controlTotalsError, 16, 1, 'Converted Firms', @convertedActual, 'Legacy Firms', @legacyCount ) ;
+
+    IF  ( @recordINSERTs <> @newCount )
+        RAISERROR( @controlTotalsError, 16, 1, 'Inserted Firms', @recordINSERTs,  'Expected Inserts', @newCount ) ;
+
+    IF  ( @recordUPDATEs <> @updatedCount )
+        RAISERROR( @controlTotalsError, 16, 1, 'Updated Firms', @recordUPDATEs,  'Expected Updates', @updatedCount ) ;
+
+    IF  ( @recordMERGEs <> @changesCount )
+        RAISERROR( @controlTotalsError, 16, 1, 'Changed Firms', @recordMERGEs,  'Expected Changes', @changesCount ) ;
+
+        
+    COMMIT TRANSACTION ;
+
+
+endOfProc:
+/**/SELECT  @codeBlockNum   = 11
+/**/      , @codeBlockDesc  = @codeBlockDesc11 ; --  Reset CONTEXT_INFO, allowing triggers to fire when invoked
+
+    SET CONTEXT_INFO 0x0 ;
+
+
+
+/**/SELECT  @codeBlockNum   = 12
+/**/      , @codeBlockDesc  = @codeBlockDesc12 ; --  Print control totals
+
+    SELECT  @processEndTime     = CONVERT( VARCHAR(30), GETDATE(), 121 )
+          , @processElapsedTime = DATEDIFF( ms, CAST( @processStartTime AS DATETIME ), CAST( @processEndTime AS DATETIME ) ) ;
+
+    RAISERROR( 'Conversion.processFirms CONTROL TOTALS ', 0, 0 ) ;
+    RAISERROR( 'Firms on legacy system                  = % 8d', 0, 0, @legacyCount ) ;
+    RAISERROR( '', 0, 0 ) ;
+    RAISERROR( 'Existing Firms on converted system      = % 8d', 0, 0, @convertedCount ) ;
+    RAISERROR( '     + new records                      = % 8d', 0, 0, @newCount ) ;
+    RAISERROR( '                                           ======= ', 0, 0 ) ;
+    RAISERROR( 'Total Firms on converted system         = % 8d', 0, 0, @convertedActual ) ;
+    RAISERROR( 'Changed records already counted         = % 8d', 0, 0, @updatedCount ) ;
+    RAISERROR( '', 0, 0 ) ;
+    RAISERROR( '', 0, 0 ) ;
+    RAISERROR( 'Database Change Details', 0, 0 ) ;
+    RAISERROR( '', 0, 0 ) ;
+    RAISERROR( '     Total INSERTs dbo.Firm             = % 8d', 0, 0, @recordINSERTs ) ;
+    RAISERROR( '     Total UPDATEs dbo.Firm             = % 8d', 0, 0, @recordUPDATEs ) ;
+    RAISERROR( '', 0, 0 ) ;
+    RAISERROR( '     TOTAL changes on dbo.Firm          = % 8d', 0, 0, @recordMERGEs ) ;
+    RAISERROR( '', 0, 0 ) ;
+    RAISERROR( 'processFirms START : %s', 0, 0, @processStartTime ) ;
+    RAISERROR( 'processFirms   END : %s', 0, 0, @processEndTime ) ;
+    RAISERROR( '      Elapsed Time : %d ms', 0, 0, @processElapsedTime ) ;
 
 
 END TRY
 BEGIN CATCH
-    
-    EXECUTE dbo.processEhlersError ;
+
+    IF  @@TRANCOUNT > 0
+        ROLLBACK TRANSACTION ;
+
+    SELECT  @errorTypeID    = 1
+          , @errorSeverity  = ERROR_SEVERITY()
+          , @errorState     = ERROR_STATE()
+          , @errorNumber    = ERROR_NUMBER()
+          , @errorLine      = ERROR_LINE()
+          , @errorProcedure = ISNULL( ERROR_PROCEDURE(), '-' )
+
+    IF  @errorMessage IS NULL
+    BEGIN
+        SELECT  @errorMessage = N'Error occurred in Code Block %d, %s ' + CHAR(13)
+                              + N'Error %d, Level %d, State %d, Procedure %s, Line %d, Message: ' + ERROR_MESSAGE() ;
+
+        RAISERROR( @errorMessage, @errorSeverity, 1
+                 , @codeBlockNum
+                 , @codeBlockDesc
+                 , @errorNumber
+                 , @errorSeverity
+                 , @errorState
+                 , @errorProcedure
+                 , @errorLine ) ;
+                 
+        SELECT  @errorMessage = ERROR_MESSAGE() ; 
+
+        IF  @codeBlockDesc = @codeBlockDesc08
+            SELECT  @errorData = '<b>temp storage contents from processFirms procedure</b></br></br>'
+                               + '<table border="1">'
+                               + '<tr><th>FirmID</th><th>Firm</th><th>ShortName</th><th>FirmStatus</th>'
+                               + '<th>Phone</th><th>Fax</th><th>TollFree</th><th>WebSite</th><th>GoodFaith</th>'
+                               + '<th>Notes</th><th>ChangeDate</th><th>ChangeBy</th></tr>'
+                               + CAST ( ( SELECT  td = FirmID, ''
+                                               ,  td = Firm, ''
+                                               ,  td = ShortName, ''
+                                               ,  td = FirmStatus, ''
+                                               ,  td = Phone, ''
+                                               ,  td = Fax, ''
+                                               ,  td = TollFree, ''
+                                               ,  td = WebSite, ''
+                                               ,  td = GoodFaith, ''
+                                               ,  td = Notes, ''
+                                               ,  td = ChangeDate, ''
+                                               ,  td = ChangeBy, ''
+                                            FROM  @changedFirmData
+                                             FOR XML PATH('tr'), TYPE ) AS VARCHAR(MAX) )
+                               + N'</table>' ;
+
+        EXECUTE dbo.processEhlersError  @errorTypeID
+                                      , @codeBlockNum
+                                      , @codeBlockDesc
+                                      , @errorNumber
+                                      , @errorSeverity
+                                      , @errorState
+                                      , @errorProcedure
+                                      , @errorLine
+                                      , @errorMessage
+                                      , @errorData ;
+
+    END
+        ELSE
+    BEGIN
+        SELECT  @errorSeverity  = ERROR_SEVERITY()
+              , @errorState     = ERROR_STATE()
+
+        RAISERROR( @errorMessage, @errorSeverity, @errorState ) ;
+    END
+
 END CATCH
-
-
-endOfProc:
-
--- 10)  Reset CONTEXT_INFO to re-enable converted table triggers
-    SET CONTEXT_INFO 0x0 ;
-
-
--- 11)  Print control totals
-    SELECT  @processEndTime     = GETDATE()
-          , @processElapsedTime = DATEDIFF( ms, @processStartTime, @processEndTime ) ;
-
-    PRINT   'Conversion.processFirms CONTROL TOTALS ' ;
-    PRINT   'Firms on legacy system                  = ' + STR( @legacyCount, 8 ) ;
-    PRINT   '' ;
-    PRINT   'Existing Firms on converted system      = ' + STR( @convertedCount, 8 ) ;
-    PRINT   '     + new records                      = ' + STR( @newCount, 8 ) ;
-    PRINT   '                                           ======= ' ;
-    PRINT   'Total Firms on converted system         = ' + STR( @convertedActual, 8 ) ;
-    PRINT   'Changed records already counted         = ' + STR( @updatedCount, 8 ) ;
-    PRINT   '' ;
-    PRINT   '' ;
-    PRINT   'Database Change Details ' ;
-    PRINT   '' ;
-    PRINT   '     Total INSERTs dbo.Firm             = ' + STR( @recordINSERTs, 8 ) ;
-    PRINT   '     Total UPDATEs dbo.Firm             = ' + STR( @recordUPDATEs, 8 ) ;
-    PRINT   '' ;
-    PRINT   '     TOTAL changes on dbo.Firm          = ' + STR( @recordMERGEs, 8 ) ;
-    PRINT   '' ;
-    PRINT   'processFirms START : ' + CONVERT( VARCHAR (30), @processStartTime, 121 ) ;
-    PRINT   'processFirms   END : ' + CONVERT( VARCHAR (30), @processEndTime, 121 ) ;
-    PRINT   '      Elapsed Time : ' + CAST ( @processElapsedTime AS VARCHAR (20) ) + 'ms' ;
-
 END
