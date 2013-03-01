@@ -144,42 +144,29 @@
     <Folder Include="Database Security\Service Broker" />
     <Folder Include="Database Security\Service Broker\Routes" />
     <Folder Include="Project Scripts" />
-    <Folder Include="Project Scripts\InitialConversion" />
-    <Folder Include="Project Scripts\InitialConversion\Publish XML" />
     <Folder Include="Database References" />
     <Folder Include="Storage" />
-    <Folder Include="Project Scripts\InitialConversion\DataChanges" />
-    <Folder Include="Project Scripts\InitialConversion\PowerShell Scripts" />
-    <Folder Include="Project Scripts\InitialConversion\Post-Deployment" />
-    <Folder Include="Project Scripts\InitialConversion\Pre-Deployment" />
-    <Folder Include="Project Scripts\Project Script Templates" />
-    <Folder Include="Project Scripts\Project Script Templates\DataChanges" />
-    <Folder Include="Project Scripts\Project Script Templates\Post-Deployment" />
-    <Folder Include="Project Scripts\Project Script Templates\Pre-Deployment" />
-    <Folder Include="Project Scripts\Project Script Templates\Publish XML" />
-    <Folder Include="Project Scripts\Project Script Templates\OtherChanges" />
-    <Folder Include="Project Scripts\InitialConversion\OtherChanges" />
+    <Folder Include="Project Scripts\edataSources" />
+    <Folder Include="Project Scripts\edataSources\Publish XML" />
+    <Folder Include="Project Scripts\edataSources\PostDeploy" />
+    <Folder Include="Project Scripts\edataSources\PostDeployChanges" />
+    <Folder Include="Project Scripts\edataSources\PreDeploy" />
+    <Folder Include="Project Scripts\edataSources\PreDeployChanges" />
   </ItemGroup>
   <ItemGroup>
     <BuildContributorArgument Include="OutDir=$(OutDir)" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Project Scripts\InitialConversion\Publish XML\CreateEhlersOnTest.publish.xml" />
-    <None Include="Project Scripts\InitialConversion\Publish XML\CreateOnLocal.publish.xml" />
-    <None Include="Project Scripts\InitialConversion\Publish XML\UpdateEhlersOnProd.publish.xml" />
-    <None Include="Project Scripts\InitialConversion\Publish XML\UpdateEhlersOnStage.publish.xml" />
-    <None Include="Project Scripts\InitialConversion\Publish XML\UpdateEhlersOnTest.publish.xml" />
-    <None Include="Project Scripts\InitialConversion\Publish XML\UpdateOnLocal.publish.xml" />
     <None Include="Database References\edata.dacpac" />
     <None Include="Database References\ServerLogins.dacpac" />
-    <None Include="Project Scripts\InitialConversion\PowerShell Scripts\ScriptStaticListDrops.ps1" />
-    <None Include="Project Scripts\InitialConversion\PowerShell Scripts\ScriptStaticListLoads.ps1" />
-    <None Include="Project Scripts\Project Script Templates\Publish XML\CreateEhlersOnTest.publish.xml" />
-    <None Include="Project Scripts\Project Script Templates\Publish XML\CreateOnLocal.publish.xml" />
-    <None Include="Project Scripts\Project Script Templates\Publish XML\UpdateEhlersOnProd.publish.xml" />
-    <None Include="Project Scripts\Project Script Templates\Publish XML\UpdateEhlersOnStage.publish.xml" />
-    <None Include="Project Scripts\Project Script Templates\Publish XML\UpdateEhlersOnTest.publish.xml" />
-    <None Include="Project Scripts\Project Script Templates\Publish XML\UpdateOnLocal.publish.xml" />
+    <None Include="Project Scripts\edataSources\Publish XML\CreateEhlersOnTest.publish.xml" />
+    <None Include="Project Scripts\edataSources\Publish XML\CreateOnLocal.publish.xml" />
+    <None Include="Project Scripts\edataSources\Publish XML\UpdateEhlersOnProd.publish.xml" />
+    <None Include="Project Scripts\edataSources\Publish XML\UpdateEhlersOnStage.publish.xml" />
+    <None Include="Project Scripts\edataSources\Publish XML\UpdateEhlersOnTest.publish.xml" />
+    <None Include="Project Scripts\edataSources\Publish XML\UpdateOnLocal.publish.xml" />
+    <None Include="Project Scripts\SetRevisionDate.ps1" />
+    <None Include="Project Scripts\edataSources\Project notes and Comments.comments.txt" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_AddressChecksum.function.sql" />
@@ -543,67 +530,28 @@
     <Build Include="Schema Objects\Documents.schema.sql" />
     <Build Include="Schema Objects\Meta.schema.sql" />
     <Build Include="Database Security\Database Roles\RoleMemberships.sql" />
-    <None Include="Project Scripts\InitialConversion\DataChanges\LoadOfficeAddresses.script.sql" />
-    <None Include="Project Scripts\InitialConversion\DataChanges\LoadStaticLists.script.sql" />
-    <None Include="Project Scripts\InitialConversion\Post-Deployment\PostDeployDataChanges.script.sql" />
-    <None Include="Project Scripts\InitialConversion\Pre-Deployment\PreDeployDataChanges.script.sql" />
-    <None Include="Project Scripts\Project Script Templates\DataChanges\DataChangesTemplate.script.sql" />
-    <None Include="Project Scripts\Project Script Templates\Post-Deployment\PostDeployDataChanges.script.sql" />
-    <None Include="Project Scripts\Project Script Templates\Pre-Deployment\PreDeployDataChanges.script.sql" />
-    <None Include="Project Scripts\Project Script Templates\Post-Deployment\PostDeployment.script.sql" />
-    <PreDeploy Include="Project Scripts\InitialConversion\Pre-Deployment\PreDeployment.script.sql" />
-    <None Include="Project Scripts\Project Script Templates\OtherChanges\OtherChangesTemplate.script.sql" />
-    <None Include="Project Scripts\InitialConversion\OtherChanges\CreateDataConversionJob.script.sql" />
-    <None Include="Project Scripts\InitialConversion\OtherChanges\CreateErrorReportingJob.script.sql" />
-    <None Include="Project Scripts\InitialConversion\OtherChanges\DropDataConversionJob.script.sql" />
-    <None Include="Project Scripts\InitialConversion\OtherChanges\DropErrorReportingJob.script.sql" />
-    <None Include="Project Scripts\InitialConversion\OtherChanges\SetSQLUsersGroupPermissions.script.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.buildDataConversionAgentJob.proc.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.buildErrorReportingAgentJob.proc.sql" />
+    <None Include="Project Scripts\edataSources\PostDeploy\PostDeployChanges.script.sql" />
+    <None Include="Project Scripts\edataSources\PostDeploy\PostDeployment.script.sql" />
+    <None Include="Project Scripts\edataSources\PostDeployChanges\PostDeploySample.script.sql" />
+    <None Include="Project Scripts\edataSources\PreDeploy\PreDeployChanges.script.sql" />
+    <None Include="Project Scripts\edataSources\PreDeploy\PreDeployment.script.sql" />
+    <None Include="Project Scripts\edataSources\PreDeployChanges\PreDeploySample.script.sql" />
   </ItemGroup>
   <ItemGroup>
-    <SqlCmdVariable Include="ProductionServer">
-      <DefaultValue>EHLERS-SS3</DefaultValue>
-      <Value>$(SqlCmdVar__19)</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="TargetServer">
-      <DefaultValue>EHLERS-SS4</DefaultValue>
-      <Value>$(SqlCmdVar__13)</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="PreDeployDataChanges">
-      <DefaultValue>None</DefaultValue>
-      <Value>$(SqlCmdVar__16)</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="PostDeployDataChanges">
-      <DefaultValue>None</DefaultValue>
-      <Value>$(SqlCmdVar__18)</Value>
-    </SqlCmdVariable>
     <SqlCmdVariable Include="edata">
       <DefaultValue>edata</DefaultValue>
-      <Value>$(SqlCmdVar__10)</Value>
+      <Value>$(SqlCmdVar__20)</Value>
     </SqlCmdVariable>
-    <SqlCmdVariable Include="EnableRI">
-      <DefaultValue>YES</DefaultValue>
-      <Value>$(SqlCmdVar__6)</Value>
+    <SqlCmdVariable Include="PreDeployChanges">
+      <DefaultValue>NO</DefaultValue>
+      <Value>$(SqlCmdVar__16)</Value>
     </SqlCmdVariable>
-    <SqlCmdVariable Include="EnableTriggers">
-      <DefaultValue>YES</DefaultValue>
-      <Value>$(SqlCmdVar__7)</Value>
+    <SqlCmdVariable Include="PostDeployChanges">
+      <DefaultValue>NO</DefaultValue>
+      <Value>$(SqlCmdVar__18)</Value>
     </SqlCmdVariable>
-    <SqlCmdVariable Include="BuildSQLAgentJobs">
-      <DefaultValue>YES/NO</DefaultValue>
-      <Value>$(SqlCmdVar__12)</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="AgentJobOwner">
-      <DefaultValue>EHLERS\Admin</DefaultValue>
-      <Value>$(SqlCmdVar__11)</Value>
-    </SqlCmdVariable>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Project Scripts\Project Script Templates\Pre-Deployment\PreDeployment.script.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <PostDeploy Include="Project Scripts\InitialConversion\Post-Deployment\PostDeployment.script.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Schema Objects\Meta\Tables\Meta.DatabaseChangeLog.sql" />
@@ -623,15 +571,15 @@
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
-    <ArtifactReference Include="Database References\edata.dacpac">
-      <HintPath>Database References\edata.dacpac</HintPath>
-      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
-      <DatabaseVariableLiteralValue>edata</DatabaseVariableLiteralValue>
-    </ArtifactReference>
     <ArtifactReference Include="Database References\ServerLogins.dacpac">
       <HintPath>Database References\ServerLogins.dacpac</HintPath>
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
+    <ArtifactReference Include="Database References\edata.dacpac">
+      <HintPath>Database References\edata.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseSqlCmdVariable>edata</DatabaseSqlCmdVariable>
     </ArtifactReference>
   </ItemGroup>
 </Project>
