@@ -150,6 +150,8 @@
     <Folder Include="Database\Security" />
     <Folder Include="Database\Security\Database Roles" />
     <Folder Include="Database\Security\Users" />
+    <Folder Include="Schema Objects\edata" />
+    <Folder Include="Schema Objects\edata\Synonyms" />
   </ItemGroup>
   <ItemGroup>
     <BuildContributorArgument Include="OutDir=$(OutDir)" />
@@ -536,8 +538,14 @@
     <Build Include="Schema Objects\Meta\Tables\Meta.ErrorType.table.sql" />
     <Build Include="Schema Objects\Meta\Tables\Meta.ErrorTypeRecipient.table.sql" />
     <None Include="Project Scripts\Error Reporting\PostDeployChanges\LoadErrorTypeAndRecipients.script.sql" />
+    <Build Include="Schema Objects\edata\Synonyms\edata.Synonyms.sql" />
+    <Build Include="Schema Objects\edata.schema.sql" />
   </ItemGroup>
   <ItemGroup>
+    <SqlCmdVariable Include="edata">
+      <DefaultValue>edata</DefaultValue>
+      <Value>$(SqlCmdVar__19)</Value>
+    </SqlCmdVariable>
     <SqlCmdVariable Include="PreDeployChanges">
       <DefaultValue>NO</DefaultValue>
       <Value>$(SqlCmdVar__16)</Value>
@@ -562,15 +570,15 @@
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
-    <ArtifactReference Include="Database References\edata.dacpac">
-      <HintPath>Database References\edata.dacpac</HintPath>
-      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
-      <DatabaseVariableLiteralValue>edata</DatabaseVariableLiteralValue>
-    </ArtifactReference>
     <ArtifactReference Include="Database References\ServerLogins.dacpac">
       <HintPath>Database References\ServerLogins.dacpac</HintPath>
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
+    <ArtifactReference Include="Database References\edata.dacpac">
+      <HintPath>Database References\edata.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseSqlCmdVariable>edata</DatabaseSqlCmdVariable>
     </ArtifactReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Publish' ">
