@@ -13,7 +13,7 @@ AS
     ccarson         2013-01-24          created
 
     Logic Summary:
-    1)  Load edata.dbo.Maturities data into temporary storage
+    1)  Load edata.Maturities data into temporary storage
     2)  Load dbo.IssueMaturity with data from temporary storage
     3)  Load dbo.Purpose with data from temporary storage
     4)  Load dbo.Purpose with data from temporary storage

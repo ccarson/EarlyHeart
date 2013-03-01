@@ -16,7 +16,7 @@ AS
 
     Logic Summary:
     1)  Stop processing when trigger is invoked by Conversion.processFirmCategories
-    2)  Write back FirmCategory values to edata.dbo.Firms.FirmCategory
+    2)  Write back FirmCategory values to edata.Firms.FirmCategory
 
 ************************************************************************************************************************************
 */
@@ -56,13 +56,13 @@ BEGIN TRY
 INNER JOIN  Conversion.tvf_LegacyFirmCategories ( 'Converted' ) AS b ON b.FirmID = a.FirmID
 
 
---  3)  Write back FirmCategory values to edata.dbo.Firms.FirmCategory
-    UPDATE  edata.dbo.Firms
+--  3)  Write back FirmCategory values to edata.Firms.FirmCategory
+    UPDATE  edata.Firms
        SET  FirmCategory = c.FirmCategory
           , ChangeBy     = c.ModifiedUser
           , ChangeDate   = c.ModifiedDate
           , ChangeCode   = @changeCode
-      FROM  edata.dbo.Firms AS f
+      FROM  edata.Firms AS f
 INNER JOIN  @changedData    AS c ON c.FirmID = f.FirmID ;
 
 

@@ -6,7 +6,7 @@ AS
 
     Trigger:    dbo.tr_FirmAddresses_Insert
      Author:    Chris Carson
-    Purpose:    loads dbo.Address data back to edata.dbo.Firms
+    Purpose:    loads dbo.Address data back to edata.Firms
 
 
     revisor         date                description
@@ -50,7 +50,7 @@ BEGIN
 
 
 --  3)  Update Address Data back to dbo.Firms
-    UPDATE  edata.dbo.Firms
+    UPDATE  edata.Firms
        SET  Address1   = a.Address1
           , Address2   = a.Address2
           , City       = a.City
@@ -60,7 +60,7 @@ BEGIN
           , ChangeBy   = i.ModifiedUser
           , ChangeCode = 'CVAddress'
       FROM  inserted AS i
-INNER JOIN  edata.dbo.Firms AS f
+INNER JOIN  edata.Firms AS f
         ON  f.FirmID = i.FirmID AND i.AddressTypeID = 3
 INNER JOIN  dbo.Address AS a
         ON  a.AddressID = i.AddressID ;

@@ -28,7 +28,7 @@ RETURN
               , County2
               , County3
               , County4
-          FROM  edata.dbo.Clients
+          FROM  edata.Clients
          WHERE  @Source = 'Legacy' ) ,
 
         overlap AS (

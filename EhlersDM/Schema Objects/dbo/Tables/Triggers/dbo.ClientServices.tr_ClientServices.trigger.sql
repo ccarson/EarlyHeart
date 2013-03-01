@@ -7,7 +7,7 @@ AS
 
     Trigger:    dbo.tr_ClientServices
      Author:    Chris Carson
-    Purpose:    Synchronizes ClientServices data with Legacy edata.dbo.ClientServices table
+    Purpose:    Synchronizes ClientServices data with Legacy edata.ClientServices table
 
 
     revisor         date                description
@@ -34,9 +34,9 @@ BEGIN TRY
     IF  CONTEXT_INFO() = @processClientServices RETURN ;
 
 
---  2)  MERGE new client service data onto edata.dbo.ClientContacts
+--  2)  MERGE new client service data onto edata.ClientContacts
       WITH  legacy AS (
-            SELECT * FROM edata.dbo.ClientsServices AS c
+            SELECT * FROM edata.ClientsServices AS c
              WHERE EXISTS ( SELECT 1 FROM inserted AS i WHERE c.ClientID = i.ClientID ) ) ,
 
             clientServices AS (

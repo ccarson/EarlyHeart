@@ -24,7 +24,7 @@ RETURN
               , FirstCallDate    = CONVERT( VARCHAR(10), ISNULL( FirstCallDate, '1900-01-01' ), 120 )
               , CallPricePercent = CAST( CAST( ISNULL( CallPrice, 100 ) AS DECIMAL(12,8) ) AS VARCHAR(20) )
               , CallableMatDate  = CONVERT( VARCHAR(10), ISNULL( CallableMatDate, '1900-01-01' ), 120 )
-          FROM  edata.dbo.Calls AS c
+          FROM  edata.Calls AS c
      LEFT JOIN  dbo.IssueCall   AS ic
             ON  ic.IssueID = c.IssueID
                 AND ISNULL(ic.CallDate,'1900-01-01') = ISNULL(c.FirstCallDate,'1900-01-01')

@@ -22,7 +22,7 @@ RETURN
   WITH  dc AS (
         SELECT  ClientID    = ClientID
               , Initials    = Analyst 
-          FROM  edata.dbo.Clients
+          FROM  edata.Clients
          WHERE  @Source = 'Legacy' AND Analyst <> '' ) ,
 
         employees AS (

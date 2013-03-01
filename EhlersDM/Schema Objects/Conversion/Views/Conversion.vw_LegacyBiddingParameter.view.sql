@@ -36,7 +36,7 @@ AS
           , InternetSale           = ISNULL( ibt.InternetBiddingTypeID, 2 )
           , ChangeDate             = ISNULL( i.ChangeDate, GETDATE() )
           , ChangeBy               = ISNULL( NULLIF( i.ChangeBy, '' ), 'processIssues' )
-      FROM  edata.dbo.Issues AS i
+      FROM  edata.Issues AS i
  LEFT JOIN  dbo.BiddingParameter AS bp ON bp.IssueID = i.IssueID
  LEFT JOIN  dbo.InternetBiddingType AS ibt
         ON  ibt.LegacyValue = i.InternetSale ;

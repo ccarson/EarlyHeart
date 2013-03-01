@@ -27,7 +27,7 @@ AS
               , Zip             = ISNULL( f.Zip, '' )
               , ChangeDate      = ISNULL( f.ChangeDate, GETDATE() )
               , ChangeBy        = ISNULL( NULLIF ( f.ChangeBy, '' ), 'processAddresses')
-          FROM  edata.dbo.Firms            AS f
+          FROM  edata.Firms            AS f
      LEFT JOIN  Conversion.LegacyAddresses AS la
             ON  la.LegacyID = f.FirmID AND la.LegacyTableName = 'Firms' ) ,
 
@@ -42,7 +42,7 @@ AS
               , Zip             = ISNULL( c.Zip, '' )
               , ChangeDate      = ISNULL( c.ChangeDate, GETDATE() )
               , ChangeBy        = ISNULL( NULLIF ( c.ChangeBy, '' ), 'processAddresses')
-          FROM  edata.dbo.Clients          AS c
+          FROM  edata.Clients          AS c
      LEFT JOIN  Conversion.LegacyAddresses AS la
             ON  la.LegacyID = c.ClientID AND la.LegacyTableName = 'Clients' ) ,
 
@@ -57,7 +57,7 @@ AS
               , Zip             = ISNULL( fc.Zip, '' )
               , ChangeDate      = ISNULL( fc.ChangeDate, GETDATE() )
               , ChangeBy        = ISNULL( NULLIF ( fc.ChangeBy, '' ), 'processAddresses')
-          FROM  edata.dbo.FirmContacts  AS fc
+          FROM  edata.FirmContacts  AS fc
      LEFT JOIN  Conversion.LegacyAddresses AS la
             ON  la.LegacyID = fc.ContactID AND la.LegacyTableName = 'FirmContacts' ) ,
 
@@ -72,7 +72,7 @@ AS
               , Zip             = ISNULL( cc.Zip, '' )
               , ChangeDate      = ISNULL( cc.ChangeDate, GETDATE() )
               , ChangeBy        = ISNULL( NULLIF ( cc.ChangeBy, '' ), 'processAddresses')
-          FROM  edata.dbo.ClientContacts    AS cc
+          FROM  edata.ClientContacts    AS cc
      LEFT JOIN  Conversion.LegacyAddresses  AS la
             ON  la.LegacyID = cc.ContactID AND la.LegacyTableName = 'ClientContacts' ) ,
 

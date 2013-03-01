@@ -15,9 +15,9 @@ AS
 
     Logic Summary:
     1)  Stop processing when trigger is invoked by Conversion.processContacts procedure
-    2)  SELECT current ContactID from edata.dbo.FirmContacts for INSERT
+    2)  SELECT current ContactID from edata.FirmContacts for INSERT
     3)  INSERT into Conversion.LegacyContacts from trigger tables
-    4)  MERGE new Contact data onto edata.dbo.FirmContacts
+    4)  MERGE new Contact data onto edata.FirmContacts
 
     Notes:
 
@@ -36,9 +36,9 @@ BEGIN TRY
     IF  CONTEXT_INFO() = @processContacts RETURN ;
 
 
---  2)  SELECT current ContactID from edata.dbo.FirmContacts for INSERT
+--  2)  SELECT current ContactID from edata.FirmContacts for INSERT
     SELECT  @currentContactID = ISNULL( MAX( ContactID ), 0 )
-      FROM  edata.dbo.FirmContacts ;
+      FROM  edata.FirmContacts ;
 
 
 --  3)  INSERT into Conversion.LegacyContacts from trigger tables
@@ -49,7 +49,7 @@ BEGIN TRY
       FROM  inserted ;
 
 
---  4)  INSERT new Contact data onto edata.dbo.FirmContacts
+--  4)  INSERT new Contact data onto edata.FirmContacts
       WITH  insertData AS (
             SELECT  ContactID   = b.LegacyContactID
                   , FirmID      = i.FirmID
@@ -68,11 +68,11 @@ BEGIN TRY
                   , ChangeDate  = c.ChangeDate
                   , ChangeBy    = c.ChangeBy
               FROM  inserted                        AS i
-        INNER JOIN  edata.dbo.Firms                 AS a ON a.FirmID  = i.FirmID
+        INNER JOIN  edata.Firms                 AS a ON a.FirmID  = i.FirmID
         INNER JOIN  Conversion.LegacyContacts       AS b ON b.ContactID = i.ContactID
         INNER JOIN  Conversion.vw_ConvertedContacts AS c ON c.ContactID = i.ContactID  ) 
             
-    INSERT  edata.dbo.FirmContacts (
+    INSERT  edata.FirmContacts (
             ContactID, FirmID, FDN, NamePrefix, FirstName, LastName, Title, Department
                 , Phone, Email, Fax, CellPhone, Notes, ChangeCode, ChangeDate, ChangeBy )
     SELECT  * FROM insertData ; 

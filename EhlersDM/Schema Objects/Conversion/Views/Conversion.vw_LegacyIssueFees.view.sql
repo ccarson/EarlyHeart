@@ -29,7 +29,7 @@ AS
               , EscrowCPASLGReorder, BTSC, MiscRevenue, MiscExpense, SLGPlacement
 --              , InvoiceYN
               , TermBondNotice, BBECIP 
-          FROM  edata.dbo.Fees ) 
+          FROM  edata.Fees ) 
 SELECT  IssueID, FeeType, Fee
   FROM  Fees AS f 
     UNPIVOT ( Fee FOR FeeType 

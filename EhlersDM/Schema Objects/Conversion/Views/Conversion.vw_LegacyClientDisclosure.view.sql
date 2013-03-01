@@ -30,7 +30,7 @@ AS
           , ContractDate            =   ISNULL( d.ContractDate, '1900-01-01' )
           , ChangeDate              =   ISNULL( c.ChangeDate, GETDATE() )
           , ChangeBy                =   ISNULL( c.ChangeBy, 'processDisclosure' )
-      FROM  edata.dbo.Clients    AS c
-INNER JOIN  edata.dbo.Disclosure AS d ON d.ClientID = c.ClientID
+      FROM  edata.Clients    AS c
+INNER JOIN  edata.Disclosure AS d ON d.ClientID = c.ClientID
      WHERE  d.DisclosureType IN ( 0, 1 ) ;
 

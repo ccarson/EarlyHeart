@@ -18,7 +18,7 @@ RETURNS TABLE AS
     @Format     VARCHAR(20)     'CSV', 'Table'
 
     Notes:
-    'CSV' returns the legacy version of the edata.dbo.Firms.FirmCategory field, UPPERed and Sorted
+    'CSV' returns the legacy version of the edata.Firms.FirmCategory field, UPPERed and Sorted
     'Table' returns FirmCategories in a table format, and includes the dbo.FirmCategory.FirmCategoryID for each record
 
 ************************************************************************************************************************************
@@ -29,7 +29,7 @@ RETURN
               , FirmCategoriesID = fcs.FirmCategoriesID
               , FirmCategoryID   = fct.FirmCategoryID
               , Item             = CAST( UPPER(x.Item) AS VARCHAR(50) )
-          FROM  edata.dbo.Firms AS f
+          FROM  edata.Firms AS f
    CROSS APPLY  dbo.tvf_CSVSplit( f.FirmCategory, ',' ) AS x
     INNER JOIN  dbo.FirmCategory    AS fct
             ON  fct.LegacyValue = x.Item AND fct.LegacyValue <> ''

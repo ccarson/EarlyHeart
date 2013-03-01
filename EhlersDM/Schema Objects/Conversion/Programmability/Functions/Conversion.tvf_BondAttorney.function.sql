@@ -55,7 +55,7 @@ RETURN
               , FirmID                  = f.FirmID
               , FirmName                = f.FirmName
               , IssueID                 = i.IssueID
-          FROM  edata.dbo.Issues AS i 
+          FROM  edata.Issues AS i 
     INNER JOIN  issueFirmsData   AS f ON i.IssueID = f.IssueID
     INNER JOIN  bondAttorney     AS a ON a.FirmID  = f.FirmID AND i.Attorney = a.Attorney
          WHERE  @Source = 'Legacy' ) , 

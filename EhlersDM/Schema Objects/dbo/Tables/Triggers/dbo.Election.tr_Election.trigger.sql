@@ -16,7 +16,7 @@ AS
     Logic Summary:
     1)  Stop processing when trigger is invoked by Conversion.processFirms procedure
     2)  Stop processing unless Firm data has actually changed
-    3)  Merge data from dbo.Firm back to edata.dbo.Firms
+    3)  Merge data from dbo.Firm back to edata.Firms
 
     Notes:
 
@@ -44,12 +44,12 @@ BEGIN
     SELECT  ElectionID FROM deleted ;
 
 
---  3)  MERGE converted election data onto edata.dbo.Elections
+--  3)  MERGE converted election data onto edata.Elections
 
-    SET IDENTITY_INSERT edata.dbo.Elections ON ;
+    SET IDENTITY_INSERT edata.Elections ON ;
 
       WITH  legacyElections AS (
-            SELECT * FROM edata.dbo.Elections AS e
+            SELECT * FROM edata.Elections AS e
              WHERE EXISTS ( SELECT 1 FROM @changedElections AS c WHERE c.ElectionID = e.ElectionID ) ) ,
 
             changedElections AS (
@@ -76,7 +76,7 @@ BEGIN
       WHEN  NOT MATCHED BY SOURCE THEN 
             DELETE ; 
 
-    SET IDENTITY_INSERT edata.dbo.Elections OFF ;
+    SET IDENTITY_INSERT edata.Elections OFF ;
 
     END TRY
     BEGIN CATCH

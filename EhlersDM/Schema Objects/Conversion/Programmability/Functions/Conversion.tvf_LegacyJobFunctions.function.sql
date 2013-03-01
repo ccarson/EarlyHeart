@@ -25,20 +25,20 @@ RETURN
               , LegacyTableName = lc.LegacyTableName
               , ContactID       = lc.ContactID
               , JobFunction     = fc.JobFunction
-          FROM  edata.dbo.FirmContacts    AS fc
+          FROM  edata.FirmContacts    AS fc
      LEFT JOIN  Conversion.LegacyContacts AS lc ON lc.LegacyContactID = fc.ContactID
          WHERE  lc.LegacyTableName = 'FirmContacts' AND fc.JobFunction <> '' AND @Source = 'Legacy'
-           AND  EXISTS ( SELECT 1 FROM edata.dbo.Firms AS f WHERE f.FirmID = fc.FirmID ) ) ,
+           AND  EXISTS ( SELECT 1 FROM edata.Firms AS f WHERE f.FirmID = fc.FirmID ) ) ,
 
         clientsData AS (
         SELECT  LegacyContactID = cc.ContactID
               , LegacyTableName = lc.LegacyTableName
               , ContactID       = lc.ContactID
               , JobFunction     = cc.JobFunction
-          FROM  edata.dbo.ClientContacts  AS cc
+          FROM  edata.ClientContacts  AS cc
      LEFT JOIN  Conversion.LegacyContacts AS lc ON lc.LegacyContactID = cc.ContactID
          WHERE  lc.LegacyTableName = 'ClientContacts' AND cc.JobFunction <> '' AND @Source = 'Legacy'
-           AND  EXISTS ( SELECT 1 FROM edata.dbo.Clients AS c WHERE c.ClientID = c.ClientID ) ) ,
+           AND  EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientID = c.ClientID ) ) ,
 
         legacy  AS (
         SELECT  LegacyContactID = f.ContactID

@@ -24,7 +24,7 @@ RETURN
   WITH  legacy AS (
         SELECT  FirmID           = f.FirmID
               , Item             = CAST( x.Item AS VARCHAR(50) )
-          FROM  edata.dbo.Firms AS f
+          FROM  edata.Firms AS f
    CROSS APPLY  dbo.tvf_CSVSplit( f.FirmCategory, ',' ) AS x
     INNER JOIN  dbo.FirmCategory    AS fct
             ON  fct.LegacyValue = x.Item AND fct.LegacyValue <> ''

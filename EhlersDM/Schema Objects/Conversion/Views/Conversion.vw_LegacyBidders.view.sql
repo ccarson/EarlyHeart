@@ -4,7 +4,7 @@
 
        View:    Conversion.vw_LegacyBidders
      Author:    Chris Carson
-    Purpose:    consolidates and scrubs data from the edata.dbo.Bidders and edata.dbo.InternetBidders tables
+    Purpose:    consolidates and scrubs data from the edata.Bidders and edata.InternetBidders tables
 
 
     revisor         date                description
@@ -25,7 +25,7 @@ AS
           , BABTICPercent = CAST( z.pctValue AS DECIMAL(12,8) )
           , HasWinningBID = CASE b.override WHEN 'u' THEN CAST( 1 AS BIT ) ELSE CAST( 0 AS BIT ) END
           , IsRecoveryAct = CAST( b.ynARRA AS BIT )
-      FROM  edata.dbo.Bidders AS b
+      FROM  edata.Bidders AS b
      CROSS  APPLY Conversion.tvf_transformPercentage ( tic )     AS x
      CROSS  APPLY Conversion.tvf_transformPercentage ( nicPct )  AS y
      CROSS  APPLY Conversion.tvf_transformPercentage ( ARRAtic ) AS z
@@ -39,8 +39,8 @@ AS
           , BABTICPercent = CAST( 0 AS DECIMAL(12,8) )
           , HasWinningBID = CAST( 0 AS BIT )
           , IsRecoveryAct = CAST( 0 AS BIT )
-      FROM  edata.dbo.InternetBidders AS b
+      FROM  edata.InternetBidders AS b
      CROSS  APPLY Conversion.tvf_transformPercentage ( tic )    AS x
      CROSS  APPLY Conversion.tvf_transformPercentage ( nicPct ) AS y
-     WHERE NOT EXISTS ( SELECT 1 FROM edata.dbo.bidders AS z
+     WHERE NOT EXISTS ( SELECT 1 FROM edata.bidders AS z
                          WHERE z.FirmID = b.FirmID AND z.IssueID = b.IssueID ) ;

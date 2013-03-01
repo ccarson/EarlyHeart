@@ -5,7 +5,7 @@ AS
 
   Procedure:  Conversion.processFirmCategories
      Author:  Chris Carson
-    Purpose:  converts legacy FirmCategories column on edata.dbo.Firms
+    Purpose:  converts legacy FirmCategories column on edata.Firms
 
 
     revisor         date                description

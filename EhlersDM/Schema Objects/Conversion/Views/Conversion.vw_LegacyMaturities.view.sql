@@ -4,7 +4,7 @@
 
        View:    Conversion.vw_LegacyMaturities
      Author:    Chris Carson
-    Purpose:    shows "scrubbed" version of edata.dbo.Maturities data
+    Purpose:    shows "scrubbed" version of edata.Maturities data
 
     Revision History:
     revisor     date            description
@@ -28,6 +28,6 @@ AS
           , PriceToCall                 = m.ptc
           , ReofferingYield             = CAST( ISNULL( m.reoffer, 0 ) AS DECIMAL(7,4) )
           , NotReoffered                = m.nro
-      FROM  edata.dbo.Maturities AS m
+      FROM  edata.Maturities AS m
  LEFT JOIN  Conversion.tvf_transformInsurance() AS a
         ON  m.Insurance = a.Insurance ;

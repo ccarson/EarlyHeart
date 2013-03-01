@@ -55,7 +55,7 @@ BEGIN TRY
     SELECT  ContactID FROM deleted ;
 
 
---  3)  UPDATE edata.dbo.FirmContacts with new JobFunction field
+--  3)  UPDATE edata.FirmContacts with new JobFunction field
       WITH  jobFunctions AS (
             SELECT  c.ContactID
                   , j.LegacyContactID
@@ -71,17 +71,17 @@ BEGIN TRY
               FROM  dbo.Contact AS a
              WHERE  EXISTS ( SELECT 1 FROM @changes AS b WHERE b.ContactID = a.ContactID ) )
 
-    UPDATE  edata.dbo.FirmContacts
+    UPDATE  edata.FirmContacts
        SET  JobFunction = jf.JobFunction
           , ChangeCode  = 'CVJobFunction'
           , ChangeDate  = cd.ModifiedDate
           , ChangeBy    = cd.ModifiedUser
-      FROM  edata.dbo.FirmContacts  AS fc
+      FROM  edata.FirmContacts  AS fc
 INNER JOIN  jobFunctions            AS jf ON jf.LegacyContactID = fc.ContactID
 INNER JOIN  contactData             AS cd ON cd.ContactID       = jf.ContactID ;
 
 
---  4)  UPDATE edata.dbo.FirmContacts with new JobFunction field
+--  4)  UPDATE edata.FirmContacts with new JobFunction field
       WITH  jobFunctions AS (
             SELECT  c.ContactID
                   , j.LegacyContactID
@@ -97,12 +97,12 @@ INNER JOIN  contactData             AS cd ON cd.ContactID       = jf.ContactID ;
               FROM  dbo.Contact AS a
              WHERE  EXISTS ( SELECT 1 FROM @changes AS b WHERE b.ContactID = a.ContactID ) )
 
-    UPDATE  edata.dbo.ClientContacts
+    UPDATE  edata.ClientContacts
        SET  JobFunction = jf.JobFunction
           , ChangeCode  = 'CVJobFunction'
           , ChangeDate  = cd.ModifiedDate
           , ChangeBy    = cd.ModifiedUser
-      FROM  edata.dbo.ClientContacts AS cc
+      FROM  edata.ClientContacts AS cc
 INNER JOIN  jobFunctions             AS jf ON jf.LegacyContactID = cc.ContactID
 INNER JOIN  contactData              AS cd ON cd.ContactID       = jf.ContactID ;
 

@@ -53,7 +53,7 @@ BEGIN TRY
     SELECT  ContactID FROM deleted ; 
 
     
---  3)  update edata.dbo.FirmContacts with new Mailing data
+--  3)  update edata.FirmContacts with new Mailing data
       WITH  mailings AS (
             SELECT  c.ContactID
                   , m.LegacyContactID
@@ -69,17 +69,17 @@ BEGIN TRY
               FROM  dbo.Contact AS a
              WHERE  EXISTS ( SELECT 1 FROM @changes AS b WHERE b.ContactID = a.ContactID ) )
              
-    UPDATE  edata.dbo.FirmContacts
+    UPDATE  edata.FirmContacts
        SET  Mailing     = md.Mailing
           , ChangeCode  = 'CVMailing'
           , ChangeDate  = cd.ModifiedDate
           , ChangeBy    = cd.ModifiedUser
-      FROM  edata.dbo.FirmContacts  AS fc
+      FROM  edata.FirmContacts  AS fc
 INNER JOIN  mailings                AS md ON md.LegacyContactID = fc.ContactID
 INNER JOIN  contactData             AS cd ON cd.ContactID       = md.ContactID ;
 
 
---  4)  update edata.dbo.ClientContacts with new Mailing data
+--  4)  update edata.ClientContacts with new Mailing data
       WITH  mailings AS (
             SELECT  c.ContactID
                   , m.LegacyContactID
@@ -95,12 +95,12 @@ INNER JOIN  contactData             AS cd ON cd.ContactID       = md.ContactID ;
               FROM  dbo.Contact AS a
              WHERE  EXISTS ( SELECT 1 FROM @changes AS b WHERE b.ContactID = a.ContactID ) )
              
-    UPDATE  edata.dbo.ClientContacts
+    UPDATE  edata.ClientContacts
        SET  Mailing     = md.Mailing
           , ChangeCode  = 'CVMailing'
           , ChangeDate  = cd.ModifiedDate
           , ChangeBy    = cd.ModifiedUser
-      FROM  edata.dbo.ClientContacts AS cc
+      FROM  edata.ClientContacts AS cc
 INNER JOIN  mailings                 AS md ON md.LegacyContactID = cc.ContactID
 INNER JOIN  contactData              AS cd ON cd.ContactID       = md.ContactID ;
 

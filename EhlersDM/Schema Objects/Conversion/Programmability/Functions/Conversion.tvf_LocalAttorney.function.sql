@@ -25,7 +25,7 @@ RETURN
         SELECT  ClientID            = c.ClientID
               , LocalAttorney       = c.LocalAttorney
               , FirmCategoriesID    = ISNULL( fc.FirmCategoriesID, 0 )
-          FROM  edata.dbo.Clients  AS c
+          FROM  edata.Clients  AS c
      LEFT JOIN  dbo.Firm           AS f  ON f.FirmName        = c.LocalAttorney
      LEFT JOIN  dbo.FirmCategories AS fc ON fc.FirmID         = f.firmID
      LEFT JOIN  dbo.FirmCategory   AS ct ON ct.FirmCategoryID = fc.FirmCategoryID

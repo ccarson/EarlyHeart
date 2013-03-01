@@ -39,8 +39,8 @@ AS
           , AcctClass               =   ej.EhlersJobTeamID
           , ChangeDate              =   ISNULL( ChangeDate, GETDATE() )
           , ChangeBy                =   ISNULL( ChangeBy, 'processClients' )
-      FROM  edata.dbo.Clients    AS c
- LEFT JOIN  edata.dbo.Disclosure AS d  ON d.ClientID = c.ClientID
+      FROM  edata.Clients    AS c
+ LEFT JOIN  edata.Disclosure AS d  ON d.ClientID = c.ClientID
  LEFT JOIN  dbo.ClientPrefix     AS cp ON cp.LegacyValue = c.Prefix
  LEFT JOIN  dbo.ClientStatus     AS cs ON cs.LegacyValue = c.Status
  LEFT JOIN  dbo.JurisdictionType AS jt ON c.TypeJurisdiction = jt.LegacyValue

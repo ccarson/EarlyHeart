@@ -17,7 +17,7 @@ AS
     2)  Create temp storage for changed data from source tables
     3)  SELECT initial control counts
     4)  INSERT changed Firms data into @changedFirmIDs
-    5)  Exit procedure if there are no changes on edata.dbo.Firms
+    5)  Exit procedure if there are no changes on edata.Firms
     6)  INSERT new firms data into #convertingFirms
     7)  INSERT updated Firms data into #convertingFirms
     8)  MERGE #processFirmsData with dbo.Firm
@@ -103,7 +103,7 @@ BEGIN TRY
     SELECT  @changesCount = @@ROWCOUNT ;
 
 
---  5)  Exit procedure if there are no changes on edata.dbo.Firms
+--  5)  Exit procedure if there are no changes on edata.Firms
     IF  ( @changesCount = 0 )
         GOTO  endOfProc ;
 

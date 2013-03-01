@@ -47,7 +47,7 @@ BEGIN TRY
           , AcctClass   = ISNULL( c.AcctClass, '' )
           , DiscCoord   = c.Analyst
       FROM  Conversion.tvf_ClientCPAs ( 'Legacy' ) AS l
-INNER JOIN  edata.dbo.Clients AS c on c.ClientID = l.ClientID
+INNER JOIN  edata.Clients AS c on c.ClientID = l.ClientID
      WHERE  l.FirmCategoriesID = 0 OR l.ClientCPAFirmID = 0
     SELECT  @ClientCPAErrorCount = @@ROWCOUNT ;
 
@@ -103,7 +103,7 @@ endOfProc:
 --  5) Print control totals
     PRINT 'Conversion.processClientCPAs ' ;
     PRINT 'CONTROL TOTALS ' ;
-    PRINT '    ClientCPA Errors on edata.dbo.Client = ' + STR( @ClientCPAErrorCount, 8 ) ;
+    PRINT '    ClientCPA Errors on edata.Client = ' + STR( @ClientCPAErrorCount, 8 ) ;
     PRINT '' ;
 
     RETURN @rc ;

@@ -76,11 +76,11 @@ BEGIN TRY
     IF  @ClientCPAChanges = 0
     BEGIN
         SELECT @ClientCPAsActual = @ClientCPAsExpected ;
-        PRINT   'ClientCPA data on edata.dbo.Clients unchanged ' ;
+        PRINT   'ClientCPA data on edata.Clients unchanged ' ;
         GOTO endOfProc ;
     END
 
-    PRINT   'Data has changed, migrating ClientCPA data from edata.dbo.Clients ' ;
+    PRINT   'Data has changed, migrating ClientCPA data from edata.Clients ' ;
 
 
       WITH  allClientCPAs AS (

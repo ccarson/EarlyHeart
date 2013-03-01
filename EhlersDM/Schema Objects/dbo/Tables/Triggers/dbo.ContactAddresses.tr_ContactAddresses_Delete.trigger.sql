@@ -6,7 +6,7 @@ AS
 
     Trigger:    dbo.tr_ContactAddresses_Delete
      Author:    Chris Carson
-    Purpose:    Applies address data to specified edata.dbo.ClientContacts or edata.dbo.FirmContacts records
+    Purpose:    Applies address data to specified edata.ClientContacts or edata.FirmContacts records
 
     Revision History:
     revisor         date                description
@@ -16,8 +16,8 @@ AS
     Logic Summary:
     1)  Create ContactAddressesAudit record reflecting DELETE
     2)  Stop processing when trigger is invoked by Conversion.processAddresses procedure
-    3)  Clear out Address fields on edata.dbo.FirmContacts records
-    4)  Clear out Address fields on edata.dbo.ClientContacts records
+    3)  Clear out Address fields on edata.FirmContacts records
+    4)  Clear out Address fields on edata.ClientContacts records
     5)  Delete Conversion.LegacyAddresses records
 
     Notes:
@@ -48,8 +48,8 @@ BEGIN
     IF  CONTEXT_INFO() = @processAddresses RETURN ;
 
 
---  3)  Clear out Address fields on edata.dbo.FirmContacts records
-    UPDATE  edata.dbo.FirmContacts
+--  3)  Clear out Address fields on edata.FirmContacts records
+    UPDATE  edata.FirmContacts
        SET  Address1    = ''
           , Address2    = ''
           , City        = ''
@@ -61,12 +61,12 @@ BEGIN
       FROM  deleted AS d
 INNER JOIN  Conversion.LegacyAddresses AS la
         ON  la.AddressID = d.AddressID
-INNER JOIN  edata.dbo.FirmContacts AS fc
+INNER JOIN  edata.FirmContacts AS fc
         ON  fc.ContactID = la.LegacyID ;
 
 
---  4)  Clear out Address fields on edata.dbo.ClientContacts records
-    UPDATE  edata.dbo.ClientContacts
+--  4)  Clear out Address fields on edata.ClientContacts records
+    UPDATE  edata.ClientContacts
        SET  Address1    = ''
           , Address2    = ''
           , City        = ''
@@ -78,7 +78,7 @@ INNER JOIN  edata.dbo.FirmContacts AS fc
       FROM  deleted AS d
 INNER JOIN  Conversion.LegacyAddresses AS la
         ON  la.AddressID = d.AddressID
-INNER JOIN  edata.dbo.ClientContacts AS cc
+INNER JOIN  edata.ClientContacts AS cc
         ON  cc.ContactID = la.LegacyID ;
 
 

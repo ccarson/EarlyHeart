@@ -41,7 +41,7 @@ RETURN
               , FirmCategoryID   = fcs.FirmCategoryID
               , Category         = ips.Category
               , FirmName         = NULL
-          FROM  edata.dbo.IssueProfSvcs AS ips
+          FROM  edata.IssueProfSvcs AS ips
     INNER JOIN  legacyIssues            AS iss ON iss.IssueID = ips.IssueID
     INNER JOIN  firmCategories          AS fcs ON fcs.FirmID = ips.FirmID AND fcs.Category = ips.Category
          WHERE  @Source = 'Legacy' ) ,

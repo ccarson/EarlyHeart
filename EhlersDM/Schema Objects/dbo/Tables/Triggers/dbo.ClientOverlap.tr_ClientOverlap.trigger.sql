@@ -16,7 +16,7 @@ AS
     Logic Summary:
     1)  Stop processing when trigger is invoked by Conversion.processClients procedure
     2)  Stop processing unless County data has actually changed
-    3)  Replace data on edata.dbo.Clients with county data from Conversion.tvf_LegacyCounties
+    3)  Replace data on edata.Clients with county data from Conversion.tvf_LegacyCounties
 
     Notes:
 
@@ -37,7 +37,7 @@ BEGIN
         RETURN ;
 
     BEGIN TRY
---  2)  Stop processing unless Counties have changed ( Some data on dbo.ClientOverlap does not write back to edata.dbo.Clients )
+--  2)  Stop processing unless Counties have changed ( Some data on dbo.ClientOverlap does not write back to edata.Clients )
     IF  NOT EXISTS ( SELECT CHECKSUM_AGG( CHECKSUM(*) ) 
                        FROM Conversion.tvf_LegacyCounties( 'Converted' ) AS c
                       WHERE EXISTS ( SELECT 1 FROM inserted AS i WHERE i.ClientID = c.ClientID )
@@ -48,13 +48,13 @@ BEGIN
         RETURN ;
 
 
---  3)  MERGE new County data onto edata.dbo.Clients
+--  3)  MERGE new County data onto edata.Clients
       WITH  changedClients AS ( 
             SELECT ClientID FROM inserted
                 UNION
             SELECT ClientID FROM deleted ) 
 
-    UPDATE  edata.dbo.Clients
+    UPDATE  edata.Clients
        SET  HomeCounty  = t.HomeCounty
           , County1     = t.County1
           , County2     = t.County2
@@ -64,7 +64,7 @@ BEGIN
           , ChangeBy    = @systemUser
           , ChangeCode  = 'CVCounty'
           , ChangeDate  = @systemTime
-      FROM  edata.dbo.Clients AS c
+      FROM  edata.Clients AS c
 INNER JOIN  Conversion.tvf_LegacyCounties ( 'Converted' ) AS t ON t.ClientID = c.ClientID
      WHERE  EXISTS ( SELECT 1 FROM changedClients AS x WHERE x.ClientID = c.ClientID ) ;
                         

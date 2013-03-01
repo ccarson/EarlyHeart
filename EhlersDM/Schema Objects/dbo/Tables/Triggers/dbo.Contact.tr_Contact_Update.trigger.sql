@@ -49,7 +49,7 @@ BEGIN TRY
 
 
 --  3)  UPDATE legacy contact on table that's linked to the contact record
-    UPDATE  edata.dbo.FirmContacts
+    UPDATE  edata.FirmContacts
        SET  NamePrefix  = c.NamePrefix
           , FirstName   = c.FirstName
           , LastName    = c.LastName
@@ -64,11 +64,11 @@ BEGIN TRY
           , ChangeDate  = c.ChangeDate
           , ChangeBy    = c.ChangeBy
       FROM  Conversion.vw_ConvertedContacts  AS c
-INNER JOIN  edata.dbo.FirmContacts           AS f ON f.ContactID = c.LegacyContactID
+INNER JOIN  edata.FirmContacts           AS f ON f.ContactID = c.LegacyContactID
      WHERE  c.LegacyTableName = 'FirmContacts'
        AND  EXISTS ( SELECT 1 FROM inserted AS i WHERE i.ContactID = c.ContactID ) ;
 
-    UPDATE  edata.dbo.ClientContacts
+    UPDATE  edata.ClientContacts
        SET  NamePrefix  = c.NamePrefix
           , FirstName   = c.FirstName
           , LastName    = c.LastName
@@ -83,7 +83,7 @@ INNER JOIN  edata.dbo.FirmContacts           AS f ON f.ContactID = c.LegacyConta
           , ChangeDate  = c.ChangeDate
           , ChangeBy    = c.ChangeBy
       FROM  Conversion.vw_ConvertedContacts  AS c
-INNER JOIN  edata.dbo.ClientContacts         AS cc ON cc.ContactID = c.LegacyContactID
+INNER JOIN  edata.ClientContacts         AS cc ON cc.ContactID = c.LegacyContactID
      WHERE  c.LegacyTableName = 'ClientContacts'
        AND  EXISTS ( SELECT 1 FROM inserted AS i WHERE i.ContactID = c.ContactID ) ;
 
