@@ -2,14 +2,14 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
-    <TargetDatabaseName>Ehlers</TargetDatabaseName>
-    <DeployScriptFileName>Ehlers.sql</DeployScriptFileName>
-    <TargetConnectionString>Data Source=MNDT0368;Integrated Security=True;Pooling=False</TargetConnectionString>
+    <TargetDatabaseName>Ehlers_Test</TargetDatabaseName>
+    <DeployScriptFileName>Ehlers_Test.sql</DeployScriptFileName>
+    <TargetConnectionString>Data Source=EHLERS-SS4;Integrated Security=True;Pooling=False</TargetConnectionString>
     <ScriptDatabaseOptions>True</ScriptDatabaseOptions>
-    <BlockOnPossibleDataLoss>True</BlockOnPossibleDataLoss>
+    <BlockOnPossibleDataLoss>False</BlockOnPossibleDataLoss>
     <CreateNewDatabase>False</CreateNewDatabase>
     <ProfileVersionNumber>1</ProfileVersionNumber>
-    <DeployDatabaseInSingleUserMode>True</DeployDatabaseInSingleUserMode>
+    <DeployDatabaseInSingleUserMode>False</DeployDatabaseInSingleUserMode>
     <BackupDatabaseBeforeChanges>True</BackupDatabaseBeforeChanges>
     <DropObjectsNotInSource>True</DropObjectsNotInSource>
     <DropPermissionsNotInSource>True</DropPermissionsNotInSource>
@@ -28,32 +28,14 @@
     <TreatVerificationErrorsAsWarnings>True</TreatVerificationErrorsAsWarnings>
   </PropertyGroup>
   <ItemGroup>
-    <SqlCmdVariable Include="AgentJobOwner">
-      <Value>EHLERS\Admin</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="BuildSQLAgentJobs">
-      <Value>YES</Value>
-    </SqlCmdVariable>
     <SqlCmdVariable Include="edata">
-      <Value>edata</Value>
+      <Value>edata_test</Value>
     </SqlCmdVariable>
-    <SqlCmdVariable Include="EnableRI">
-      <Value>YES</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="EnableTriggers">
-      <Value>YES</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="PostDeployDataChanges">
+    <SqlCmdVariable Include="PostDeployChanges">
       <Value>NO</Value>
     </SqlCmdVariable>
-    <SqlCmdVariable Include="PreDeployDataChanges">
+    <SqlCmdVariable Include="PreDeployChanges">
       <Value>NO</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="ProductionServer">
-      <Value>EHLERS-SS3</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="TargetServer">
-      <Value>MNDT0368</Value>
     </SqlCmdVariable>
   </ItemGroup>
 </Project>
