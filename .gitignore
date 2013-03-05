@@ -4,4 +4,4 @@ obj
 sql
 *.user
 *.dbmdl
-EhlersDM.suo
+/*.suo

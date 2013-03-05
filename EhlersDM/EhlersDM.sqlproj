@@ -139,21 +139,20 @@
     <Folder Include="Schema Objects\Meta" />
     <Folder Include="Schema Objects\Meta\Tables" />
     <Folder Include="Database Security\Database Roles" />
-    <Folder Include="Database Security\Schemas" />
     <Folder Include="Database Security\Users" />
     <Folder Include="Database Security\Service Broker" />
     <Folder Include="Database Security\Service Broker\Routes" />
     <Folder Include="Project Scripts" />
     <Folder Include="Database References" />
-    <Folder Include="Storage" />
-    <Folder Include="Project Scripts\edataSources" />
-    <Folder Include="Project Scripts\edataSources\Publish XML" />
-    <Folder Include="Project Scripts\edataSources\PostDeploy" />
-    <Folder Include="Project Scripts\edataSources\PostDeployChanges" />
-    <Folder Include="Project Scripts\edataSources\PreDeploy" />
-    <Folder Include="Project Scripts\edataSources\PreDeployChanges" />
-    <Folder Include="Schema Objects\edata" />
-    <Folder Include="Schema Objects\edata\Synonyms" />
+    <Folder Include="Project Scripts\IssuesConversion" />
+    <Folder Include="Project Scripts\IssuesConversion\DataChanges" />
+    <Folder Include="Project Scripts\IssuesConversion\OtherChanges" />
+    <Folder Include="Project Scripts\IssuesConversion\Post-Deployment" />
+    <Folder Include="Project Scripts\IssuesConversion\Pre-Deployment" />
+    <Folder Include="Project Scripts\IssuesConversion\Publish XML" />
+    <Folder Include="Schema Objects\Import" />
+    <Folder Include="Schema Objects\Import\Stored Procedures" />
+    <Folder Include="Schema Objects\Import\Views" />
   </ItemGroup>
   <ItemGroup>
     <BuildContributorArgument Include="OutDir=$(OutDir)" />
@@ -536,6 +535,22 @@
     <Build Include="Database Security\Database Roles\RoleMemberships.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.buildDataConversionAgentJob.proc.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.buildErrorReportingAgentJob.proc.sql" />
+    <None Include="Project Scripts\IssuesConversion\DataChanges\DataChangesTemplate.script.sql" />
+    <None Include="Project Scripts\IssuesConversion\OtherChanges\OtherChangesTemplate.script.sql" />
+    <None Include="Project Scripts\IssuesConversion\Post-Deployment\PostDeployDataChanges.script.sql" />
+    <PostDeploy Include="Project Scripts\IssuesConversion\Post-Deployment\PostDeployment.script.sql" />
+    <None Include="Project Scripts\IssuesConversion\Pre-Deployment\PreDeployDataChanges.script.sql" />
+    <PreDeploy Include="Project Scripts\IssuesConversion\Pre-Deployment\PreDeployment.script.sql" />
+    <Build Include="Schema Objects\Import.schema.sql" />
+    <Build Include="Schema Objects\Import\Stored Procedures\Import.deleteExistingIssueData.proc.sql" />
+    <Build Include="Schema Objects\Import\Views\Import.vw_IssuesData.view.sql" />
+    <Build Include="Schema Objects\Import\Stored Procedures\Import.insertIssueMaturity.sql" />
+    <Build Include="Schema Objects\Import\Stored Procedures\Import.insertIssuePostBond.sql" />
+    <Build Include="Schema Objects\Import\Stored Procedures\Import.updateIssueMaturity.sql" />
+    <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurpose.sql" />
+    <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeMaturity.sql" />
+    <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeSource.sql" />
+    <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeUse.sql" />
     <None Include="Project Scripts\edataSources\PostDeploy\PostDeployChanges.script.sql" />
     <None Include="Project Scripts\edataSources\PostDeploy\PostDeployment.script.sql" />
     <None Include="Project Scripts\edataSources\PostDeployChanges\PostDeploySample.script.sql" />

@@ -12,6 +12,11 @@ AS
     revisor         date                description
     ---------       ----------          ----------------------------
     ccarson         2013-01-24          created
+    
+    
+    Notes:
+    Add logic to add County Fees to IssueFeeCounty based on contents of ClientOverlap at the time.
+        No Values will be entered, just the records so that feed data can be entered later
 
     Logic Summary:
     1)  UPDATE dbo.Issue.GoodFaithAmount to 20% of the IssueAmount unless after SaleDate

@@ -4,7 +4,7 @@
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseName>Ehlers</TargetDatabaseName>
     <DeployScriptFileName>Ehlers.sql</DeployScriptFileName>
-    <TargetConnectionString>Data Source=MNDT0368;Integrated Security=True;Pooling=False</TargetConnectionString>
+    <TargetConnectionString>Data Source=(local);Integrated Security=True;Pooling=False</TargetConnectionString>
     <ScriptDatabaseOptions>True</ScriptDatabaseOptions>
     <BlockOnPossibleDataLoss>True</BlockOnPossibleDataLoss>
     <CreateNewDatabase>False</CreateNewDatabase>
@@ -32,7 +32,7 @@
       <Value>EHLERS\Admin</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="BuildSQLAgentJobs">
-      <Value>YES</Value>
+      <Value>NO</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="edata">
       <Value>edata</Value>
