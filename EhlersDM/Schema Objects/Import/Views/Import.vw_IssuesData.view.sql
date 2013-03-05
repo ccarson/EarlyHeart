@@ -1,4 +1,4 @@
-﻿CREATE VIEW Import.vw_IssuesData
+CREATE VIEW Import.vw_IssuesData
 /*
 ************************************************************************************************************************************
 
@@ -9,7 +9,7 @@
 
     revisor         date                description
     ---------       -----------         ----------------------------
-    ccarson         ###DATE###          created
+    ccarson         2013-02-13          created
 
     Notes:
 

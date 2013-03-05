@@ -43,33 +43,4 @@
     <IgnoreWithNocheckOnForeignKeys>True</IgnoreWithNocheckOnForeignKeys>
     <IncludeTransactionalScripts>False</IncludeTransactionalScripts>
   </PropertyGroup>
-  <ItemGroup>
-    <SqlCmdVariable Include="AgentJobOwner">
-      <Value>EHLERS\Admin</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="BuildSQLAgentJobs">
-      <Value>NO</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="edata">
-      <Value>edata</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="EnableRI">
-      <Value>YES</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="EnableTriggers">
-      <Value>YES</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="PostDeployDataChanges">
-      <Value>NO</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="PreDeployDataChanges">
-      <Value>NO</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="ProductionServer">
-      <Value>EHLERS-SS3</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="TargetServer">
-      <Value>EHLERS-SS2</Value>
-    </SqlCmdVariable>
-  </ItemGroup>
 </Project>

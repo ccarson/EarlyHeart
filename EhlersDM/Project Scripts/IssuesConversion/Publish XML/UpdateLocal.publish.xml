@@ -4,9 +4,9 @@
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseName>Ehlers</TargetDatabaseName>
     <DeployScriptFileName>Ehlers.sql</DeployScriptFileName>
-    <TargetConnectionString>Data Source=EHLERS-SS2;Integrated Security=True;Pooling=False</TargetConnectionString>
+    <TargetConnectionString>Data Source=(local);Integrated Security=True;Pooling=False</TargetConnectionString>
     <ScriptDatabaseOptions>True</ScriptDatabaseOptions>
-    <BlockOnPossibleDataLoss>True</BlockOnPossibleDataLoss>
+    <BlockOnPossibleDataLoss>False</BlockOnPossibleDataLoss>
     <CreateNewDatabase>False</CreateNewDatabase>
     <ProfileVersionNumber>1</ProfileVersionNumber>
     <DeployDatabaseInSingleUserMode>True</DeployDatabaseInSingleUserMode>
@@ -16,7 +16,7 @@
     <DropRoleMembersNotInSource>True</DropRoleMembersNotInSource>
     <IgnoreAnsiNulls>False</IgnoreAnsiNulls>
     <IgnoreFillFactor>False</IgnoreFillFactor>
-    <IgnoreFullTextCatalogFilePath>False</IgnoreFullTextCatalogFilePath>
+    <IgnoreFullTextCatalogFilePath>True</IgnoreFullTextCatalogFilePath>
     <IgnoreIndexPadding>False</IgnoreIndexPadding>
     <IgnoreKeywordCasing>False</IgnoreKeywordCasing>
     <IgnoreQuotedIdentifiers>False</IgnoreQuotedIdentifiers>
@@ -26,16 +26,15 @@
     <ScriptDeployStateChecks>True</ScriptDeployStateChecks>
     <ScriptDatabaseCompatibility>False</ScriptDatabaseCompatibility>
     <TreatVerificationErrorsAsWarnings>True</TreatVerificationErrorsAsWarnings>
+    <IgnoreIdentitySeed>True</IgnoreIdentitySeed>
+    <IgnoreIncrement>True</IgnoreIncrement>
   </PropertyGroup>
   <ItemGroup>
     <SqlCmdVariable Include="AgentJobOwner">
       <Value>EHLERS\Admin</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="BuildSQLAgentJobs">
-      <Value>YES</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="edata">
-      <Value>edata</Value>
+      <Value>NO</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="EnableRI">
       <Value>YES</Value>
@@ -43,17 +42,17 @@
     <SqlCmdVariable Include="EnableTriggers">
       <Value>YES</Value>
     </SqlCmdVariable>
-    <SqlCmdVariable Include="PostDeployDataChanges">
+    <SqlCmdVariable Include="PostDeployChanges">
       <Value>NO</Value>
     </SqlCmdVariable>
-    <SqlCmdVariable Include="PreDeployDataChanges">
+    <SqlCmdVariable Include="PreDeployChanges">
       <Value>NO</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="ProductionServer">
       <Value>EHLERS-SS3</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="TargetServer">
-      <Value>EHLERS-SS2</Value>
+      <Value>MNDT0368</Value>
     </SqlCmdVariable>
   </ItemGroup>
 </Project>
