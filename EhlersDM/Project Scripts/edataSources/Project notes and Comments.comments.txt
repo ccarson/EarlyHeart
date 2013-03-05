@@ -1,0 +1,5 @@
+﻿edataSources changes for Ehlers
+
+1)  change references in code from "edata" to $(edata)
+2)  change project publish scripts to substitute in the correct value for $(edata)
+
