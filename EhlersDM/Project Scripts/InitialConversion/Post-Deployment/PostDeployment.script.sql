@@ -21,6 +21,7 @@
     3)  Enable / Disable Database Triggers     ( for development purposes )
     4)  Drop/Create SQL Agent jobs to run conversion ( if requested )
     5)  Grant permissions to the domain SQL-Users group for the target database
+    6)  Create EHLERS/Ehlers-WB2$ user for the database if the login exists
 
 
 ************************************************************************************************************************************
@@ -65,3 +66,22 @@ END
 
 --  5)  Grant permissions to the domain SQL-Users group for the target database
 :r ..\OtherChanges\SetSQLUsersGroupPermissions.script.sql
+
+
+-- 6)   Create EHLERS/Ehlers-WB2$ user for the database if the login exists
+IF  EXISTS ( SELECT 1 FROM sys.syslogins WHERE name = 'EHLERS/Ehlers-WB2$' )
+BEGIN 
+    CREATE USER [EHLERS\EHLERS-WB2$] FOR LOGIN [EHLERS\EHLERS-WB2$] ;
+    GRANT CONNECT TO [EHLERS\EHLERS-WB2$] ;    
+END
+    
+    
+    
+    
+
+
+
+
+
+
+

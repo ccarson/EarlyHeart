@@ -539,7 +539,6 @@
     <Build Include="Schema Objects\Documents\Tables\Documents.MergeFields.table.sql" />
     <Build Include="Schema Objects\Documents\Tables\Documents.Templates.table.sql" />
     <Build Include="Schema Objects\Documents\Tables\Documents.TemplateVersions.table.sql" />
-    <Build Include="Database Security\Users\EhlersWB2.user.sql" />
     <Build Include="Schema Objects\Conversion.schema.sql" />
     <Build Include="Schema Objects\Documents.schema.sql" />
     <Build Include="Schema Objects\Meta.schema.sql" />
