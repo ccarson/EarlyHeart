@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseName>Ehlers</TargetDatabaseName>
+    <DeployScriptFileName>Ehlers.sql</DeployScriptFileName>
+    <TargetConnectionString>Data Source=MNDT0368;Integrated Security=True;Pooling=False</TargetConnectionString>
+    <ScriptDatabaseOptions>True</ScriptDatabaseOptions>
+    <BlockOnPossibleDataLoss>True</BlockOnPossibleDataLoss>
+    <CreateNewDatabase>True</CreateNewDatabase>
+    <ProfileVersionNumber>1</ProfileVersionNumber>
+  </PropertyGroup>
+  <ItemGroup>
+    <SqlCmdVariable Include="AgentJobOwner">
+      <Value>EHLERS\Admin</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="BuildSQLAgentJobs">
+      <Value>YES</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="edata">
+      <Value>edata</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="EnableRI">
+      <Value>YES</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="EnableTriggers">
+      <Value>YES</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="PostDeployDataChanges">
+      <Value>YES</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="PreDeployDataChanges">
+      <Value>NO</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="ProductionServer">
+      <Value>EHLERS-SS3</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="TargetServer">
+      <Value>MNDT0368</Value>
+    </SqlCmdVariable>
+  </ItemGroup>
+</Project>
