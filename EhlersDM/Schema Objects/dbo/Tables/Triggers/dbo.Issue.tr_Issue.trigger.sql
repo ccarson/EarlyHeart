@@ -12,17 +12,15 @@ AS
     revisor         date                description
     ---------       ----------          ----------------------------
     ccarson         2013-01-24          created
+    ccarson         ###DATE###          Issues Conversion changes
     
     
-    Notes:
-    Add logic to add County Fees to IssueFeeCounty based on contents of ClientOverlap at the time.
-        No Values will be entered, just the records so that feed data can be entered later
-
     Logic Summary:
     1)  UPDATE dbo.Issue.GoodFaithAmount to 20% of the IssueAmount unless after SaleDate
-    2)  Stop processing when trigger is invoked by Conversion.processIssues procedure
-    3)  Stop processing unless Issue data has actually changed
-    4)  Update edata.Issues with relevant data from dbo.Issue
+    2)  INSERT IssueFeeCounty for each CountyClient record that exists
+    3)  Stop processing when trigger is invoked by Conversion.processIssues procedure
+    4)  Stop processing unless Issue data has actually changed
+    5)  Update edata.dbo.Issues with relevant data from dbo.Issue
 
 ************************************************************************************************************************************
 */
@@ -42,12 +40,32 @@ BEGIN TRY
       FROM  dbo.Issue AS a
      WHERE  EXISTS ( SELECT 1 FROM inserted AS b
                       WHERE a.IssueID = b.IssueID AND DATEDIFF( dd, GETDATE(), SaleDate ) > 0 ) ;
-
---  2)  Stop processing when trigger is invoked by Conversion.processIssues procedure
+                      
+                      
+--  2)  INSERT IssueFeeCounty for each CountyClient record that exists
+      WITH  clientCounties AS ( 
+            SELECT  IssueID         = ins.IssueID
+                  , CountyClientID  = cov.OverlapClientID 
+                  , Ordinal         = cov.Ordinal
+                  , ModifiedDate    = ins.ModifiedDate
+                  , ModifiedUser    = ins.ModifiedUser 
+              FROM  dbo.ClientOverlap AS cov
+        INNER JOIN  dbo.OverlapType   AS ovt ON ovt.OverlapTypeID = cov.OverlapTypeID AND ovt.Value = 'Counties' 
+        INNER JOIN  inserted          AS ins ON ins.ClientID = cov.ClientID 
+             WHERE  NOT EXISTS ( SELECT 1 FROM deleted AS del WHERE del.IssueID = ins.IssueID ) ) 
+          
+    INSERT  dbo.IssueFeeCounty ( 
+            IssueID, CountyClientID, Ordinal, ModifiedDate, ModifiedUser ) 
+    SELECT  IssueID, CountyClientID, Ordinal, ModifiedDate, ModifiedUser 
+      FROM  clientCounties 
+     ORDER  BY Ordinal ;                      
+                      
+                      
+--  3)  Stop processing when trigger is invoked by Conversion.processIssues procedure
     IF  CONTEXT_INFO() = @processIssues
         RETURN ;
 
---  3)  Stop processing unless Issue data has actually changed ( Some data on dbo.Issue does not write back to edata.Issues )
+--  4)  Stop processing unless Issue data has actually changed ( Some data on dbo.Issue does not write back to edata.dbo.Issues )
     SELECT  @legacyChecksum = CHECKSUM_AGG( CHECKSUM(*) ) FROM Conversion.tvf_IssueChecksum( 'Legacy' ) AS a
      WHERE  EXISTS ( SELECT 1 FROM inserted AS b WHERE a.IssueID = b.IssueID ) ;
 
@@ -57,7 +75,7 @@ BEGIN TRY
     IF  ( @legacyChecksum = @convertedChecksum )
         RETURN ;
 
---  4)  Update edata.Issues with relevant data from dbo.Issue
+--  5)  Update edata.dbo.Issues with relevant data from dbo.Issue
       WITH  changedIssues AS (
             SELECT  IssueID, DatedDate, Amount, ClientID
                         , IssueName, ShortName, IssueStatus, cusip6
@@ -70,7 +88,7 @@ BEGIN TRY
                         , ChangeBy, ObligorClientID, EIPInvest
               FROM  Conversion.vw_ConvertedIssues
              WHERE  IssueID IN ( SELECT IssueID FROM inserted ) )
-     MERGE  edata.Issues AS tgt
+     MERGE  edata.dbo.Issues AS tgt
      USING  changedIssues    AS src
         ON  tgt.IssueID = src.IssueID
       WHEN  MATCHED THEN
