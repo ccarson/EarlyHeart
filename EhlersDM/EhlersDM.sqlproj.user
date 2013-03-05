@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <SqlCmdVar__20>edata</SqlCmdVar__20>
     <SqlCmdVar__18>NO</SqlCmdVar__18>
     <SqlCmdVar__16>NO</SqlCmdVar__16>
   </PropertyGroup>

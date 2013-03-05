@@ -88,8 +88,8 @@ BEGIN TRY
                         , ChangeBy, ObligorClientID, EIPInvest
               FROM  Conversion.vw_ConvertedIssues
              WHERE  IssueID IN ( SELECT IssueID FROM inserted ) )
-     MERGE  edata.dbo.Issues AS tgt
-     USING  changedIssues    AS src
+     MERGE  edata.Issues    AS tgt
+     USING  changedIssues   AS src
         ON  tgt.IssueID = src.IssueID
       WHEN  MATCHED THEN
             UPDATE
