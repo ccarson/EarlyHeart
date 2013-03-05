@@ -16,7 +16,7 @@ AS
     Logic Summary:
     1)  Stop processing when trigger is invoked by Conversion.processClients or Conversion.processClientDisclosure procedures
     2)  Stop processing unless Client data has actually changed
-    3)  Merge data from dbo.Client back to edata.dbo.Clients
+    3)  Merge data from dbo.Client back to edata.Clients
 
     Notes:
 
@@ -41,7 +41,7 @@ BEGIN TRY
         CONTEXT_INFO() = @processClientDisclosure
         RETURN ;
 
---  2)  Stop processing unless legacy Clients is changed ( Some data on dbo.Client does not write back to edata.dbo.Clients )
+--  2)  Stop processing unless legacy Clients is changed ( Some data on dbo.Client does not write back to edata.Clients )
     SELECT  @legacyChecksum     = CHECKSUM_AGG( CHECKSUM(*) ) FROM Conversion.tvf_ClientChecksum( 'Legacy' ) AS l
      WHERE  EXISTS ( SELECT 1 FROM inserted AS i WHERE i.ClientID = l.ClientID ) ;
 
@@ -49,12 +49,12 @@ BEGIN TRY
      WHERE  EXISTS ( SELECT 1 FROM inserted AS i WHERE i.ClientID = c.ClientID ) ;
      
 
---  3)  MERGE new Client data onto edata.dbo.Clients
+--  3)  MERGE new Client data onto edata.Clients
       WITH  changedClients AS (
             SELECT  *
               FROM  Conversion.vw_ConvertedClients  AS c
              WHERE  EXISTS ( SELECT 1 FROM inserted AS i WHERE i.ClientID = c.ClientID ) )
-     MERGE  edata.dbo.Clients AS tgt
+     MERGE  edata.Clients AS tgt
      USING  changedClients    AS src
         ON  tgt.ClientID = src.ClientID
       WHEN  MATCHED THEN

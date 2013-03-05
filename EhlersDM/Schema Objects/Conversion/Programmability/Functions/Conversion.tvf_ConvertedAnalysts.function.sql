@@ -26,7 +26,7 @@ RETURN
               , [3]         = CAST( EhlersContact3 AS VARCHAR )
               , [4]         = CAST( OriginatingFA1 AS VARCHAR )
               , [5]         = CAST( OriginatingFA2 AS VARCHAR )
-          FROM  edata.dbo.Clients
+          FROM  edata.Clients
          WHERE  @Source = 'Legacy' ) ,
 
         employees AS (

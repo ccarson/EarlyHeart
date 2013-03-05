@@ -15,7 +15,7 @@ AS
 
     Logic Summary:
     1)  Stop processing when trigger is invoked by Conversion.processArbitrageService procedure
-    2)  DELETE edata.dbo.IssueArbitrageServices records where deleted from dbo.ArbitrageService
+    2)  DELETE edata.IssueArbitrageServices records where deleted from dbo.ArbitrageService
 
 
     Notes:
@@ -35,8 +35,8 @@ BEGIN
     IF  CONTEXT_INFO() = @processArbitrageService
         RETURN ;
 
---  2)  DELETE edata.dbo.IssueArbitrageServices records where deleted from dbo.ArbitrageService
-    DELETE  edata.dbo.IssueArbitrageServices
-      FROM  edata.dbo.IssueArbitrageServices AS i
+--  2)  DELETE edata.IssueArbitrageServices records where deleted from dbo.ArbitrageService
+    DELETE  edata.IssueArbitrageServices
+      FROM  edata.IssueArbitrageServices AS i
      WHERE  EXISTS ( SELECT 1 FROM deleted AS d WHERE d.ArbitrageServiceID = i.ID ) ;
 END

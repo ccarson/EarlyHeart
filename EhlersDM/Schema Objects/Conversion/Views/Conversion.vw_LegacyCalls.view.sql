@@ -21,7 +21,7 @@ SELECT  IssueCallID         = ISNULL(ic.IssueCallID, 0)
       , FirstCallDate       = CAST( c.FirstCallDate   AS DATE )
       , CallPrice           = CAST( ISNULL( c.CallPrice, 100 ) AS DECIMAL(12,8) )
       , CallableMatDate     = CAST( c.CallableMatDate AS DATE )
-  FROM  edata.dbo.Calls AS c
+  FROM  edata.Calls AS c
   LEFT  JOIN  dbo.IssueCall   AS ic
     ON  ic.IssueID = c.IssueID
         AND ISNULL( ic.CallDate,'1900-01-01' ) = ISNULL( c.FirstCallDate,'1900-01-01' )

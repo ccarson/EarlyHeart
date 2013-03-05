@@ -39,7 +39,7 @@ RETURN
               , City            = QUOTENAME( ISNULL( f.City, '' ) )
               , [State]         = QUOTENAME( ISNULL( f.[State], '' ) )
               , Zip             = QUOTENAME( ISNULL( f.Zip, '' ) )
-          FROM  edata.dbo.Firms            AS f
+          FROM  edata.Firms            AS f
      LEFT JOIN  Conversion.LegacyAddresses AS la
             ON  la.LegacyID = f.FirmID AND la.LegacyTableName = @LegacyTableName
          WHERE  @LegacyTableName = 'Firms' ) ,
@@ -53,7 +53,7 @@ RETURN
               , City            = QUOTENAME( ISNULL( c.City, '' ) )
               , [State]         = QUOTENAME( ISNULL( c.[State], '' ) )
               , Zip             = QUOTENAME( ISNULL( c.Zip, '' ) )
-          FROM  edata.dbo.Clients   AS c
+          FROM  edata.Clients   AS c
      LEFT JOIN  Conversion.LegacyAddresses AS la
             ON  la.LegacyID = c.ClientID AND la.LegacyTableName = @LegacyTableName
          WHERE  @LegacyTableName = 'Clients' ) ,
@@ -67,7 +67,7 @@ RETURN
               , City            = QUOTENAME( ISNULL( cc.City, '' ) )
               , [State]         = QUOTENAME( ISNULL( cc.[State], '' ) )
               , Zip             = QUOTENAME( ISNULL( cc.Zip, '' ) )
-          FROM  edata.dbo.ClientContacts  AS cc
+          FROM  edata.ClientContacts  AS cc
     INNER JOIN  Conversion.LegacyContacts AS lc
             ON  lc.LegacyContactID = cc.ContactID AND lc.LegacyTableName = @LegacyTableName
      LEFT JOIN  Conversion.LegacyAddresses AS la
@@ -83,7 +83,7 @@ RETURN
               , City            = QUOTENAME( ISNULL( fc.City, '' ) )
               , [State]         = QUOTENAME( ISNULL( fc.[State], '' ) )
               , Zip             = QUOTENAME( ISNULL( fc.Zip, '' ) )
-          FROM  edata.dbo.FirmContacts  AS fc
+          FROM  edata.FirmContacts  AS fc
     INNER JOIN  Conversion.LegacyContacts AS lc
             ON  lc.LegacyContactID = fc.ContactID AND lc.LegacyTableName = @LegacyTableName
      LEFT JOIN  Conversion.LegacyAddresses AS la

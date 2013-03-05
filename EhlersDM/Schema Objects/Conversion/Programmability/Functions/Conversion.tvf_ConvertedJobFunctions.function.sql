@@ -27,10 +27,10 @@ RETURN
               , JobFunction     = fc.JobFunction
               , ModifiedDate    = ISNULL( fc.ChangeDate, GETDATE() )
               , ModifiedUser    = ISNULL( NULLIF( fc.ChangeBy, '' ) , 'processJobFunctions' )
-          FROM  edata.dbo.FirmContacts    AS fc
+          FROM  edata.FirmContacts    AS fc
     INNER JOIN  Conversion.LegacyContacts AS lc ON lc.LegacyContactID = fc.ContactID 
          WHERE  lc.LegacyTableName = 'FirmContacts' AND fc.JobFunction <> '' AND  @Source = 'Legacy'
-           AND  EXISTS ( SELECT 1 FROM edata.dbo.Firms AS f WHERE f.FirmID = fc.FirmID ) ) , 
+           AND  EXISTS ( SELECT 1 FROM edata.Firms AS f WHERE f.FirmID = fc.FirmID ) ) , 
 
         clientsData AS (
         SELECT  LegacyContactID = cc.ContactID
@@ -39,10 +39,10 @@ RETURN
               , JobFunction     = cc.JobFunction
               , ModifiedDate    = ISNULL( cc.ChangeDate, GETDATE() )
               , ModifiedUser    = ISNULL( NULLIF( cc.ChangeBy, '' ), 'processJobFunctions' )
-          FROM  edata.dbo.ClientContacts  AS cc
+          FROM  edata.ClientContacts  AS cc
     INNER JOIN  Conversion.LegacyContacts AS lc ON lc.LegacyContactID = cc.ContactID 
          WHERE  lc.LegacyTableName = 'ClientContacts' AND cc.JobFunction <> '' AND @Source = 'Legacy'
-           AND  EXISTS ( SELECT 1 FROM edata.dbo.Clients AS c WHERE c.ClientID = cc.ClientID ) ) , 
+           AND  EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientID = cc.ClientID ) ) , 
            
         legacy  AS ( 
         SELECT  LegacyContactID = fd.LegacyContactID

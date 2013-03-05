@@ -6,7 +6,7 @@ AS
 
     Trigger:    dbo.tr_BiddingParameter
      Author:    Chris Carson
-    Purpose:    loads BiddingParameter data into edata.dbo.Issues
+    Purpose:    loads BiddingParameter data into edata.Issues
 
 
     revisor         date                description
@@ -53,8 +53,8 @@ BEGIN
         UNION
     SELECT  IssueID FROM deleted ;
 
---  4)  Update edata.dbo.Issues with relevant data from dbo.Issue
-    UPDATE  edata.dbo.Issues
+--  4)  Update edata.Issues with relevant data from dbo.Issue
+    UPDATE  edata.Issues
        SET  MinimumBid      = c.MinimumBid
           , MaximumBid      = c.MaximumBid
           , AllowDecrease   = c.AllowDecrease
@@ -67,7 +67,7 @@ BEGIN
           , InternetSale    = c.InternetSale
           , ChangeDate      = ISNULL( c.ChangeDate, GETDATE() )
           , ChangeBy        = ISNULL( c.ChangeBy, @SystemUser )
-      FROM  edata.dbo.Issues AS a
+      FROM  edata.Issues AS a
 INNER JOIN  @changedIssues AS b
         ON  b.IssueID = a.IssueID
  LEFT JOIN  Conversion.vw_ConvertedBiddingParameter AS c

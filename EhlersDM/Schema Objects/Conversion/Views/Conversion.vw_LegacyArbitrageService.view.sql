@@ -26,6 +26,6 @@ AS
           , Fee             =  CAST( ISNULL(i.Fee, 0) AS DECIMAL(15,2) )
           , ModifiedDate    =  ISNULL( x.ChangeDate, GETDATE() ) 
           , ModifiedUser    =  ISNULL( x.ChangeBy, 'processArbitrage' )
-      FROM  edata.dbo.IssueArbitrageServices AS i
-INNER JOIN  edata.dbo.Issues AS x ON x.IssueID = i.IssueID   
+      FROM  edata.IssueArbitrageServices AS i
+INNER JOIN  edata.Issues AS x ON x.IssueID = i.IssueID   
  LEFT JOIN  dbo.ArbitrageComputationType AS t ON t.LegacyValue = i.ComputationType

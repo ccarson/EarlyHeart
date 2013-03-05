@@ -17,7 +17,7 @@ RETURNS TABLE AS
 
     Notes:
     Use QUOTENAME() to prevent "wrong field" errors.  QUOTENAME() encloses fields with [] and prevents that error from occurring.
-    USE CAST for the GoodFaith and Notes from edata.dbo.Firms, HASHBYTES does not compute checksums over text fields.
+    USE CAST for the GoodFaith and Notes from edata.Firms, HASHBYTES does not compute checksums over text fields.
 
 ************************************************************************************************************************************
 */

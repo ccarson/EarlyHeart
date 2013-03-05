@@ -27,7 +27,7 @@ RETURN
               , EhlersContact3
               , OriginatingFA1
               , OriginatingFA2
-          FROM  edata.dbo.Clients
+          FROM  edata.Clients
          WHERE  @Source = 'Legacy' ) ,
 
         clientAnalysts AS (

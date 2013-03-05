@@ -30,8 +30,8 @@ RETURN
               , ynDataIn                    = QUOTENAME( CAST(ias.ynDataIn AS VARCHAR(1) ) )
               , ynReport                    = QUOTENAME( CAST(ias.ynReport AS VARCHAR(1) ) )
               , Fee                         = CAST( ISNULL(ias.Fee, 0) AS DECIMAL(15,2) )
-          FROM  edata.dbo.IssueArbitrageServices AS ias
-    INNER JOIN  edata.dbo.Issues AS i ON i.IssueID = ias.IssueID
+          FROM  edata.IssueArbitrageServices AS ias
+    INNER JOIN  edata.Issues AS i ON i.IssueID = ias.IssueID
     INNER JOIN  dbo.ArbitrageComputationType AS t ON t.LegacyValue = ias.ComputationType
          WHERE  @Source = 'Legacy' ) ,
 

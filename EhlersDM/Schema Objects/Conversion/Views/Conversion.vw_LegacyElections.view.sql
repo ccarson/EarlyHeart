@@ -24,5 +24,5 @@ AS
           , Description     = ISNULL( e.Description, '' )
           , VotesYes        = e.VotesYes
           , VotesNo         = e.VotesNo
-      FROM  edata.dbo.Elections AS e
+      FROM  edata.Elections AS e
  LEFT JOIN  dbo.ElectionType    AS et ON et.LegacyValue = e.Purpose ;

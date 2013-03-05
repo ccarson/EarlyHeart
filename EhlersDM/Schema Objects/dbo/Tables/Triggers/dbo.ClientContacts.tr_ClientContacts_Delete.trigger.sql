@@ -16,7 +16,7 @@ AS
 
     Logic Summary:
     1)  Write Audit record to show deletion
-    2)  DELETE records from edata.dbo.ClientContacts
+    2)  DELETE records from edata.ClientContacts
     3)  DELETE records from Conversion.LegacyContacts
 
 ************************************************************************************************************************************
@@ -46,9 +46,9 @@ BEGIN TRY
       FROM  deleted ;
 
 
---  2)  Delete records from edata.dbo.ClientContacts
+--  2)  Delete records from edata.ClientContacts
       WITH  legacy AS (
-            SELECT * FROM edata.dbo.ClientContacts AS cc
+            SELECT * FROM edata.ClientContacts AS cc
              WHERE EXISTS ( SELECT 1
                               FROM Conversion.LegacyContacts AS lc
                         INNER JOIN deleted AS d ON d.ContactID = lc.ContactID

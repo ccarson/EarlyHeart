@@ -40,7 +40,7 @@ RETURN
               , DateDecrease          = CONVERT( VARCHAR(10) , ISNULL( i.DateDecrease , '1900-01-01' ) , 120 )
               , AwardBasis            = CASE i.AwardBasis WHEN 1 THEN 'TIC' ELSE 'NIC' END
               , InternetSale          = ISNULL( ibt.InternetBiddingTypeID, 2 )
-          FROM  edata.dbo.Issues        AS i
+          FROM  edata.Issues        AS i
      LEFT JOIN  dbo.BiddingParameter    AS bp  ON  bp.IssueID = i.IssueID
      LEFT JOIN  dbo.InternetBiddingType AS ibt ON  ibt.LegacyValue = i.InternetSale
          WHERE  @Source = 'Legacy' ) ,

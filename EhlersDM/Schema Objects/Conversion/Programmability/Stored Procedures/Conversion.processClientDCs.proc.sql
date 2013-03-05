@@ -75,11 +75,11 @@ BEGIN TRY
     IF  @analystChanges = 0
     BEGIN
         SELECT @ClientAnalystsActual = @ClientAnalystsExpected ;
-        PRINT   'Analysts on edata.dbo.Clients unchanged ' ;
+        PRINT   'Analysts on edata.Clients unchanged ' ;
         GOTO endOfProc ;
     END 
 
-    PRINT   'Data has changed, migrating analysts on edata.dbo.Clients ' ;
+    PRINT   'Data has changed, migrating analysts on edata.Clients ' ;
 
     
       WITH  jobGroups AS ( 

@@ -15,8 +15,8 @@ AS
 
     Logic Summary:
     1)  Stop processing when trigger is invoked by Conversion.processArbitrageService procedure
-    2)  INSERT records onto edata.dbo.IssueArbitrageServices
-    3)  ROLLBACK and RAISERROR if the ID already exists on edata.dbo.IssueArbitrageServices
+    2)  INSERT records onto edata.IssueArbitrageServices
+    3)  ROLLBACK and RAISERROR if the ID already exists on edata.IssueArbitrageServices
 
     Notes:
     The ROLLBACK and RAISERROR should not happen. It's in place to prevent primary key errors on the INSERT
@@ -39,11 +39,11 @@ BEGIN
         RETURN ;
 
 
---  2)  INSERT records onto edata.dbo.IssueArbitrageServices
-    SET IDENTITY_INSERT edata.dbo.IssueArbitrageServices ON ;
+--  2)  INSERT records onto edata.IssueArbitrageServices
+    SET IDENTITY_INSERT edata.IssueArbitrageServices ON ;
 
     BEGIN TRY
-    INSERT  edata.dbo.IssueArbitrageServices (
+    INSERT  edata.IssueArbitrageServices (
             ID
           , IssueId
           , DtService
@@ -65,11 +65,11 @@ BEGIN
     END TRY
 
 
---  3)  ROLLBACK and RAISERROR if the ID already exists on edata.dbo.IssueArbitrageServices
+--  3)  ROLLBACK and RAISERROR if the ID already exists on edata.IssueArbitrageServices
     BEGIN CATCH
         ROLLBACK ;
-        RAISERROR ( 'Error on INSERT to edata.dbo.IssueArbitrageServices', 16, 1 ) ;
+        RAISERROR ( 'Error on INSERT to edata.IssueArbitrageServices', 16, 1 ) ;
     END CATCH
 
-    SET IDENTITY_INSERT edata.dbo.IssueArbitrageServices OFF ;
+    SET IDENTITY_INSERT edata.IssueArbitrageServices OFF ;
 END

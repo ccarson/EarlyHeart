@@ -6,7 +6,7 @@ AS
 
     Trigger:    dbo.tr_IssueFirms
      Author:    Chris Carson
-    Purpose:    Synchronizes IssueFirms data back to edata.dbo.IssueProfSvcs
+    Purpose:    Synchronizes IssueFirms data back to edata.IssueProfSvcs
 
 
     revisor         date                description
@@ -16,8 +16,8 @@ AS
 
     Logic Summary:
     1)  Stop processing when trigger is invoked by Conversion.processIssueFirms procedure
-    2)  Stop processing unless the new FirmCategories actually appear on edata.dbo.IssueProfSvcs
-    3)  Update edata.dbo.Issues with relevant data from dbo.Issue
+    2)  Stop processing unless the new FirmCategories actually appear on edata.IssueProfSvcs
+    3)  Update edata.Issues with relevant data from dbo.Issue
 
 ************************************************************************************************************************************
 */
@@ -46,7 +46,7 @@ BEGIN
     SELECT  IssueID FROM deleted ;
 
 
---  2)  Continue processing only if data that relates edata.dbo.IssueProfSvcs has changed
+--  2)  Continue processing only if data that relates edata.IssueProfSvcs has changed
     SELECT  @legacyChecksum = CHECKSUM_AGG(CHECKSUM(*)) FROM Conversion.tvf_IssueFirms( 'Legacy' ) AS l
      WHERE  EXISTS ( SELECT 1 FROM @changedIssues AS i WHERE i.IssueID = l.IssueID ) ;
 
@@ -57,19 +57,19 @@ BEGIN
         RETURN ;
 
 
---  3)  Clear out edata.dbo.IssueProfSvcs for affected firms
-    UPDATE  edata.dbo.IssueProfSvcs
+--  3)  Clear out edata.IssueProfSvcs for affected firms
+    UPDATE  edata.IssueProfSvcs
        SET  FirmID   = 0
           , Firmname = NULL
-      FROM  edata.dbo.IssueProfSvcs AS ips
+      FROM  edata.IssueProfSvcs AS ips
 INNER JOIN  @changedIssues          AS iss ON iss.IssueID = ips.IssueID ;
 
 
---  4)  UPDATE edata.dbo.IssueProfSvcs with current dbo.IssueFirms data
-    UPDATE  edata.dbo.IssueProfSvcs
+--  4)  UPDATE edata.IssueProfSvcs with current dbo.IssueFirms data
+    UPDATE  edata.IssueProfSvcs
        SET  FirmID   = isf.FirmID
           , Firmname = isf.FirmName
-      FROM  edata.dbo.IssueProfSvcs                  AS ips
+      FROM  edata.IssueProfSvcs                  AS ips
 INNER JOIN  Conversion.tvf_IssueFirms( 'Converted' ) AS isf ON isf.IssueID = ips.IssueID AND isf.Category = ips.Category
 INNER JOIN  @changedIssues AS iss ON iss.IssueID = ips.IssueID ;
 

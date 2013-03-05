@@ -5,7 +5,7 @@ AS
 
   Procedure:    Conversion.processIssueFirms
      Author:    Chris Carson
-    Purpose:    converts legacy edata.dbo.IssueProfSvcs data
+    Purpose:    converts legacy edata.IssueProfSvcs data
 
 
     revisor         date                description

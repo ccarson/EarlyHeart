@@ -17,8 +17,8 @@ AS
     Logic Summary:
     1)  Stop processing when trigger is invoked by Conversion.processClientAnalysts procedure
     2)  INSERT ClientIDs from trigger tables into temp storage
-    3)  Stop processing if Analyst or DC data has not changed because not all clientAnalysts data writes back to edata.dbo.Clients 
-    4)  UPDATE new analyst and DC data onto edata.dbo.Clients
+    3)  Stop processing if Analyst or DC data has not changed because not all clientAnalysts data writes back to edata.Clients 
+    4)  UPDATE new analyst and DC data onto edata.Clients
 
     Notes:
 
@@ -54,7 +54,7 @@ BEGIN TRY
     SELECT  ClientID FROM deleted ;
 
     
---  3)  Stop processing unless Analsyt or DC data has changed ( Not all clientAnalysts data writes back to edata.dbo.Clients )
+--  3)  Stop processing unless Analsyt or DC data has changed ( Not all clientAnalysts data writes back to edata.Clients )
     SELECT  @legacyAnalystChecksum = CHECKSUM_AGG( CHECKSUM(*) ) FROM Conversion.tvf_LegacyAnalysts( 'Legacy' ) AS a
      WHERE  EXISTS ( SELECT 1 FROM @changedClients AS b WHERE b.ClientID = a.ClientID ) ; 
       
@@ -72,8 +72,8 @@ BEGIN TRY
         RETURN ; 
         
 
---  4)  UPDATE new analyst and DC data onto edata.dbo.Clients
-    UPDATE  edata.dbo.Clients
+--  4)  UPDATE new analyst and DC data onto edata.Clients
+    UPDATE  edata.Clients
        SET  EhlersContact1  = a.EhlersContact1
           , EhlersContact2  = a.EhlersContact2
           , EhlersContact3  = a.EhlersContact3
@@ -83,7 +83,7 @@ BEGIN TRY
           , ChangeBy        = @systemUser
           , ChangeCode      = 'CVAnalyst'
           , ChangeDate      = @systemTime
-      FROM  edata.dbo.Clients AS c 
+      FROM  edata.Clients AS c 
  LEFT JOIN  Conversion.tvf_LegacyAnalysts ( 'Converted' )  AS a ON a.ClientID = c.ClientID
  LEFT JOIN  Conversion.tvf_LegacyDCs ( 'Converted' )       AS d ON d.ClientID = c.ClientID 
      WHERE  EXISTS ( SELECT 1 FROM @changedClients AS t WHERE t.ClientID = c.ClientID ) ; 

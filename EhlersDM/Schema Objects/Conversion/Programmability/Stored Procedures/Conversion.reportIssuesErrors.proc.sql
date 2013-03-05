@@ -13,7 +13,7 @@ AS
     ccarson         2013-01-24          created
 
     Logic Summary:
-    1)  SELECT error counts from edata.dbo.Issues and edata.dbo.Clients
+    1)  SELECT error counts from edata.Issues and edata.Clients
     2)  Exit if there are no errors
     3)  INSERT orphan Issues records into @errorRecords
     4)  SELECT error report data from @errorRecords for Orphan Issues report
@@ -54,17 +54,17 @@ BEGIN
                                          , ObligorClientID  INT ) ;
 
 
---  1)  SELECT error counts from edata.dbo.Issues and edata.dbo.Clients
+--  1)  SELECT error counts from edata.Issues and edata.Clients
 BEGIN TRY
     SELECT  @orphanErrorCount = COUNT(*)
-      FROM  edata.dbo.Issues AS i
-     WHERE  NOT EXISTS ( SELECT 1 FROM edata.dbo.Clients AS c WHERE c.ClientID = i.ClientID ) ;
+      FROM  edata.Issues AS i
+     WHERE  NOT EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientID = i.ClientID ) ;
 
     SELECT  @obligorErrorCount = COUNT(*)
-      FROM  edata.dbo.Issues AS i
+      FROM  edata.Issues AS i
      WHERE  i.ObligorClientID IS NOT NULL
-       AND  EXISTS ( SELECT 1 FROM edata.dbo.Clients AS c WHERE c.ClientID = i.ClientID )
-       AND  NOT EXISTS ( SELECT 1 FROM edata.dbo.Clients AS c WHERE c.ClientID = i.ObligorClientID ) ;
+       AND  EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientID = i.ClientID )
+       AND  NOT EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientID = i.ObligorClientID ) ;
 
 
 --  2)  Exit if there are no errors
@@ -86,8 +86,8 @@ BEGIN TRY
           , Amount                  =  ISNULL( i.Amount, 0.00 )
           , ClientID                =  i.ClientID
           , ObligorClientID         =  NULL
-      FROM  edata.dbo.Issues AS i
-     WHERE  NOT EXISTS ( SELECT 1 FROM edata.dbo.Clients AS c WHERE c.ClientID = i.ClientID ) ;
+      FROM  edata.Issues AS i
+     WHERE  NOT EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientID = i.ClientID ) ;
     SELECT  @orphanErrorActual = @@ROWCOUNT ;
 
 
@@ -134,10 +134,10 @@ BEGIN TRY
           , Amount                  =  ISNULL( i.Amount, 0.00 )
           , ClientID                =  i.ClientID
           , ObligorClientID         =  i.ObligorClientID
-      FROM  edata.dbo.Issues AS i
+      FROM  edata.Issues AS i
      WHERE  ObligorClientID IS NOT NULL
-       AND  EXISTS ( SELECT 1 FROM edata.dbo.Clients AS c WHERE c.ClientID = i.ClientID )
-       AND  NOT EXISTS ( SELECT 1 FROM edata.dbo.Clients AS c WHERE c.ClientID = i.ObligorClientID ) ;
+       AND  EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientID = i.ClientID )
+       AND  NOT EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientID = i.ObligorClientID ) ;
     SELECT  @obligorErrorActual = @@ROWCOUNT ;
 
 

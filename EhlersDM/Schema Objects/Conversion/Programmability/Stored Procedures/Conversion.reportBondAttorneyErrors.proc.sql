@@ -50,8 +50,8 @@ BEGIN TRY
             SELECT  iss.IssueID
                   , ips.FirmID 
                   , iss.Attorney
-              FROM  edata.dbo.Issues        AS iss
-        INNER JOIN  edata.dbo.IssueProfSvcs AS ips ON ips.IssueID = iss.IssueID
+              FROM  edata.Issues        AS iss
+        INNER JOIN  edata.IssueProfSvcs AS ips ON ips.IssueID = iss.IssueID
              WHERE  ips.Category = 'bc' AND ips.FirmID <> 0 AND iss.Attorney <> 'Check with FA' ) 
              
     INSERT  @bondAttorneyErrors ( IssueID, FirmID, Attorney ) 
@@ -118,7 +118,7 @@ endOfProc:
 --  5)  Print control totals
     PRINT 'Conversion.reportBondAttorneyErrors ' ;
     PRINT 'CONTROL TOTALS ' ;
-    PRINT '    Bond Attorney Errors on edata.dbo.Issues = ' + STR( @errorCount, 8 ) ;
+    PRINT '    Bond Attorney Errors on edata.Issues = ' + STR( @errorCount, 8 ) ;
     PRINT '' ;
 
     RETURN @rc ;

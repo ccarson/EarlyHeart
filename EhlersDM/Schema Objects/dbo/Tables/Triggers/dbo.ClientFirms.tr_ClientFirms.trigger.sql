@@ -7,7 +7,7 @@ AS
 
     Trigger:    dbo.tr_ClientFirms
      Author:    Chris Carson
-    Purpose:    Synchronizes ClientFirms data with Legacy edata.dbo.Clients table
+    Purpose:    Synchronizes ClientFirms data with Legacy edata.Clients table
 
 
     revisor         date                description
@@ -55,7 +55,7 @@ BEGIN TRY
          LEFT JOIN  dbo.FirmAddresses                           AS fa  ON fa.FirmID = fc.FirmID
          LEFT JOIN  dbo.Address                                 AS a   ON a.AddressID = fa.AddressID )
        
-    UPDATE  edata.dbo.Clients 
+    UPDATE  edata.Clients 
        SET  ClientCPA       = cd.ClientCPA
           , ClientCPAFirmID = cd.ClientCPAFirmID
           , LocalAttorney   = cd.LocalAttorney
@@ -63,7 +63,7 @@ BEGIN TRY
           , LAState         = cd.LAState
           , ChangeDate      = GETDATE()
           , ChangeCode      = 'CVClientFirms'
-      FROM  edata.dbo.Clients AS c
+      FROM  edata.Clients AS c
 INNER JOIN  clientData        AS cd ON cd.ClientID = c.ClientID ; 
 
 END TRY

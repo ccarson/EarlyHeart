@@ -28,4 +28,4 @@ SELECT  FirmID     = f.FirmID
       , Notes      = ISNULL( CAST( f.Notes     AS VARCHAR(MAX) ), '' )
       , ChangeDate = ISNULL( f.ChangeDate, GETDATE() )
       , ChangeBy   = ISNULL( NULLIF( f.ChangeBy, '' ), 'processFirms' )
-  FROM  edata.dbo.Firms AS f ;
+  FROM  edata.Firms AS f ;

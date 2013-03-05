@@ -27,14 +27,14 @@ RETURN
               , [3]         = County2
               , [4]         = County3
               , [5]         = County4
-          FROM  edata.dbo.Clients
+          FROM  edata.Clients
          WHERE  HomeCounty IS NOT NULL AND @Source = 'Legacy' ) ,
 
         counties AS (
         SELECT  CountyID    = ClientID
               , State       = State
               , CountyName  = HomeCounty
-          FROM  edata.dbo.Clients
+          FROM  edata.Clients
          WHERE  TypeJurisdiction = 'County' AND @Source = 'Legacy' ) ,
 
         legacy AS (

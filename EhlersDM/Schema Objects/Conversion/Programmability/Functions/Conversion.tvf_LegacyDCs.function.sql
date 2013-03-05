@@ -23,7 +23,7 @@ RETURN
   WITH  legacy AS (
         SELECT  ClientID
               , Analyst
-          FROM  edata.dbo.Clients
+          FROM  edata.Clients
          WHERE  @Source = 'Legacy' AND Analyst <> '' ) ,
 
         converted AS (

@@ -6,7 +6,7 @@ AS
 
     Trigger:    dbo.tr_FirmAddresses_Delete
      Author:    Chris Carson
-    Purpose:    Clears address data on edata.dbo.Firms
+    Purpose:    Clears address data on edata.Firms
 
 
     revisor         date                description
@@ -48,7 +48,7 @@ BEGIN
 
 
 --  3)  Update Address Data back to dbo.Firms
-    UPDATE  edata.dbo.Clients
+    UPDATE  edata.Clients
        SET  Address1   = ''
           , Address2   = ''
           , City       = ''
@@ -58,7 +58,7 @@ BEGIN
           , ChangeBy   = @SystemUser
           , ChangeCode = 'CVAddress'
       FROM  deleted AS d
-INNER JOIN  edata.dbo.Firms AS f
+INNER JOIN  edata.Firms AS f
         ON  f.FirmID = d.FirmID
      WHERE  d.AddressTypeID = 3 ;
 

@@ -22,7 +22,7 @@
 ************************************************************************************************************************************
 */
 AS
-  WITH  firms AS ( SELECT FirmID FROM edata.dbo.Firms ) ,
+  WITH  firms AS ( SELECT FirmID FROM edata.Firms ) ,
 
         firmContacts AS (
         SELECT  ContactID       =  ISNULL( lc.ContactID, 0 )
@@ -45,13 +45,13 @@ AS
               , Notes           =  CAST( ISNULL( fc.Notes, '' ) AS VARCHAR(MAX) )
               , ChangeBy        =  ISNULL( NULLIF( fc.ChangeBy, '' ), 'processContacts' )
               , ChangeDate      =  ISNULL( fc.ChangeDate, GETDATE() )
-          FROM  edata.dbo.FirmContacts      AS fc
+          FROM  edata.FirmContacts      AS fc
     INNER JOIN  firms                       AS f  ON f.FirmID = fc.FirmID
      LEFT JOIN  Conversion.LegacyContacts   AS lc ON lc.LegacyContactID = fc.ContactID AND lc.LegacyTableName = 'FirmContacts'
          WHERE  ISNULL( lc.LegacyTableName, 'FirmContacts' ) = 'FirmContacts' ) ,
 
 
-        clients AS ( SELECT ClientID FROM edata.dbo.Clients ) ,
+        clients AS ( SELECT ClientID FROM edata.Clients ) ,
 
         clientContacts AS (
         SELECT  ContactID       =  ISNULL( lc.ContactID, 0 )
@@ -74,7 +74,7 @@ AS
               , Notes           =  CAST( ISNULL( cc.Notes, '' ) AS VARCHAR(MAX) )
               , ChangeDate      =  ISNULL( cc.ChangeDate, GETDATE() )
               , ChangeBy        =  ISNULL( NULLIF( cc.ChangeBy, '' ), 'processContacts' )
-          FROM  edata.dbo.ClientContacts    AS cc
+          FROM  edata.ClientContacts    AS cc
     INNER JOIN  clients                     AS c  ON c.ClientID         = cc.ClientID
      LEFT JOIN  Conversion.LegacyContacts   AS lc ON lc.LegacyContactID = cc.ContactID  AND lc.LegacyTableName = 'ClientContacts'
          WHERE  ISNULL( lc.LegacyTableName, 'ClientContacts' ) = 'ClientContacts' )

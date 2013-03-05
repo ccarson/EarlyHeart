@@ -53,8 +53,8 @@ INNER JOIN  deleted  AS d ON i.AddressID = d.AddressID ;
     IF  CONTEXT_INFO() = @processAddresses RETURN ;
 
 
---  3)  Update Address Data back to edata.dbo.Firms
-    UPDATE  edata.dbo.Firms
+--  3)  Update Address Data back to edata.Firms
+    UPDATE  edata.Firms
        SET  Address1   = i.Address1
           , Address2   = i.Address2
           , City       = i.City
@@ -66,12 +66,12 @@ INNER JOIN  deleted  AS d ON i.AddressID = d.AddressID ;
       FROM  inserted AS i
 INNER JOIN  Conversion.LegacyAddresses AS la
         ON  la.AddressID = i.AddressID AND la.LegacyTableName = 'Firms'
-INNER JOIN  edata.dbo.Firms AS f
+INNER JOIN  edata.Firms AS f
         ON  f.FirmID = la.LegacyID ;
 
 
---  4)  Update Address Data back to edata.dbo.Clients
-    UPDATE  edata.dbo.Clients
+--  4)  Update Address Data back to edata.Clients
+    UPDATE  edata.Clients
        SET  Address1   = i.Address1
           , Address2   = i.Address2
           , City       = i.City
@@ -83,12 +83,12 @@ INNER JOIN  edata.dbo.Firms AS f
       FROM  inserted AS i
 INNER JOIN  Conversion.LegacyAddresses AS la
         ON  la.AddressID = i.AddressID AND la.LegacyTableName = 'Clients'
-INNER JOIN  edata.dbo.Clients AS c
+INNER JOIN  edata.Clients AS c
         ON  c.ClientID = la.LegacyID ;
 
 
---  5)  Update Address Data back to edata.dbo.FirmContacts
-    UPDATE  edata.dbo.FirmContacts
+--  5)  Update Address Data back to edata.FirmContacts
+    UPDATE  edata.FirmContacts
        SET  Address1   = i.Address1
           , Address2   = i.Address2
           , City       = i.City
@@ -100,12 +100,12 @@ INNER JOIN  edata.dbo.Clients AS c
       FROM  inserted AS i
 INNER JOIN  Conversion.LegacyAddresses AS la
         ON  la.AddressID = i.AddressID AND la.LegacyTableName = 'FirmContacts'
-INNER JOIN  edata.dbo.FirmContacts AS fc
+INNER JOIN  edata.FirmContacts AS fc
         ON  fc.ContactID = la.LegacyID ;
 
 
---  6)  Update Address Data back to edata.dbo.ClientContacts
-    UPDATE  edata.dbo.ClientContacts
+--  6)  Update Address Data back to edata.ClientContacts
+    UPDATE  edata.ClientContacts
        SET  Address1   = i.Address1
           , Address2   = i.Address2
           , City       = i.City
@@ -117,6 +117,6 @@ INNER JOIN  edata.dbo.FirmContacts AS fc
       FROM  inserted AS i
 INNER JOIN  Conversion.LegacyAddresses AS la
         ON  la.AddressID = i.AddressID AND la.LegacyTableName = 'ClientContacts'
-INNER JOIN  edata.dbo.ClientContacts AS cc
+INNER JOIN  edata.ClientContacts AS cc
         ON  cc.ContactID = la.LegacyID ;
 END

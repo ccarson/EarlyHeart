@@ -18,7 +18,7 @@ AS
     1)  Process only if FirmName has changed
     2)  Insert dbo.FirmNameHistory to reflect firm name change
     3)  Stop processing when trigger is invoked by Conversion.processFirms procedure
-    4)  Write firm name change back to legacy edata.dbo.FirmHistory
+    4)  Write firm name change back to legacy edata.FirmHistory
 
     Notes:
 
@@ -51,8 +51,8 @@ INNER JOIN  inserted AS i ON i.FirmID = d.FirmID AND i.FirmName <> d.FirmName ;
         RETURN ;
 
 
---  4)  Write firm name change back to legacy edata.dbo.FirmHistory
-    INSERT  edata.dbo.FirmHistory ( FirmID, FirmName, EffectiveDate, sequence )
+--  4)  Write firm name change back to legacy edata.FirmHistory
+    INSERT  edata.FirmHistory ( FirmID, FirmName, EffectiveDate, sequence )
     SELECT  d.FirmID, d.FirmName, i.ModifiedDate, 0
       FROM  deleted  AS d
 INNER JOIN  inserted AS i ON i.FirmID = d.FirmID AND i.FirmName <> d.FirmName ;

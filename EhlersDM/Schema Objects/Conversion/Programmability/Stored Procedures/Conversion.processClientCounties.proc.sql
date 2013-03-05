@@ -71,11 +71,11 @@ BEGIN TRY
     IF  @countyChanges = 0
     BEGIN
         SELECT @ClientCountiesActual = @ClientCountiesExpected ;
-        PRINT   'Counties on edata.dbo.Clients unchanged ' ;
+        PRINT   'Counties on edata.Clients unchanged ' ;
         GOTO endOfProc ;
     END 
 
-    PRINT   'Data has changed, migrating counties on edata.dbo.Clients ' ;
+    PRINT   'Data has changed, migrating counties on edata.Clients ' ;
     
       WITH  allCounties AS ( 
             SELECT * FROM dbo.ClientOverlap

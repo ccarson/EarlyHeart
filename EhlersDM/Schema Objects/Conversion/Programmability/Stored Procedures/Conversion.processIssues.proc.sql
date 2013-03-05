@@ -17,7 +17,7 @@ AS
     2)  Create temp storage for changed data from source tables
     3)  SELECT initial control counts
     4)  INSERT changed Issues data into @changedIssueIDs
-    5)  Exit procedure if there are no changes on edata.dbo.Issues
+    5)  Exit procedure if there are no changes on edata.Issues
     6)  INSERT new issues data into #convertingIssues
     7)  INSERT updated issues data into #convertingIssues
     8)  Remove ObligorClientID data if the Client does not exist in legacy System
@@ -126,7 +126,7 @@ BEGIN TRY
     SELECT  @changesCount = @@ROWCOUNT ;
 
 
---  5)  Exit procedure if there are no changes on edata.dbo.Issues
+--  5)  Exit procedure if there are no changes on edata.Issues
     IF  ( @changesCount = 0 )
         GOTO  endOfProc ;
 
@@ -161,7 +161,7 @@ BEGIN TRY
     UPDATE  #convertingIssues
        SET  ObligorClientID = NULL
       FROM  #convertingIssues AS a
-     WHERE  NOT EXISTS ( SELECT 1 FROM edata.dbo.Clients AS b WHERE b.ClientID = a.ObligorClientID ) ;
+     WHERE  NOT EXISTS ( SELECT 1 FROM edata.Clients AS b WHERE b.ClientID = a.ObligorClientID ) ;
 
 
 --  9)  MERGE #convertingIssues with dbo.Issue

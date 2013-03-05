@@ -17,7 +17,7 @@ AS
     1)  UPDATE dbo.Issue.GoodFaithAmount to 20% of the IssueAmount unless after SaleDate
     2)  Stop processing when trigger is invoked by Conversion.processIssues procedure
     3)  Stop processing unless Issue data has actually changed
-    4)  Update edata.dbo.Issues with relevant data from dbo.Issue
+    4)  Update edata.Issues with relevant data from dbo.Issue
 
 ************************************************************************************************************************************
 */
@@ -42,7 +42,7 @@ BEGIN TRY
     IF  CONTEXT_INFO() = @processIssues
         RETURN ;
 
---  3)  Stop processing unless Issue data has actually changed ( Some data on dbo.Issue does not write back to edata.dbo.Issues )
+--  3)  Stop processing unless Issue data has actually changed ( Some data on dbo.Issue does not write back to edata.Issues )
     SELECT  @legacyChecksum = CHECKSUM_AGG( CHECKSUM(*) ) FROM Conversion.tvf_IssueChecksum( 'Legacy' ) AS a
      WHERE  EXISTS ( SELECT 1 FROM inserted AS b WHERE a.IssueID = b.IssueID ) ;
 
@@ -52,7 +52,7 @@ BEGIN TRY
     IF  ( @legacyChecksum = @convertedChecksum )
         RETURN ;
 
---  4)  Update edata.dbo.Issues with relevant data from dbo.Issue
+--  4)  Update edata.Issues with relevant data from dbo.Issue
       WITH  changedIssues AS (
             SELECT  IssueID, DatedDate, Amount, ClientID
                         , IssueName, ShortName, IssueStatus, cusip6
@@ -65,7 +65,7 @@ BEGIN TRY
                         , ChangeBy, ObligorClientID, EIPInvest
               FROM  Conversion.vw_ConvertedIssues
              WHERE  IssueID IN ( SELECT IssueID FROM inserted ) )
-     MERGE  edata.dbo.Issues AS tgt
+     MERGE  edata.Issues AS tgt
      USING  changedIssues    AS src
         ON  tgt.IssueID = src.IssueID
       WHEN  MATCHED THEN

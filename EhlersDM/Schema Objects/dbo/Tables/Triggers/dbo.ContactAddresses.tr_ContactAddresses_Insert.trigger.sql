@@ -6,7 +6,7 @@ AS
 
     Trigger:    dbo.tr_ContactAddresses_Insert
      Author:    Chris Carson
-    Purpose:    loads dbo.Address data back to edata.dbo.FirmContacts and edata.dbo.ClientContacts tables
+    Purpose:    loads dbo.Address data back to edata.FirmContacts and edata.ClientContacts tables
 
 
     revisor         date                description
@@ -49,7 +49,7 @@ BEGIN
 
 
 --  3)  Update Address Data back to dbo.FirmContacts
-    UPDATE  edata.dbo.FirmContacts
+    UPDATE  edata.FirmContacts
        SET  Address1   = a.Address1
           , Address2   = a.Address2
           , City       = a.City
@@ -63,12 +63,12 @@ INNER JOIN  dbo.Address AS a
         ON  a.AddressID = i.AddressID AND i.AddressTypeID = 3
 INNER JOIN  Conversion.LegacyContacts AS lc
         ON  lc.ContactID = i.ContactID
-INNER JOIN  edata.dbo.FirmContacts AS fc
+INNER JOIN  edata.FirmContacts AS fc
         ON  fc.ContactID = lc.LegacyContactID ;
 
 
 --  4)  Update Address Data back to dbo.ClientContacts
-    UPDATE  edata.dbo.ClientContacts
+    UPDATE  edata.ClientContacts
        SET  Address1   = a.Address1
           , Address2   = a.Address2
           , City       = a.City
@@ -82,7 +82,7 @@ INNER JOIN  dbo.Address AS a
         ON  a.AddressID = i.AddressID AND i.AddressTypeID = 3
 INNER JOIN  Conversion.LegacyContacts AS lc
         ON  lc.ContactID = i.ContactID
-INNER JOIN  edata.dbo.ClientContacts AS cc
+INNER JOIN  edata.ClientContacts AS cc
         ON  cc.ContactID = lc.LegacyContactID ;
 
 

@@ -14,7 +14,7 @@ AS
 
     Logic Summary:
     
-    1)  Create temporary storage for data from edata.dbo.ClientsRating
+    1)  Create temporary storage for data from edata.ClientsRating
     2)  Load temp storage with extracted data by ratings agency, eliminating duplicates
     3)  Sort and enumerate temp storage by RatedDate for each client and rating type
     4)  recursive CTE determines whether each new rating for a client represents an upgrade or downgrade from previous rating
@@ -47,7 +47,7 @@ BEGIN
           
 BEGIN TRY
 
---  1)  Create temporary storage for data from edata.dbo.ClientsRating
+--  1)  Create temporary storage for data from edata.ClientsRating
     IF  OBJECT_ID('tempdb..#legacyData') IS NOT NULL DROP TABLE #legacyData ;
 
     CREATE  TABLE #legacyData ( 
@@ -70,10 +70,10 @@ BEGIN TRY
           , RatingTypeID    = rt.RatingTypeID
           , RatedDate       = ISNULL( i.SaleDate, i.DatedDate )
           , RatingID        = r.RatingID
-      FROM  edata.dbo.Issues        AS i  
-INNER JOIN  dbo.SecurityType        AS st ON st.LegacyValue = i.SecurityType
-INNER JOIN  dbo.RatingType          AS rt ON rt.Value = st.Value
-INNER JOIN  ratings                 AS r 
+      FROM  edata.Issues        AS i  
+INNER JOIN  dbo.SecurityType    AS st ON st.LegacyValue = i.SecurityType
+INNER JOIN  dbo.RatingType      AS rt ON rt.Value = st.Value
+INNER JOIN  ratings             AS r 
         ON  ( r.Rating = i.RatingMoody AND @Agency = 'Moody' )         OR
             ( r.Rating = i.RatingSP    AND @Agency = 'StandardPoor' )  OR
             ( r.Rating = i.RatingFitch AND @Agency = 'Fitch' )   

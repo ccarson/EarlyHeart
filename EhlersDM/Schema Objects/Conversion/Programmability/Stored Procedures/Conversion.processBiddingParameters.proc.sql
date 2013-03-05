@@ -5,7 +5,7 @@ AS
 
   Procedure:    Conversion.processBiddingParameters
      Author:    Chris Carson
-    Purpose:    converts legacy data from edata.dbo.Issues into dbo.BiddingParameter
+    Purpose:    converts legacy data from edata.Issues into dbo.BiddingParameter
 
 
     revisor         date                description

@@ -15,7 +15,7 @@ AS
     Logic Summary:
     1)  Stop processing when trigger is invoked by Conversion.processCalls procedure
     2)  Load CTE with temp data from inserted and deleted...
-    3)  ...MERGE data from CTE onto edata.dbo.Calls
+    3)  ...MERGE data from CTE onto edata.Calls
 
     Notes:
 
@@ -53,8 +53,8 @@ BEGIN
              WHERE  IssueCallID NOT IN ( SELECT IssueCallID FROM inserted ) )
 
 
---  3)  ...MERGE data from CTE onto edata.dbo.Calls
-     MERGE  edata.dbo.Calls AS tgt
+--  3)  ...MERGE data from CTE onto edata.Calls
+     MERGE  edata.Calls AS tgt
      USING  triggerData     AS src
         ON  tgt.IssueID = src.IssueID
             AND ISNULL( tgt.FirstCallDate,'1900-01-01' ) = ISNULL( src.FirstCallDate,'1900-01-01' )

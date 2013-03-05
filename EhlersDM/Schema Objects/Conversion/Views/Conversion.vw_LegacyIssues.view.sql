@@ -4,7 +4,7 @@
 
        View:    Conversion.vw_LegacyIssues
      Author:    Chris Carson
-    Purpose:    shows "scrubbed" version of edata.dbo.Issues
+    Purpose:    shows "scrubbed" version of edata.Issues
 
 
     revisor         date                description
@@ -53,9 +53,9 @@ AS
           , ChangeBy                =  ISNULL( NULLIF( i.ChangeBy, '' ), 'processIssues' )
           , ObligorClientID         =  oc.ClientID
           , EIPInvest               =  ISNULL( i.EIPInvest, 0 )
-      FROM  edata.dbo.Issues        AS i
-INNER JOIN  edata.dbo.Clients       AS c   ON c.ClientID      = i.ClientID
- LEFT JOIN  edata.dbo.Clients       AS oc  ON oc.ClientID     = i.ObligorClientID
+      FROM  edata.Issues        AS i
+INNER JOIN  edata.Clients       AS c   ON c.ClientID      = i.ClientID
+ LEFT JOIN  edata.Clients       AS oc  ON oc.ClientID     = i.ObligorClientID
  LEFT JOIN  dbo.IssueShortName      AS shn ON shn.LegacyValue = i.ShortName
  LEFT JOIN  dbo.IssueStatus         AS sta ON sta.LegacyValue = i.IssueStatus
  LEFT JOIN  dbo.IssueType           AS ist ON ist.LegacyValue = i.IssueType

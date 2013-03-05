@@ -6,7 +6,7 @@ AS
 
     Trigger:    dbo.tr_ClientAddresses_Delete
      Author:    Chris Carson
-    Purpose:    Applies address data to specified edata.dbo.Client records
+    Purpose:    Applies address data to specified edata.Client records
 
 
     revisor         date                description
@@ -16,7 +16,7 @@ AS
     Logic Summary:
     1)  Create ClientAddressesAudit records reflecting DELETEs
     2)  Stop processing when trigger is invoked by Conversion.processAddresses procedure
-    3)  Clear out Address fields on edata.dbo.Client records
+    3)  Clear out Address fields on edata.Client records
     4)  Delete Conversion.LegacyAddresses records
 
     Notes:
@@ -48,8 +48,8 @@ BEGIN
         RETURN ;
 
 
---  3)  Clear out Address fields on edata.dbo.Client records
-    UPDATE  edata.dbo.Clients
+--  3)  Clear out Address fields on edata.Client records
+    UPDATE  edata.Clients
        SET  Address1    = ''
           , Address2    = ''
           , City        = ''
@@ -59,7 +59,7 @@ BEGIN
           , ChangeBy    = @SystemUser
           , ChangeCode  = 'CVAddress'
       FROM  deleted AS d
-INNER JOIN  edata.dbo.Clients AS c
+INNER JOIN  edata.Clients AS c
         ON  c.ClientID = d.ClientID
      WHERE  d.AddressTypeID = 3 ;
 

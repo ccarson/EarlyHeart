@@ -56,7 +56,7 @@ BEGIN TRY
           , AcctClass       = ISNULL( c.AcctClass, '' )
           , DiscCoord       = c.Analyst
       FROM  Conversion.tvf_LocalAttorney ( 'Legacy' ) AS l
-INNER JOIN  edata.dbo.Clients AS c on c.ClientID = l.ClientID
+INNER JOIN  edata.Clients AS c on c.ClientID = l.ClientID
      WHERE  l.FirmCategoriesID = 0
     SELECT  @errorCount = @@ROWCOUNT ;
 
@@ -109,7 +109,7 @@ endOfProc:
 --  5)  Print control totals
     PRINT 'Conversion.reportLocalAttorneyErrors ' ;
     PRINT 'CONTROL TOTALS ' ;
-    PRINT '    Local Attorney Errors on edata.dbo.Client = ' + STR( @errorCount, 8 ) ;
+    PRINT '    Local Attorney Errors on edata.Client = ' + STR( @errorCount, 8 ) ;
     PRINT '' ;
 
     RETURN @rc ;

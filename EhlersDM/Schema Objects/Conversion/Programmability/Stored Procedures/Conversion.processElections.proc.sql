@@ -75,7 +75,7 @@ BEGIN TRY
 
 
 
---  4)  Check for changes on edata.dbo.Firms, bypass if no changes
+--  4)  Check for changes on edata.Firms, bypass if no changes
     INSERT  @changedElections
     SELECT  ElectionID        = l.ElectionID
           , legacyChecksum    = l.ElectionChecksum
@@ -90,11 +90,11 @@ BEGIN TRY
     IF  ( @ElectionChanges = 0 )
         BEGIN
             SELECT @actualConvertedElections = @convertedElections ;
-            PRINT 'no changes on edata.dbo.Elections, exiting' ;
+            PRINT 'no changes on edata.Elections, exiting' ;
             GOTO  endOfProc ;
         END
     ELSE
-        PRINT 'Migrating edata.dbo.Elections changes' ;
+        PRINT 'Migrating edata.Elections changes' ;
 
 
 --  5)  Load data from vw_LegacyFirms that needs to be INSERTed
@@ -124,7 +124,7 @@ BEGIN TRY
 --  7)  Throw error if no records are loaded
     IF  ( @ElectionChanges <> @newElections + @updatedElections )
     BEGIN
-        SELECT  @errorMessage = 'Error:  changes on edata.dbo.Elections detected but not captured'
+        SELECT  @errorMessage = 'Error:  changes on edata.Elections detected but not captured'
               , @errorQuery   = NULL
               , @rc = 16 ;
         GOTO    processingError ;

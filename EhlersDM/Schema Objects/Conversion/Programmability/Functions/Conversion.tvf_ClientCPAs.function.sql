@@ -26,7 +26,7 @@ RETURN
               , ClientCPA               =   c.ClientCPA
               , ClientCPAFirmID         =   ISNULL( c.ClientCPAFirmID, 0 )
               , FirmCategoriesID        =   ISNULL( fc.FirmCategoriesID, 0 )
-          FROM  edata.dbo.Clients  AS c
+          FROM  edata.Clients  AS c
      LEFT JOIN  dbo.Firm           AS f  ON f.FirmID          = c.ClientCPAFirmID
      LEFT JOIN  dbo.FirmCategories AS fc ON fc.FirmID         = f.firmID 
      LEFT JOIN  dbo.FirmCategory   AS ct ON ct.FirmCategoryID = fc.FirmCategoryID 

@@ -36,8 +36,8 @@ BEGIN
         RETURN ;
 
 
---  2)  UPDATE records on edata.dbo.IssueArbitrageServices
-    UPDATE  edata.dbo.IssueArbitrageServices
+--  2)  UPDATE records on edata.IssueArbitrageServices
+    UPDATE  edata.IssueArbitrageServices
        SET  IssueID         = c.IssueID
           , DtService       = c.DtService
           , ComputationType = c.ComputationType
@@ -45,7 +45,7 @@ BEGIN
           , ynDataIn        = c.ynDataIn
           , ynReport        = c.ynReport
           , Fee             = c.Fee
-      FROM  edata.dbo.IssueArbitrageServices AS ias
+      FROM  edata.IssueArbitrageServices AS ias
 INNER JOIN  Conversion.vw_ConvertedArbitrageService AS c
         ON  ias.ID = c.ID
      WHERE  EXISTS ( SELECT 1 FROM inserted AS i

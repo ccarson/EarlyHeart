@@ -6,7 +6,7 @@ AS
 
     Trigger:    dbo.tr_ClientAddresses_Insert
      Author:    Chris Carson
-    Purpose:    loads dbo.Address data back to edata.dbo.Clients
+    Purpose:    loads dbo.Address data back to edata.Clients
 
 
     revisor         date                description
@@ -48,7 +48,7 @@ BEGIN
 
 
 --  3)  Update Address Data back to dbo.Clients
-    UPDATE  edata.dbo.Clients 
+    UPDATE  edata.Clients 
        SET  Address1    = a.Address1
           , Address2    = a.Address2
           , City        = a.City
@@ -57,7 +57,7 @@ BEGIN
           , ChangeDate  = i.ModifiedDate
           , ChangeBy    = i.ModifiedUser
           , ChangeCode = 'CVAddress'
-      FROM  edata.dbo.Clients AS c
+      FROM  edata.Clients AS c
 INNER JOIN  inserted AS i
         ON  i.ClientID= c.ClientID AND i.AddressTypeID = 3
 INNER JOIN  dbo.Address AS a
