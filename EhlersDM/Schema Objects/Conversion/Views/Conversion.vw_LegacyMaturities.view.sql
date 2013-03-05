@@ -10,7 +10,8 @@
     revisor     date            description
     ---------   -----------     ----------------------------
     ccarson     2012-09-10      Created
-
+    ccarson     2013-02-01      Modified to exclude orphaned issues
+    
     Notes:
 
 ************************************************************************************************************************************
@@ -29,5 +30,6 @@ AS
           , ReofferingYield             = CAST( ISNULL( m.reoffer, 0 ) AS DECIMAL(7,4) )
           , NotReoffered                = m.nro
       FROM  edata.Maturities AS m
+INNER JOIN  dbo.Issue        AS i ON i.IssueID = m.IssueID
  LEFT JOIN  Conversion.tvf_transformInsurance() AS a
         ON  m.Insurance = a.Insurance ;
