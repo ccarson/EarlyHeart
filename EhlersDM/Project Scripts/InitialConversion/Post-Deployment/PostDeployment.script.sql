@@ -28,7 +28,7 @@
 */
 
 --  1)  Execute data changes
-IF  ( '$(PostDeployDataChanges)' = 'YES' )
+IF  ( '$(PostDeployChanges)' = 'YES' )
 BEGIN
     :r  .\PostDeployDataChanges.script.sql
 END

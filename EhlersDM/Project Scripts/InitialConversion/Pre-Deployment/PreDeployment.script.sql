@@ -22,7 +22,7 @@
 */
 
 --  Execute any pre-deploy data changes
-IF  ( '$(PreDeployDataChanges)' = 'YES' )
+IF  ( '$(PreDeployChanges)' = 'YES' )
 BEGIN 
     :r  .\PreDeployDataChanges.script.sql
 END

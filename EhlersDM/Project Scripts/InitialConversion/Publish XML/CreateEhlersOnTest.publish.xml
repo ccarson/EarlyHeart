@@ -29,10 +29,10 @@
     <SqlCmdVariable Include="EnableTriggers">
       <Value>YES</Value>
     </SqlCmdVariable>
-    <SqlCmdVariable Include="PostDeployDataChanges">
+    <SqlCmdVariable Include="PostDeployChanges">
       <Value>YES</Value>
     </SqlCmdVariable>
-    <SqlCmdVariable Include="PreDeployDataChanges">
+    <SqlCmdVariable Include="PreDeployChanges">
       <Value>NO</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="ProductionServer">
