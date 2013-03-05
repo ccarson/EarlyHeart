@@ -152,6 +152,8 @@
     <Folder Include="Project Scripts\edataSources\PostDeployChanges" />
     <Folder Include="Project Scripts\edataSources\PreDeploy" />
     <Folder Include="Project Scripts\edataSources\PreDeployChanges" />
+    <Folder Include="Schema Objects\edata" />
+    <Folder Include="Schema Objects\edata\Synonyms" />
   </ItemGroup>
   <ItemGroup>
     <BuildContributorArgument Include="OutDir=$(OutDir)" />
@@ -538,6 +540,8 @@
     <None Include="Project Scripts\edataSources\PreDeploy\PreDeployChanges.script.sql" />
     <None Include="Project Scripts\edataSources\PreDeploy\PreDeployment.script.sql" />
     <None Include="Project Scripts\edataSources\PreDeployChanges\PreDeploySample.script.sql" />
+    <Build Include="Schema Objects\edata.schema.sql" />
+    <Build Include="Schema Objects\edata\Synonyms\edata.Synonyms.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
