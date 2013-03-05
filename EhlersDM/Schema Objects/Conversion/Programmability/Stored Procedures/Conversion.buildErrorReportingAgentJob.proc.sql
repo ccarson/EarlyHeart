@@ -83,7 +83,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d Ehlers -Q "EXECUTE Conversion.reportLocalAttorneyErrors ;" -b'
+                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.reportLocalAttorneyErrors ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -94,7 +94,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d Ehlers -Q "EXECUTE Conversion.reportClientCPAErrors ;" -b'
+                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.reportClientCPAErrors ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -105,7 +105,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d Ehlers -Q "EXECUTE Conversion.reportIssuesErrors ;" -b'
+                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.reportIssuesErrors ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -116,7 +116,7 @@ BEGIN
                                             , @on_success_action    = 1
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d Ehlers -Q "EXECUTE Conversion.reportBondAttorneyErrors ;" -b'
+                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.reportBondAttorneyErrors ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
