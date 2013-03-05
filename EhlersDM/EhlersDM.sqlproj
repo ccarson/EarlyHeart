@@ -166,9 +166,11 @@
     <None Include="Project Scripts\edataSources\Publish XML\UpdateEhlersOnProd.publish.xml" />
     <None Include="Project Scripts\edataSources\Publish XML\UpdateEhlersOnStage.publish.xml" />
     <None Include="Project Scripts\edataSources\Publish XML\UpdateEhlersOnTest.publish.xml" />
-    <None Include="Project Scripts\edataSources\Publish XML\UpdateOnLocal.publish.xml" />
+    <None Include="Project Scripts\edataSources\Publish XML\UpdateEhlers_Local.publish.xml" />
     <None Include="Project Scripts\SetRevisionDate.ps1" />
     <None Include="Project Scripts\edataSources\Project notes and Comments.comments.txt" />
+    <None Include="Project Scripts\edataSources\Publish XML\UpdateEhlers_Test.publish.xml" />
+    <None Include="Project Scripts\edataSources\Publish XML\UpdateEhlers_Dev.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_AddressChecksum.function.sql" />
