@@ -145,10 +145,10 @@
     <Folder Include="Project Scripts" />
     <Folder Include="Database References" />
     <Folder Include="Project Scripts\IssuesConversion" />
-    <Folder Include="Project Scripts\IssuesConversion\DataChanges" />
-    <Folder Include="Project Scripts\IssuesConversion\OtherChanges" />
-    <Folder Include="Project Scripts\IssuesConversion\Post-Deployment" />
-    <Folder Include="Project Scripts\IssuesConversion\Pre-Deployment" />
+    <Folder Include="Project Scripts\IssuesConversion\PostDeployChanges" />
+    <Folder Include="Project Scripts\IssuesConversion\PreDeployChanges" />
+    <Folder Include="Project Scripts\IssuesConversion\PostDeploy" />
+    <Folder Include="Project Scripts\IssuesConversion\PreDeploy" />
     <Folder Include="Project Scripts\IssuesConversion\Publish XML" />
     <Folder Include="Schema Objects\Import" />
     <Folder Include="Schema Objects\Import\Stored Procedures" />
@@ -160,16 +160,10 @@
   <ItemGroup>
     <None Include="Database References\edata.dacpac" />
     <None Include="Database References\ServerLogins.dacpac" />
-    <None Include="Project Scripts\edataSources\Publish XML\CreateEhlersOnTest.publish.xml" />
-    <None Include="Project Scripts\edataSources\Publish XML\CreateOnLocal.publish.xml" />
-    <None Include="Project Scripts\edataSources\Publish XML\UpdateEhlersOnProd.publish.xml" />
-    <None Include="Project Scripts\edataSources\Publish XML\UpdateEhlersOnStage.publish.xml" />
-    <None Include="Project Scripts\edataSources\Publish XML\UpdateEhlersOnTest.publish.xml" />
-    <None Include="Project Scripts\edataSources\Publish XML\UpdateEhlers_Local.publish.xml" />
+    <None Include="Project Scripts\IssuesConversion\Publish XML\UpdateEhlersDev.publish.xml" />
+    <None Include="Project Scripts\IssuesConversion\Publish XML\UpdateLocal.publish.xml" />
     <None Include="Project Scripts\SetRevisionDate.ps1" />
-    <None Include="Project Scripts\edataSources\Project notes and Comments.comments.txt" />
-    <None Include="Project Scripts\edataSources\Publish XML\UpdateEhlers_Test.publish.xml" />
-    <None Include="Project Scripts\edataSources\Publish XML\UpdateEhlers_Dev.publish.xml" />
+    <None Include="Project Scripts\IssuesConversion\Project notes and Comments.comments.txt" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_AddressChecksum.function.sql" />
@@ -459,7 +453,6 @@
     <Build Include="Schema Objects\dbo\Tables\dbo.IssueElections.table.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.IssueFee.table.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.IssueFeeCounty.table.sql" />
-    <Build Include="Schema Objects\dbo\Tables\dbo.IssueFeeEhlers.table.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.IssueFirms.table.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.IssueFirmsContacts.table.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.IssueJointClient.table.sql" />
@@ -535,12 +528,9 @@
     <Build Include="Database Security\Database Roles\RoleMemberships.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.buildDataConversionAgentJob.proc.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.buildErrorReportingAgentJob.proc.sql" />
-    <None Include="Project Scripts\IssuesConversion\DataChanges\DataChangesTemplate.script.sql" />
-    <None Include="Project Scripts\IssuesConversion\OtherChanges\OtherChangesTemplate.script.sql" />
-    <None Include="Project Scripts\IssuesConversion\Post-Deployment\PostDeployDataChanges.script.sql" />
-    <PostDeploy Include="Project Scripts\IssuesConversion\Post-Deployment\PostDeployment.script.sql" />
-    <None Include="Project Scripts\IssuesConversion\Pre-Deployment\PreDeployDataChanges.script.sql" />
-    <PreDeploy Include="Project Scripts\IssuesConversion\Pre-Deployment\PreDeployment.script.sql" />
+    <None Include="Project Scripts\IssuesConversion\PostDeployChanges\PostDeployChangesTemplate.script.sql" />
+    <None Include="Project Scripts\IssuesConversion\PostDeploy\PostDeployChanges.script.sql" />
+    <PostDeploy Include="Project Scripts\IssuesConversion\PostDeploy\PostDeployment.script.sql" />
     <Build Include="Schema Objects\Import.schema.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.deleteExistingIssueData.proc.sql" />
     <Build Include="Schema Objects\Import\Views\Import.vw_IssuesData.view.sql" />
@@ -551,19 +541,21 @@
     <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeMaturity.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeSource.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeUse.sql" />
-    <None Include="Project Scripts\edataSources\PostDeploy\PostDeployChanges.script.sql" />
-    <None Include="Project Scripts\edataSources\PostDeploy\PostDeployment.script.sql" />
-    <None Include="Project Scripts\edataSources\PostDeployChanges\PostDeploySample.script.sql" />
-    <None Include="Project Scripts\edataSources\PreDeploy\PreDeployChanges.script.sql" />
-    <None Include="Project Scripts\edataSources\PreDeploy\PreDeployment.script.sql" />
-    <None Include="Project Scripts\edataSources\PreDeployChanges\PreDeploySample.script.sql" />
-    <Build Include="Schema Objects\edata.schema.sql" />
-    <Build Include="Schema Objects\edata\Synonyms\edata.Synonyms.sql" />
+    <None Include="Project Scripts\IssuesConversion\PreDeployChanges\PreDeployChangesTemplate.script.sql" />
+    <None Include="Project Scripts\IssuesConversion\PreDeploy\PreDeployChanges.script.sql" />
+    <None Include="Project Scripts\IssuesConversion\PreDeploy\PreDeployment.script.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.Report.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ReportCategory.table.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.ReportHistory.table.sql" />
   </ItemGroup>
   <ItemGroup>
-    <SqlCmdVariable Include="edata">
-      <DefaultValue>edata</DefaultValue>
-      <Value>$(SqlCmdVar__20)</Value>
+    <SqlCmdVariable Include="ProductionServer">
+      <DefaultValue>EHLERS-SS3</DefaultValue>
+      <Value>$(SqlCmdVar__19)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="TargetServer">
+      <DefaultValue>MNDT0368</DefaultValue>
+      <Value>$(SqlCmdVar__13)</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="PreDeployChanges">
       <DefaultValue>NO</DefaultValue>
@@ -572,6 +564,22 @@
     <SqlCmdVariable Include="PostDeployChanges">
       <DefaultValue>NO</DefaultValue>
       <Value>$(SqlCmdVar__18)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="EnableRI">
+      <DefaultValue>YES</DefaultValue>
+      <Value>$(SqlCmdVar__6)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="EnableTriggers">
+      <DefaultValue>YES</DefaultValue>
+      <Value>$(SqlCmdVar__7)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="BuildSQLAgentJobs">
+      <DefaultValue>NO</DefaultValue>
+      <Value>$(SqlCmdVar__12)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="AgentJobOwner">
+      <DefaultValue>EHLERS\Admin</DefaultValue>
+      <Value>$(SqlCmdVar__11)</Value>
     </SqlCmdVariable>
   </ItemGroup>
   <ItemGroup>
@@ -592,15 +600,18 @@
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
+    <ArtifactReference Include="Database References\edata.dacpac">
+      <HintPath>Database References\edata.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>edata</DatabaseVariableLiteralValue>
+    </ArtifactReference>
     <ArtifactReference Include="Database References\ServerLogins.dacpac">
       <HintPath>Database References\ServerLogins.dacpac</HintPath>
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
-    <ArtifactReference Include="Database References\edata.dacpac">
-      <HintPath>Database References\edata.dacpac</HintPath>
-      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
-      <DatabaseSqlCmdVariable>edata</DatabaseSqlCmdVariable>
-    </ArtifactReference>
   </ItemGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Publish' ">
+    <PreBuildEvent>powershell  -File "$(ProjectDir)Project Scripts\SetRevisionDate.ps1"</PreBuildEvent>
+  </PropertyGroup>
 </Project>
