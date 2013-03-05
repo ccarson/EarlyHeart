@@ -155,6 +155,13 @@
     <Folder Include="Schema Objects\Import\Views" />
     <Folder Include="Schema Objects\edata" />
     <Folder Include="Schema Objects\edata\Synonyms" />
+    <Folder Include="Project Scripts\InitialConversion" />
+    <Folder Include="Project Scripts\InitialConversion\DataChanges" />
+    <Folder Include="Project Scripts\InitialConversion\OtherChanges" />
+    <Folder Include="Project Scripts\InitialConversion\Post-Deployment" />
+    <Folder Include="Project Scripts\InitialConversion\PowerShell Scripts" />
+    <Folder Include="Project Scripts\InitialConversion\Pre-Deployment" />
+    <Folder Include="Project Scripts\InitialConversion\Publish XML" />
   </ItemGroup>
   <ItemGroup>
     <BuildContributorArgument Include="OutDir=$(OutDir)" />
@@ -169,6 +176,14 @@
     <None Include="Project Scripts\IssuesConversion\Publish XML\UpdateEhlers_Dev.publish.xml" />
     <None Include="Project Scripts\IssuesConversion\Publish XML\UpdateEhlers_Local.publish.xml" />
     <None Include="Project Scripts\IssuesConversion\Publish XML\UpdateEhlers_Test.publish.xml" />
+    <None Include="Project Scripts\InitialConversion\PowerShell Scripts\ScriptStaticListDrops.ps1" />
+    <None Include="Project Scripts\InitialConversion\PowerShell Scripts\ScriptStaticListLoads.ps1" />
+    <None Include="Project Scripts\InitialConversion\Publish XML\CreateEhlersOnTest.publish.xml" />
+    <None Include="Project Scripts\InitialConversion\Publish XML\CreateOnLocal.publish.xml" />
+    <None Include="Project Scripts\InitialConversion\Publish XML\UpdateEhlersOnProd.publish.xml" />
+    <None Include="Project Scripts\InitialConversion\Publish XML\UpdateEhlersOnStage.publish.xml" />
+    <None Include="Project Scripts\InitialConversion\Publish XML\UpdateEhlersOnTest.publish.xml" />
+    <None Include="Project Scripts\InitialConversion\Publish XML\UpdateOnLocal.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_AddressChecksum.function.sql" />
@@ -534,7 +549,7 @@
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.buildDataConversionAgentJob.proc.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.buildErrorReportingAgentJob.proc.sql" />
     <None Include="Project Scripts\IssuesConversion\PostDeploy\PostDeployChanges.script.sql" />
-    <PostDeploy Include="Project Scripts\IssuesConversion\PostDeploy\PostDeployment.script.sql" />
+    <None Include="Project Scripts\IssuesConversion\PostDeploy\PostDeployment.script.sql" />
     <Build Include="Schema Objects\Import.schema.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.deleteExistingIssueData.proc.sql" />
     <Build Include="Schema Objects\Import\Views\Import.vw_IssuesData.view.sql" />
@@ -547,7 +562,7 @@
     <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeUse.sql" />
     <None Include="Project Scripts\IssuesConversion\PreDeployChanges\PreDeployChangesTemplate.script.sql" />
     <None Include="Project Scripts\IssuesConversion\PreDeploy\PreDeployChanges.script.sql" />
-    <PreDeploy Include="Project Scripts\IssuesConversion\PreDeploy\PreDeployment.script.sql" />
+    <None Include="Project Scripts\IssuesConversion\PreDeploy\PreDeployment.script.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.Report.table.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.ReportCategory.table.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.ReportHistory.table.sql" />
@@ -555,6 +570,17 @@
     <None Include="Project Scripts\IssuesConversion\PostDeployChanges\LoadMiscellaneousFirmCategories.script.sql" />
     <Build Include="Schema Objects\edata.schema.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.Refunding.sql" />
+    <None Include="Project Scripts\InitialConversion\DataChanges\LoadOfficeAddresses.script.sql" />
+    <None Include="Project Scripts\InitialConversion\DataChanges\LoadStaticLists.script.sql" />
+    <None Include="Project Scripts\InitialConversion\OtherChanges\CreateDataConversionJob.script.sql" />
+    <None Include="Project Scripts\InitialConversion\OtherChanges\CreateErrorReportingJob.script.sql" />
+    <None Include="Project Scripts\InitialConversion\OtherChanges\DropDataConversionJob.script.sql" />
+    <None Include="Project Scripts\InitialConversion\OtherChanges\DropErrorReportingJob.script.sql" />
+    <None Include="Project Scripts\InitialConversion\OtherChanges\SetSQLUsersGroupPermissions.script.sql" />
+    <None Include="Project Scripts\InitialConversion\Post-Deployment\PostDeployDataChanges.script.sql" />
+    <PostDeploy Include="Project Scripts\InitialConversion\Post-Deployment\PostDeployment.script.sql" />
+    <None Include="Project Scripts\InitialConversion\Pre-Deployment\PreDeployDataChanges.script.sql" />
+    <PreDeploy Include="Project Scripts\InitialConversion\Pre-Deployment\PreDeployment.script.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
