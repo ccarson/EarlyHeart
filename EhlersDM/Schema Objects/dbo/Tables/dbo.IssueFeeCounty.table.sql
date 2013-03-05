@@ -17,9 +17,7 @@
         FOREIGN KEY ( AuditorFeeTypeID ) REFERENCES dbo.ClientAuditorFee ( ClientAuditorFeeID )
   , CONSTRAINT FK_IssueFeeCounty_Client
         FOREIGN KEY ( CountyClientID ) REFERENCES dbo.Client ( ClientID )
-  , CONSTRAINT FK_IssueFeeCounty_ClientAuditorFee
-        FOREIGN KEY ( CountyClientID ) REFERENCES dbo.ClientOverlap ( ClientOverlapID )
-  , CONSTRAINT FK_IssueFeeCounty_Issue
+  ,CONSTRAINT FK_IssueFeeCounty_Issue
         FOREIGN KEY ( IssueID ) REFERENCES dbo.Issue ( IssueID ) ) ;
 GO
 
