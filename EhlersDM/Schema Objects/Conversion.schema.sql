@@ -1,4 +1,7 @@
-﻿CREATE SCHEMA Conversion AUTHORIZATION dbo ;
+﻿CREATE SCHEMA [Conversion]
+    AUTHORIZATION [dbo];
+
+
 
 
 

@@ -1,2 +1,5 @@
-﻿CREATE SCHEMA Documents AUTHORIZATION dbo ;
+﻿CREATE SCHEMA [Documents]
+    AUTHORIZATION [dbo];
+
+
 

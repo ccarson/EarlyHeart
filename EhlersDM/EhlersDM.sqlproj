@@ -554,6 +554,7 @@
     <Build Include="Schema Objects\edata\Synonyms\edata.Synonyms.sql" />
     <None Include="Project Scripts\IssuesConversion\PostDeployChanges\LoadMiscellaneousFirmCategories.script.sql" />
     <Build Include="Schema Objects\edata.schema.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.Refunding.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
