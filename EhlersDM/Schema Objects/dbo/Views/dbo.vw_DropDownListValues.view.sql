@@ -52,8 +52,7 @@ SELECT  'RatingType'                       AS Category, Value, DisplaySequence, 
 SELECT  'RefundType'                       AS Category, Value, DisplaySequence, Active FROM RefundType UNION ALL
 SELECT  'SecurityType'                     AS Category, Value, DisplaySequence, Active FROM SecurityType UNION ALL
 SELECT  'ServiceCategory'                  AS Category, Value, DisplaySequence, Active FROM ServiceCategory UNION ALL
-SELECT  'StatAuthorityGroup'               AS Category, Value, 0 AS DisplaySequence, 1 AS Active FROM StatAuthorityGroup UNION ALL
-SELECT  'StatAuthorityType'                AS Category, Value, 0 AS DisplaySequence, 1 AS Active FROM StatAuthorityType UNION ALL
+SELECT  'StatutoryAuthority'               AS Category, Value, 0 AS DisplaySequence, 1 AS Active FROM StatutoryAuthority UNION ALL
 --SELECT  'TypeJurisdiction'               AS Category, Value, DisplaySequence, Active FROM TypeJurisdiction UNION ALL
 SELECT  'UnusedChoice'                     AS Category, Value, DisplaySequence, Active FROM UnusedChoice UNION ALL 
 SELECT  'StaticList -> ' + lc.CategoryName AS Category, DisplayValue AS Value, DisplaySequence, sl.Active
