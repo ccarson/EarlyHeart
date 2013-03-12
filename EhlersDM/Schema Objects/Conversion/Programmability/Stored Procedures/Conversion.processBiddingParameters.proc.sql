@@ -11,170 +11,199 @@ AS
     revisor         date                description
     ---------       -----------         ----------------------------
     ccarson         2013-01-24          created
+    ccarson         ###DATE###          updated for Issues Conversion
 
     Logic Summary:
-    1)  Set CONTEXT_INFO to prevent converted tables from triggering changes
-    2)  Create temp storage for changed bidding parameter data
-    3)  Check for BiddingParameter changes, and exit if none
-    4)  load records where BiddingParameterID is 0, these are INSERTs
-    5)  load records where BiddingParameterID != 0, these are UPDATEs
-    6)  Throw error if no records are loaded
-    7)  MERGE #processData with dbo.BiddingParameter
-    8)  Reset CONTEXT_INFO to re-enable converted table triggers
-    9)  Print control totals
+    1)  SET CONTEXT_INFO, inhibiting triggers when invoked
+    2)  SELECT initial control counts
+    3)  Stop processing if there are no data changes
+    4)  INSERT new records into temp storage
+    5)  INSERT changed records into temp storage
+    6)  MERGE temporary storage into dbo.BiddingParameter
+    7)  INSERT updated data into temp storage
+    8)  SELECT final control counts
+    9)  Control Total Validation
+   10)  Reset CONTEXT_INFO, allowing triggers to fire when invoked
 
     Notes:
 
 ************************************************************************************************************************************
 */
 BEGIN
+BEGIN TRY
     SET NOCOUNT ON ;
 
-    DECLARE @totalRecords               AS INT = 0
+
+    DECLARE @processBiddingParameters   AS VARBINARY (128)  = CAST( 'processBiddingParameters' AS VARBINARY(128) )
+          , @processStartTime           AS VARCHAR (30)     = CONVERT( VARCHAR(30), GETDATE(), 121 )
+          , @processEndTime             AS VARCHAR (30)     = NULL
+          , @processElapsedTime         AS INT              = 0 ;
+
+
+    DECLARE @codeBlockDesc01            AS VARCHAR (128)    = 'SET CONTEXT_INFO, inhibiting triggers when invoked'
+          , @codeBlockDesc02            AS VARCHAR (128)    = 'SELECT initial control counts'
+          , @codeBlockDesc03            AS VARCHAR (128)    = 'Stop processing if there are no data changes'
+          , @codeBlockDesc04            AS VARCHAR (128)    = 'INSERT new records into temp storage'
+          , @codeBlockDesc05            AS VARCHAR (128)    = 'INSERT changed records into temp storage'
+          , @codeBlockDesc06            AS VARCHAR (128)    = 'MERGE temporary storage into dbo.BiddingParameter'
+          , @codeBlockDesc07            AS VARCHAR (128)    = 'INSERT updated data into temp storage'
+          , @codeBlockDesc08            AS VARCHAR (128)    = 'SELECT final control counts'
+          , @codeBlockDesc09            AS VARCHAR (128)    = 'Control Total Validation'
+          , @codeBlockDesc10            AS VARCHAR (128)    = 'Reset CONTEXT_INFO, allowing triggers to fire when invoked' ;
+
+
+    DECLARE @codeBlockNum               AS INT
+          , @codeBlockDesc              AS VARCHAR (128)
+          , @errorTypeID                AS INT
+          , @errorSeverity              AS INT
+          , @errorState                 AS INT
+          , @errorNumber                AS INT
+          , @errorLine                  AS INT
+          , @errorProcedure             AS VARCHAR (128)
+          , @errorMessage               AS VARCHAR (MAX)    = NULL
+          , @errorData                  AS VARCHAR (MAX)    = NULL ;
+
+    DECLARE @controlTotalsError         AS VARCHAR (200)    = N'Control Total Failure:  %s = %d, %s = %d' ;
+
+
+    DECLARE @changesCount               AS INT = 0
+          , @convertedActual            AS INT = 0
+          , @convertedCount             AS INT = 0
           , @currentBiddingParameterID  AS INT = 0
-          , @rc                         AS INT = 0
-          , @recordsDELETEd             AS INT = 0
-          , @recordsINSERTed            AS INT = 0
-          , @recordsMERGEd              AS INT = 0
-          , @recordsToDelete            AS INT = 0
-          , @recordsToInsert            AS INT = 0
-          , @recordsToUpdate            AS INT = 0
-          , @recordsUPDATEd             AS INT = 0
-          , @processBiddingParameters   AS VARBINARY(128) = CAST( 'processBiddingParameters' AS VARBINARY(128) ) ;
+          , @legacyCount                AS INT = 0
+          , @newCount                   AS INT = 0
+          , @recordINSERTs              AS INT = 0
+          , @recordMERGEs               AS INT = 0
+          , @recordUPDATEs              AS INT = 0
+          , @total                      AS INT = 0
+          , @updatedCount               AS INT = 0 ;
+
+    DECLARE @biddingParameterData       AS TABLE ( BiddingParameterID       INT NOT NULL PRIMARY KEY CLUSTERED
+                                                 , IssueID                  INT
+                                                 , MinimumBid               DECIMAL (6,2)
+                                                 , MaximumBid               DECIMAL (6,2)
+                                                 , AllowDecrease            BIT
+                                                 , TermBonds                BIT
+                                                 , AdjustIssue              BIT
+                                                 , PctInterest              BIT
+                                                 , MaximumDecrease          DECIMAL (6,2)
+                                                 , DateDecrease             DATE
+                                                 , AwardBasis               VARCHAR (3)
+                                                 , InternetSale             INT
+                                                 , ChangeDate               DATETIME
+                                                 , ChangeBy                 VARCHAR (20) ) ;
+
+    DECLARE @changedData                AS TABLE ( BiddingParameterID       INT
+                                                 , IssueID                  INT
+                                                 , BiddingParameterChecksum VARBINARY(128) ) ;
+
+    DECLARE @mergeResults               AS TABLE ( action                   NVARCHAR (10) ) ;
 
 
---  1)  Set CONTEXT_INFO to prevent converted tables from triggering changes
+/**/SELECT  @codeBlockNum   = 1
+/**/      , @codeBlockDesc  = @codeBlockDesc01 ; -- SET CONTEXT_INFO, inhibiting triggers when invoked
+
     SET CONTEXT_INFO @processBiddingParameters ;
 
 
---  2)  Create temp storage for changed bidding parameter data
-    IF  OBJECT_ID('tempdb..#processData') IS NOT NULL
-        DROP TABLE #processData ;
-    CREATE TABLE #processData ( BiddingParameterID      INT     NOT NULL PRIMARY KEY CLUSTERED
-                              , IssueID                 INT
-                              , MinimumBid              DECIMAL(6,2)
-                              , MaximumBid              DECIMAL(6,2)
-                              , AllowDecrease           BIT
-                              , TermBonds               BIT
-                              , AdjustIssue             BIT
-                              , PctInterest             BIT
-                              , MaximumDecrease         DECIMAL(6,2)
-                              , DateDecrease            DATE
-                              , AwardBasis              VARCHAR(3)
-                              , InternetSale            INT
-                              , ChangeDate              DATETIME
-                              , ChangeBy                VARCHAR(20) ) ;
+/**/SELECT  @codeBlockNum   = 2
+/**/      , @codeBlockDesc  = @codeBlockDesc02 ; -- SELECT initial control counts
 
-    IF  OBJECT_ID('tempdb..#changedData') IS NOT NULL
-        DROP TABLE #changedData
-    CREATE TABLE #changedData ( BiddingParameterID          INT
-                              , IssueID                     INT
-                              , BiddingParameterChecksum    VARBINARY(128) ) ;
+    SELECT  @legacyCount        = COUNT(*) FROM Conversion.vw_LegacyBiddingParameter WHERE BiddingParameterID > 0 ;
+    SELECT  @convertedCount     = COUNT(*) FROM Conversion.vw_ConvertedBiddingParameter ;
+    SELECT  @convertedActual    = @convertedCount ;
 
 
---  3)  Check for BiddingParameter changes, and exit if none
-    INSERT  #changedData
+/**/SELECT  @codeBlockNum   = 3
+/**/      , @codeBlockDesc  = @codeBlockDesc03 ; -- Stop processing if there are no data changes
+
+    INSERT  @changedData
     SELECT  BiddingParameterID, IssueID, BiddingParameterChecksum FROM Conversion.tvf_BiddingParameterChecksum( 'Legacy' )
         EXCEPT
     SELECT  BiddingParameterID, IssueID, BiddingParameterChecksum FROM Conversion.tvf_BiddingParameterChecksum( 'Converted' )
-    SELECT  @totalRecords = @@ROWCOUNT ;
+    SELECT  @changesCount = @@ROWCOUNT ;
 
-    IF  ( @totalRecords = 0  )
-        BEGIN
-            PRINT 'No BiddingParameter data changes, exiting processBiddingParameters' ;
-            GOTO endOfProc ;
-        END
-    ELSE
-        PRINT 'Migrating legacy Address data' ;
+    IF  @changesCount = 0 GOTO endOfProc ;
 
 
---  4)  load records where BiddingParameterID is 0, these are INSERTs
-    SELECT  @currentBiddingParameterID = ISNULL( IDENT_CURRENT('dbo.BiddingParameters'), 0 ) ;
+/**/SELECT  @codeBlockNum   = 4
+/**/      , @codeBlockDesc  = @codeBlockDesc04 ; -- INSERT new records into temp storage
 
-    INSERT  #processData
+    SELECT  @currentBiddingParameterID = COALESCE( MAX( BiddingParameterID ), 0 ) FROM dbo.BiddingParameter ;
+
+    INSERT  @biddingParameterData
     SELECT  BiddingParameterID      = @currentBiddingParameterID
                                     + ROW_NUMBER() OVER ( ORDER BY (SELECT NULL) )
-          , IssueID                 = bp.IssueID
-          , MinimumBid              = bp.MinimumBid
-          , MaximumBid              = bp.MaximumBid
-          , AllowDecrease           = bp.AllowDecrease
-          , TermBonds               = bp.TermBonds
-          , AdjustIssue             = bp.AdjustIssue
-          , PctInterest             = bp.PctInterest
-          , MaximumDecrease         = bp.MaximumDecrease
-          , DateDecrease            = bp.DateDecrease
-          , AwardBasis              = bp.AwardBasis
-          , InternetSale            = bp.InternetSale
-          , ChangeDate              = bp.ChangeDate
-          , ChangeBy                = bp.ChangeBy
-      FROM  Conversion.vw_LegacyBiddingParameter AS bp
-     WHERE  BiddingParameterID = 0 ;
-    SELECT  @recordsToInsert = @@ROWCOUNT ;
+          , IssueID                 = bdp.IssueID
+          , MinimumBid              = bdp.MinimumBid
+          , MaximumBid              = bdp.MaximumBid
+          , AllowDecrease           = bdp.AllowDecrease
+          , TermBonds               = bdp.TermBonds
+          , AdjustIssue             = bdp.AdjustIssue
+          , PctInterest             = bdp.PctInterest
+          , MaximumDecrease         = bdp.MaximumDecrease
+          , DateDecrease            = bdp.DateDecrease
+          , AwardBasis              = bdp.AwardBasis
+          , InternetSale            = bdp.InternetSale
+          , ChangeDate              = bdp.ChangeDate
+          , ChangeBy                = bdp.ChangeBy
+      FROM  Conversion.vw_LegacyBiddingParameter AS bdp
+     WHERE  bdp.BiddingParameterID = 0 ;
+    SELECT  @newCount = @@ROWCOUNT ;
 
 
---  5)  load records where BiddingParameterID != 0, these are UPDATEs
-    INSERT  #processData
-    SELECT  BiddingParameterID      = bp.BiddingParameterID
-          , IssueID                 = bp.IssueID
-          , MinimumBid              = bp.MinimumBid
-          , MaximumBid              = bp.MaximumBid
-          , AllowDecrease           = bp.AllowDecrease
-          , TermBonds               = bp.TermBonds
-          , AdjustIssue             = bp.AdjustIssue
-          , PctInterest             = bp.PctInterest
-          , MaximumDecrease         = bp.MaximumDecrease
-          , DateDecrease            = bp.DateDecrease
-          , AwardBasis              = bp.AwardBasis
-          , InternetSale            = bp.InternetSale
-          , ChangeDate              = bp.ChangeDate
-          , ChangeBy                = bp.ChangeBy
-      FROM  Conversion.vw_LegacyBiddingParameter AS bp
-     WHERE  bp.BiddingParameterID > 0
-            AND EXISTS ( SELECT 1 FROM #changedData AS cd
-                          WHERE cd.BiddingParameterID = bp.BiddingParameterID ) ;
-    SELECT  @recordsToUpdate = @@ROWCOUNT ;
+/**/SELECT  @codeBlockNum   = 5
+/**/      , @codeBlockDesc  = @codeBlockDesc05 ; -- INSERT changed records into temp storage
+
+    INSERT  @biddingParameterData
+    SELECT  BiddingParameterID      = bdp.BiddingParameterID
+          , IssueID                 = bdp.IssueID
+          , MinimumBid              = bdp.MinimumBid
+          , MaximumBid              = bdp.MaximumBid
+          , AllowDecrease           = bdp.AllowDecrease
+          , TermBonds               = bdp.TermBonds
+          , AdjustIssue             = bdp.AdjustIssue
+          , PctInterest             = bdp.PctInterest
+          , MaximumDecrease         = bdp.MaximumDecrease
+          , DateDecrease            = bdp.DateDecrease
+          , AwardBasis              = bdp.AwardBasis
+          , InternetSale            = bdp.InternetSale
+          , ChangeDate              = bdp.ChangeDate
+          , ChangeBy                = bdp.ChangeBy
+      FROM  Conversion.vw_LegacyBiddingParameter AS bdp
+INNER JOIN  @changedData                         AS chg ON chg.BiddingParameterID = bdp.BiddingParameterID
+     WHERE  bdp.BiddingParameterID > 0 ;
+    SELECT  @updatedCount = @@ROWCOUNT ;
 
 
---  6)  Throw error if no records are loaded
-    SELECT  @totalRecords = @recordsToInsert + @recordsToUpdate ;
-    IF  @totalRecords = 0
-    BEGIN
-        PRINT   'Error:  changes detected but not captured' ;
-        SELECT  @rc = 16 ;
-        GOTO    endOfProc ;
-    END
+/**/SELECT  @codeBlockNum   = 6
+/**/      , @codeBlockDesc  = @codeBlockDesc06 ; -- MERGE temporary storage into dbo.BiddingParameter
 
-
---  7)  MERGE #processData with dbo.BiddingParameter
-    DECLARE @SummaryOfChanges AS TABLE( Change NVARCHAR(10) ) ;
+    BEGIN TRANSACTION ;
 
     SET IDENTITY_INSERT dbo.BiddingParameter ON ;
 
-     MERGE  dbo.BiddingParameter AS tgt
-     USING  #processData         AS src
-        ON  tgt.BiddingParameterID = src.BiddingParameterID
+     MERGE  dbo.BiddingParameter    AS tgt
+     USING  @biddingParameterData   AS src ON tgt.BiddingParameterID = src.BiddingParameterID
       WHEN  MATCHED THEN
-            UPDATE
-               SET  IssueID                 = src.IssueID
-                  , MinimumBidPercent       = src.MinimumBid
-                  , MaximumBidPercent       = src.MaximumBid
-                  , AllowDescendingRate     = src.AllowDecrease
-                  , AllowTerm               = src.TermBonds
-                  , AllowParAdjustment      = src.AdjustIssue
-                  , AllowPercentIncrement   = src.PctInterest
-                  , DescMaxPct              = src.MaximumDecrease
-                  , DescRateDate            = src.DateDecrease
-                  , AwardBasis              = src.AwardBasis
-                  , InternetBiddingTypeID   = src.InternetSale
-                  , ModifiedDate            = src.ChangeDate
-                  , ModifiedUser            = src.ChangeBy
+            UPDATE  SET IssueID                 = src.IssueID
+                      , MinimumBidPercent       = src.MinimumBid
+                      , MaximumBidPercent       = src.MaximumBid
+                      , AllowDescendingRate     = src.AllowDecrease
+                      , AllowTerm               = src.TermBonds
+                      , AllowParAdjustment      = src.AdjustIssue
+                      , AllowPercentIncrement   = src.PctInterest
+                      , DescMaxPct              = src.MaximumDecrease
+                      , DescRateDate            = src.DateDecrease
+                      , AwardBasis              = src.AwardBasis
+                      , InternetBiddingTypeID   = src.InternetSale
+                      , ModifiedDate            = src.ChangeDate
+                      , ModifiedUser            = src.ChangeBy
       WHEN  NOT MATCHED BY TARGET THEN
-            INSERT ( BiddingParameterID, IssueID
-                        , MinimumBidPercent, MaximumBidPercent
+            INSERT ( BiddingParameterID, IssueID, MinimumBidPercent, MaximumBidPercent
                         , AllowDescendingRate, AllowTerm, AllowParAdjustment
                         , AllowPercentIncrement, DescMaxPct, DescRateDate
-                        , AwardBasis, InternetBiddingTypeID
-                        , ModifiedDate, ModifiedUser )
+                        , AwardBasis, InternetBiddingTypeID, ModifiedDate, ModifiedUser )
             VALUES ( src.BiddingParameterID
                    , src.IssueID
                    , src.MinimumBid
@@ -189,61 +218,126 @@ BEGIN
                    , src.InternetSale
                    , src.ChangeDate
                    , src.ChangeBy )
-    OUTPUT  $action INTO @SummaryOfChanges ;
-    SELECT  @recordsMERGEd = @@ROWCOUNT    ;
+    OUTPUT  $action INTO @mergeResults ;
+    SELECT  @recordMERGEs = @@ROWCOUNT    ;
 
     SET IDENTITY_INSERT dbo.BiddingParameter OFF ;
 
-    IF  @recordsMERGEd <> @totalRecords
-    BEGIN
-        PRINT   'Processing Error: @totalRecords  = ' + CAST( @totalRecords AS VARCHAR(20) )
-              + '                  @recordsMERGEd = ' + CAST( @recordsMERGEd AS VARCHAR(20) ) + ' .' ;
-        SELECT  @rc = 16 ;
-    END
+
+/**/SELECT  @codeBlockNum   = 7
+/**/      , @codeBlockDesc  = @codeBlockDesc07 ; -- SELECT final control counts
+
+    SELECT  @recordINSERTs   = COUNT(*) FROM @mergeResults WHERE  Action = 'INSERT' ;
+    SELECT  @recordUPDATEs   = COUNT(*) FROM @mergeResults WHERE  Action = 'UPDATE' ;
+    SELECT  @convertedActual = COUNT(*) FROM Conversion.vw_ConvertedBiddingParameter ;
 
 
-    SELECT  @recordsINSERTed = COUNT(*) FROM @SummaryOfChanges WHERE Change = 'INSERT' ;
-    IF  @recordsINSERTed <> @recordsToInsert
-    BEGIN
-        PRINT   'Error ON INSERT:  @recordsToInsert = ' + CAST( @recordsToInsert AS VARCHAR(20) )
-              + '                  @recordsINSERTed = ' + CAST( @recordsINSERTed AS VARCHAR(20) ) + ' .' ;
-        SELECT  @rc = 16 ;
-    END
 
-    SELECT  @recordsUPDATEd = COUNT(*) FROM @SummaryOfChanges WHERE Change = 'UPDATE' ;
-    IF  @recordsUPDATEd <> @recordsToUpdate
-    BEGIN
-        PRINT   'Error ON UPDATE:  @recordsToUpdate = ' + CAST( @recordsToUpdate AS VARCHAR(20) )
-              + '                  @recordsUPDATEd  = ' + CAST( @recordsUPDATEd AS VARCHAR(20) ) + ' .' ;
-        SELECT  @rc = 16 ;
-    END
+/**/SELECT  @codeBlockNum   = 8
+/**/      , @codeBlockDesc  = @codeBlockDesc08 ; -- Control Total Validation
 
-    SELECT  @recordsDELETEd = COUNT(*) FROM @SummaryOfChanges WHERE Change = 'DELETE' ;
-    IF  @recordsDELETEd <> @recordsToDelete
-    BEGIN
-        PRINT   'Error ON UPDATE:  @recordsToDelete = ' + CAST( @recordsToDelete AS VARCHAR(20) )
-              + '                  @recordsDELETEd  = ' + CAST( @recordsDELETEd AS VARCHAR(20) ) + ' .' ;
-        SELECT  @rc = 16 ;
-    END
+    SELECT @total =  @convertedCount + @recordINSERTs
+    IF  ( @convertedActual <> ( @convertedCount + @recordINSERTs ) )
+        RAISERROR( @controlTotalsError, 16, 1, 'Converted Bidding Parameters', @convertedActual, 'Existing BPs + Inserted BPs', @total ) ;
 
-    IF  @rc = 16    GOTO endOfProc ;
+    IF  ( @convertedActual <> @legacyCount )
+        RAISERROR( @controlTotalsError, 16, 1, 'Converted Bidding Parameters', @convertedActual, 'Legacy BPs', @legacyCount ) ;
+
+    IF  ( @recordINSERTs <> @newCount )
+        RAISERROR( @controlTotalsError, 16, 1, 'Inserted Bidding Parameters', @recordINSERTs,  'Expected Inserts', @newCount ) ;
+
+    IF  ( @recordUPDATEs <> @updatedCount )
+        RAISERROR( @controlTotalsError, 16, 1, 'Updated Bidding Parameters', @recordUPDATEs,  'Expected Updates', @updatedCount ) ;
+
+    IF  ( @recordMERGEs <> @changesCount )
+        RAISERROR( @controlTotalsError, 16, 1, 'Changed Bidding Parameters', @recordMERGEs,  'Expected Changes', @changesCount ) ;
 
 
---  8)  Reset CONTEXT_INFO to re-enable converted table triggers
+    COMMIT TRANSACTION ;
+
+
 endOfProc:
+/**/SELECT  @codeBlockNum   = 9
+/**/      , @codeBlockDesc  = @codeBlockDesc09 ; -- Reset CONTEXT_INFO, allowing triggers to fire when invoked
     SET CONTEXT_INFO 0x0 ;
 
 
---  9)  Print control totals
-    PRINT 'CONTROL TOTALS ' ;
-    PRINT '    Changed records                          = ' + CAST( @totalRecords    AS VARCHAR(20) ) ;
-    PRINT '         new records                         = ' + CAST( @recordsToInsert AS VARCHAR(20) ) ;
-    PRINT '         modified records                    = ' + CAST( @recordsToUpdate AS VARCHAR(20) ) ;
-    PRINT '         deleted records                     = ' + CAST( @recordsToDelete AS VARCHAR(20) ) ;
-    PRINT '' ;
-    PRINT '    Processed records                        = ' + CAST( @recordsMERGEd   AS VARCHAR(20) ) ;
-    PRINT '         INSERTs to   dbo.BiddingParameter   = ' + CAST( @recordsINSERTed AS VARCHAR(20) ) ;
-    PRINT '         UPDATEs to   dbo.BiddingParameter   = ' + CAST( @recordsUPDATEd  AS VARCHAR(20) ) ;
-    PRINT '         DELETEs from dbo.BiddingParameter   = ' + CAST( @recordsDELETEd  AS VARCHAR(20) ) ;
-    PRINT '' ;
+/**/SELECT  @codeBlockNum   = 10
+/**/      , @codeBlockDesc  = @codeBlockDesc10 ; -- Print control totals
+
+    SELECT  @processEndTime     = CONVERT( VARCHAR(30), GETDATE(), 121 )
+          , @processElapsedTime = DATEDIFF( ms, CAST( @processStartTime AS DATETIME ), CAST( @processEndTime AS DATETIME ) ) ;
+
+    RAISERROR( 'Conversion.processBiddingParameters CONTROL TOTALS ', 0, 0 ) ;
+    RAISERROR( 'Legacy Bidding Parameters ( BPs )       = % 8d', 0, 0, @legacyCount ) ;
+    RAISERROR( '', 0, 0 ) ;
+    RAISERROR( 'Existing BPs on converted system        = % 8d', 0, 0, @convertedCount ) ;
+    RAISERROR( '     + new records                      = % 8d', 0, 0, @newCount ) ;
+    RAISERROR( '                                           ======= ', 0, 0 ) ;
+    RAISERROR( 'Total BPs on converted system           = % 8d', 0, 0, @convertedActual ) ;
+    RAISERROR( 'Changed records already counted         = % 8d', 0, 0, @updatedCount ) ;
+    RAISERROR( '', 0, 0 ) ;
+    RAISERROR( '', 0, 0 ) ;
+    RAISERROR( 'Database Change Details', 0, 0 ) ;
+    RAISERROR( '', 0, 0 ) ;
+    RAISERROR( '     Total INSERTs dbo.BiddingParameter = % 8d', 0, 0, @recordINSERTs ) ;
+    RAISERROR( '     Total UPDATEs dbo.BiddingParameter = % 8d', 0, 0, @recordUPDATEs ) ;
+    RAISERROR( '', 0, 0 ) ;
+    RAISERROR( '     TOTAL database changes             = % 8d', 0, 0, @recordMERGEs ) ;
+    RAISERROR( '', 0, 0 ) ;
+    RAISERROR( 'processBiddingParameters   START : %s', 0, 0, @processStartTime ) ;
+    RAISERROR( 'processBiddingParameters     END : %s', 0, 0, @processEndTime ) ;
+    RAISERROR( '                    Elapsed Time : %d ms', 0, 0, @processElapsedTime ) ;
+
+
+END TRY
+BEGIN CATCH
+
+    IF  @@TRANCOUNT > 0 ROLLBACK TRANSACTION ;
+    EXECUTE dbo.processEhlersError ;
+
+--    SELECT  @errorTypeID    = 1
+--          , @errorSeverity  = ERROR_SEVERITY()
+--          , @errorState     = ERROR_STATE()
+--          , @errorNumber    = ERROR_NUMBER()
+--          , @errorLine      = ERROR_LINE()
+--          , @errorProcedure = ISNULL( ERROR_PROCEDURE(), '-' )
+--
+--    IF  @errorMessage IS NULL
+--    BEGIN
+--        SELECT  @errorMessage = N'Error occurred in Code Block %d, %s ' + CHAR(13)
+--                              + N'Error %d, Level %d, State %d, Procedure %s, Line %d, Message: ' + ERROR_MESSAGE() ;
+--
+--        RAISERROR( @errorMessage, @errorSeverity, 1
+--                 , @codeBlockNum
+--                 , @codeBlockDesc
+--                 , @errorNumber
+--                 , @errorSeverity
+--                 , @errorState
+--                 , @errorProcedure
+--                 , @errorLine ) ;
+--
+--        SELECT  @errorMessage = ERROR_MESSAGE() ;
+--
+--        EXECUTE dbo.processEhlersError  @errorTypeID
+--                                      , @codeBlockNum
+--                                      , @codeBlockDesc
+--                                      , @errorNumber
+--                                      , @errorSeverity
+--                                      , @errorState
+--                                      , @errorProcedure
+--                                      , @errorLine
+--                                      , @errorMessage
+--                                      , @errorData ;
+--
+--    END
+--        ELSE
+--    BEGIN
+--        SELECT  @errorSeverity  = ERROR_SEVERITY()
+--              , @errorState     = ERROR_STATE()
+--
+--        RAISERROR( @errorMessage, @errorSeverity, @errorState ) ;
+--    END
+
+END CATCH
 END

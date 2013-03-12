@@ -1,4 +1,4 @@
-﻿CREATE FUNCTION Conversion.tvf_LegacyCounties( @Source AS VARCHAR(20) )
+﻿CREATE FUNCTION [Conversion].[tvf_LegacyCounties]( @Source AS VARCHAR(20) )
 RETURNS TABLE AS
 /*
 ************************************************************************************************************************************
@@ -36,7 +36,7 @@ RETURN
               , ordinal
               , CountyName = LEFT(c.ClientName, LEN(c.ClientName) - 7 )
           FROM  dbo.ClientOverlap AS co
-    INNER JOIN  dbo.client        AS c  ON c.ClientID = co.OverlapClientID ) ,
+    INNER JOIN  dbo.client        AS c  ON c.ClientID = co.OverlapClientID AND c.JurisdictionTypeID = 6 ) ,
 
         converted AS (
         SELECT  ClientID

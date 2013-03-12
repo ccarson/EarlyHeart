@@ -1,64 +1,61 @@
-﻿CREATE TABLE dbo.Client (
-    ClientID                INT             NOT NULL    IDENTITY
-  , ClientLinkID            INT             NULL
-  , ClientName              VARCHAR (100)   NOT NULL
-  , ClientPrefixID          INT             NULL
-  , SchoolDistrictNumber    VARCHAR (6)     NOT NULL    CONSTRAINT DF_Client_SchoolDistrictNumber       DEFAULT ('')
-  , InformalName            VARCHAR (100)   NOT NULL    CONSTRAINT DF_Client_ShortName                  DEFAULT ('')
-  , ClientStatusID          INT             NULL
-  , StatusChangeDate        DATE            NULL
-  , Phone                   VARCHAR (15)    NOT NULL    CONSTRAINT DF_Client_ClientPhone                DEFAULT ('')
-  , TollFreePhone           VARCHAR (15)    NOT NULL    CONSTRAINT DF_Client_ClientTollFreePhone        DEFAULT ('')
-  , Fax                     VARCHAR (15)    NOT NULL    CONSTRAINT DF_Client_ClientFax                  DEFAULT ('')
-  , Email                   VARCHAR (150)   NOT NULL    CONSTRAINT DF_Client_ClientEmail                DEFAULT ('')
-  , TaxID                   CHAR (10)       NOT NULL    CONSTRAINT DF_Client_ClientTaxID                DEFAULT ('')
-  , FiscalYearEnd           CHAR (5)        NOT NULL    CONSTRAINT DF_Client_ClientFiscalYearEnd        DEFAULT ('')
-  , JurisdictionTypeID      INT             NULL
-  , JurisdictionTypeOS      VARCHAR (100)   NOT NULL    CONSTRAINT DF_Client_JurisdictionTypeOS         DEFAULT ('')
-  , GoverningBoardID        INT             NULL
-  , WebSite                 VARCHAR (150)   NOT NULL    CONSTRAINT DF_Client_ClientWebSite              DEFAULT ('')
-  , Newspaper               VARCHAR (150)   NOT NULL    CONSTRAINT DF_Client_ClientNewspaper            DEFAULT ('')
-  , Logo                    VARCHAR (300)   NOT NULL    CONSTRAINT DF_Client_Logo                       DEFAULT ('')
-  , GovBoardMeetingSchedule VARCHAR (50)    NOT NULL    CONSTRAINT DF_Client_GovBoardMeetSched          DEFAULT ('')
-  , GovBoardMeetingTime     TIME (7)        NULL
-  , GovBoardMeetingLocation VARCHAR (50)    NOT NULL    CONSTRAINT DF_Client_GovBoardMeetLoc            DEFAULT ('')
-  , QuickBookName           VARCHAR (50)    NOT NULL    CONSTRAINT DF_Client_QuickBookName              DEFAULT ('')
-  , EhlersJobTeamID         INT             NULL        CONSTRAINT DF_Client_EhlersJobTeamID            DEFAULT 0
-  , MSAID                   INT             NULL
-  , RedemptionAgentNumber   VARCHAR (16)    NOT NULL    CONSTRAINT DF_Client_DTCAgentNumber             DEFAULT ('')
-  , DateIncorporated        VARCHAR (20)    NOT NULL    CONSTRAINT DF_Client_IncorporatedDate           DEFAULT ('')
-  , FormOfGovernmentID      INT             NULL
-  , Population              INT             NOT NULL    CONSTRAINT DF_Client_Population                 DEFAULT 0
-  , PopulationDate          DATE            NULL
-  , NumberOfEmployees       INT             NOT NULL    CONSTRAINT DF_Client_NumberOfEmployees          DEFAULT 0
-  , NumberOfEmployeesDate   DATE            NULL
-  , Census2000              INT             NOT NULL    CONSTRAINT DF_Client_Census2000                 DEFAULT 0
-  , Census2010              INT             NOT NULL    CONSTRAINT DF_Client_Census2010                 DEFAULT 0
-  , MayorVote               VARCHAR (100)   NOT NULL    CONSTRAINT DF_Client_MayorTieBreak              DEFAULT ('')
-  , QualifyForDSE           BIT             NOT NULL    CONSTRAINT DF_Client_ClientDebtServiceEqual     DEFAULT 0
-  , JurisdictionSquareMiles NUMERIC (8, 2)  NOT NULL    CONSTRAINT DF_Client_JurisdictionSquareMiles    DEFAULT 0.0
-  , HomeRuleCharter         BIT             NOT NULL    CONSTRAINT DF_Client_HomeRuleCharter            DEFAULT 0
-  , HomeRuleAmend           BIT             NOT NULL    CONSTRAINT DF_Client_HomeRuleAmend              DEFAULT 0
-  , HomeRuleAmendDate       DATE            NULL
-  , Notes                   VARCHAR (MAX)   NOT NULL    CONSTRAINT DF_Client_Notes                      DEFAULT ('')
-  , DisclosureContractType  VARCHAR (100)   NOT NULL    CONSTRAINT DF_Client_DisclosureContractType     DEFAULT ('')
-  , ContractBillingType     VARCHAR (100)   NOT NULL    CONSTRAINT DF_Client_ContractBillingType        DEFAULT ('')
-  , ModifiedDate            DATETIME        NOT NULL    CONSTRAINT DF_Client_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser            VARCHAR (20)    NOT NULL    CONSTRAINT DF_Client_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
-  , CONSTRAINT PK_Client PRIMARY KEY CLUSTERED ( ClientID ASC )
-  , CONSTRAINT FK_Client_ClientPrefix
-        FOREIGN KEY ( ClientPrefixID ) REFERENCES dbo.ClientPrefix ( ClientPrefixID )
-  , CONSTRAINT FK_Client_ClientStatus
-        FOREIGN KEY ( ClientStatusID ) REFERENCES dbo.ClientStatus ( ClientStatusID )
-  , CONSTRAINT FK_Client_EhlersJobTeam
-        FOREIGN KEY ( EhlersJobTeamID ) REFERENCES dbo.EhlersJobTeam ( EhlersJobTeamID )
-  , CONSTRAINT FK_Client_FormOfGovernment
-        FOREIGN KEY ( FormOfGovernmentID ) REFERENCES dbo.FormOfGovernment ( FormOfGovernmentID )
-  , CONSTRAINT FK_Client_GoverningBoard
-        FOREIGN KEY ( GoverningBoardID ) REFERENCES dbo.GoverningBoard ( GoverningBoardID )
-  , CONSTRAINT FK_Client_JurisdictionType
-        FOREIGN KEY ( JurisdictionTypeID ) REFERENCES dbo.JurisdictionType ( JurisdictionTypeID )
-) ;
+﻿CREATE TABLE [dbo].[Client] (
+    [ClientID]                INT            IDENTITY (1, 1) NOT NULL,
+    [ClientLinkID]            INT            NULL,
+    [ClientName]              VARCHAR (100)  NOT NULL,
+    [ClientPrefixID]          INT            NULL,
+    [SchoolDistrictNumber]    VARCHAR (6)    CONSTRAINT [DF_Client_SchoolDistrictNumber] DEFAULT ('') NOT NULL,
+    [InformalName]            VARCHAR (100)  CONSTRAINT [DF_Client_ShortName] DEFAULT ('') NOT NULL,
+    [ClientStatusID]          INT            NULL,
+    [StatusChangeDate]        DATE           NULL,
+    [Phone]                   VARCHAR (15)   CONSTRAINT [DF_Client_ClientPhone] DEFAULT ('') NOT NULL,
+    [TollFreePhone]           VARCHAR (15)   CONSTRAINT [DF_Client_ClientTollFreePhone] DEFAULT ('') NOT NULL,
+    [Fax]                     VARCHAR (15)   CONSTRAINT [DF_Client_ClientFax] DEFAULT ('') NOT NULL,
+    [Email]                   VARCHAR (150)  CONSTRAINT [DF_Client_ClientEmail] DEFAULT ('') NOT NULL,
+    [TaxID]                   CHAR (10)      CONSTRAINT [DF_Client_ClientTaxID] DEFAULT ('') NOT NULL,
+    [FiscalYearEnd]           CHAR (5)       CONSTRAINT [DF_Client_ClientFiscalYearEnd] DEFAULT ('') NOT NULL,
+    [JurisdictionTypeID]      INT            NULL,
+    [JurisdictionTypeOS]      VARCHAR (100)  CONSTRAINT [DF_Client_JurisdictionTypeOS] DEFAULT ('') NOT NULL,
+    [GoverningBoardID]        INT            NULL,
+    [WebSite]                 VARCHAR (150)  CONSTRAINT [DF_Client_ClientWebSite] DEFAULT ('') NOT NULL,
+    [Newspaper]               VARCHAR (150)  CONSTRAINT [DF_Client_ClientNewspaper] DEFAULT ('') NOT NULL,
+    [Logo]                    VARCHAR (300)  CONSTRAINT [DF_Client_Logo] DEFAULT ('') NOT NULL,
+    [GovBoardMeetingSchedule] VARCHAR (50)   CONSTRAINT [DF_Client_GovBoardMeetSched] DEFAULT ('') NOT NULL,
+    [GovBoardMeetingTime]     TIME (7)       NULL,
+    [GovBoardMeetingLocation] VARCHAR (50)   CONSTRAINT [DF_Client_GovBoardMeetLoc] DEFAULT ('') NOT NULL,
+    [QuickBookName]           VARCHAR (50)   CONSTRAINT [DF_Client_QuickBookName] DEFAULT ('') NOT NULL,
+    [EhlersJobTeamID]         INT            CONSTRAINT [DF_Client_EhlersJobTeamID] DEFAULT ((0)) NULL,
+    [MSAID]                   INT            NULL,
+    [RedemptionAgentNumber]   VARCHAR (16)   CONSTRAINT [DF_Client_DTCAgentNumber] DEFAULT ('') NOT NULL,
+    [DateIncorporated]        VARCHAR (20)   CONSTRAINT [DF_Client_IncorporatedDate] DEFAULT ('') NOT NULL,
+    [FormOfGovernmentID]      INT            NULL,
+    [Population]              INT            CONSTRAINT [DF_Client_Population] DEFAULT ((0)) NOT NULL,
+    [PopulationDate]          DATE           NULL,
+    [NumberOfEmployees]       INT            CONSTRAINT [DF_Client_NumberOfEmployees] DEFAULT ((0)) NOT NULL,
+    [NumberOfEmployeesDate]   DATE           NULL,
+    [Census2000]              INT            CONSTRAINT [DF_Client_Census2000] DEFAULT ((0)) NOT NULL,
+    [Census2010]              INT            CONSTRAINT [DF_Client_Census2010] DEFAULT ((0)) NOT NULL,
+    [MayorVote]               VARCHAR (100)  CONSTRAINT [DF_Client_MayorTieBreak] DEFAULT ('') NOT NULL,
+    [QualifyForDSE]           BIT            CONSTRAINT [DF_Client_ClientDebtServiceEqual] DEFAULT ((0)) NOT NULL,
+    [JurisdictionSquareMiles] NUMERIC (8, 2) CONSTRAINT [DF_Client_JurisdictionSquareMiles] DEFAULT ((0.0)) NOT NULL,
+    [HomeRuleCharter]         BIT            CONSTRAINT [DF_Client_HomeRuleCharter] DEFAULT ((0)) NOT NULL,
+    [HomeRuleAmend]           BIT            CONSTRAINT [DF_Client_HomeRuleAmend] DEFAULT ((0)) NOT NULL,
+    [HomeRuleAmendDate]       DATE           NULL,
+    [Notes]                   VARCHAR (MAX)  CONSTRAINT [DF_Client_Notes] DEFAULT ('') NOT NULL,
+    [DisclosureContractType]  VARCHAR (100)  CONSTRAINT [DF_Client_DisclosureContractType] DEFAULT ('') NOT NULL,
+    [ContractBillingType]     VARCHAR (100)  CONSTRAINT [DF_Client_ContractBillingType] DEFAULT ('') NOT NULL,
+    [CapitalLoanDistrict]     BIT            CONSTRAINT [DF_Client_CapitalLoanDistricy] DEFAULT ((0)) NOT NULL,
+    [ModifiedDate]            DATETIME       CONSTRAINT [DF_Client_ModifiedDate] DEFAULT (getdate()) NOT NULL,
+    [ModifiedUser]            VARCHAR (20)   CONSTRAINT [DF_Client_ModifiedUser] DEFAULT ([dbo].[udf_GetSystemUser]()) NOT NULL,
+    CONSTRAINT [PK_Client] PRIMARY KEY CLUSTERED ([ClientID] ASC),
+    CONSTRAINT [FK_Client_ClientPrefix] FOREIGN KEY ([ClientPrefixID]) REFERENCES [dbo].[ClientPrefix] ([ClientPrefixID]),
+    CONSTRAINT [FK_Client_ClientStatus] FOREIGN KEY ([ClientStatusID]) REFERENCES [dbo].[ClientStatus] ([ClientStatusID]),
+    CONSTRAINT [FK_Client_EhlersJobTeam] FOREIGN KEY ([EhlersJobTeamID]) REFERENCES [dbo].[EhlersJobTeam] ([EhlersJobTeamID]),
+    CONSTRAINT [FK_Client_FormOfGovernment] FOREIGN KEY ([FormOfGovernmentID]) REFERENCES [dbo].[FormOfGovernment] ([FormOfGovernmentID]),
+    CONSTRAINT [FK_Client_GoverningBoard] FOREIGN KEY ([GoverningBoardID]) REFERENCES [dbo].[GoverningBoard] ([GoverningBoardID]),
+    CONSTRAINT [FK_Client_JurisdictionType] FOREIGN KEY ([JurisdictionTypeID]) REFERENCES [dbo].[JurisdictionType] ([JurisdictionTypeID])
+);
+
+
 GO
 
 CREATE INDEX IX_Client_ClientName ON dbo.Client ( ClientName ASC ) ;

@@ -13,6 +13,8 @@
 
 
 
+
+
 GO
 
 CREATE INDEX IX_IssueFirms_IssueID ON dbo.IssueFirms ( IssueID ASC ) ;

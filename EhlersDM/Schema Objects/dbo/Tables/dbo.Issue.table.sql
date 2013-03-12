@@ -55,6 +55,8 @@
     [Notes]                        VARCHAR (MAX)   NULL,
     [ObligorClientID]              INT             NULL,
     [FirstDeadline]                DATE            NULL,
+    [IsAAC]                        BIT             CONSTRAINT [DF_Issue_isAAC] DEFAULT ((0)) NOT NULL,
+    [IsTAC]                        BIT             CONSTRAINT [DF_Issue_isTAC] DEFAULT ((0)) NOT NULL,
     [ModifiedDate]                 DATETIME        CONSTRAINT [DF_Issue_ModifiedDate] DEFAULT (getdate()) NOT NULL,
     [ModifiedUser]                 VARCHAR (20)    CONSTRAINT [DF_Issue_ModifiedUser] DEFAULT ([dbo].[udf_GetSystemUser]()) NOT NULL,
     CONSTRAINT [PK_Issue] PRIMARY KEY CLUSTERED ([IssueID] ASC),
@@ -74,6 +76,8 @@
     CONSTRAINT [FK_Issue_PaymentMethod] FOREIGN KEY ([TotalFeePaymentMethodID]) REFERENCES [dbo].[PaymentMethod] ([PaymentMethodID]),
     CONSTRAINT [FK_Issue_SecurityType] FOREIGN KEY ([SecurityTypeID]) REFERENCES [dbo].[SecurityType] ([SecurityTypeID])
 );
+
+
 
 
 GO

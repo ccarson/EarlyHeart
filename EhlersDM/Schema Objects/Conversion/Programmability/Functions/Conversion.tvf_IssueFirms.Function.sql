@@ -1,24 +1,6 @@
 ﻿CREATE FUNCTION Conversion.tvf_IssueFirms ( @Source AS VARCHAR(20) )
 RETURNS TABLE AS
-/*
-************************************************************************************************************************************
 
-       View:    Conversion.tvf_IssueFirms
-     Author:    Chris Carson
-    Purpose:    returns professional services data in a format that can be used by legacy and converted systems
-
-
-    revisor         date                description
-    ---------       -----------         ----------------------------
-    ccarson         2013-01-24          created
-
-    Function Arguments:
-    @Source     VARCHAR(20)    'Legacy'|'Converted'
-
-    Notes:
-
-************************************************************************************************************************************
-*/
 RETURN
   WITH  legacyIssues AS (
         SELECT  IssueID FROM Conversion.vw_LegacyIssues
@@ -41,9 +23,20 @@ RETURN
               , FirmCategoryID   = fcs.FirmCategoryID
               , Category         = ips.Category
               , FirmName         = NULL
-          FROM  edata.IssueProfSvcs AS ips
+          FROM  edata.IssueProfSvcs     AS ips
     INNER JOIN  legacyIssues            AS iss ON iss.IssueID = ips.IssueID
     INNER JOIN  firmCategories          AS fcs ON fcs.FirmID = ips.FirmID AND fcs.Category = ips.Category
+         WHERE  @Source = 'Legacy' 
+            UNION ALL 
+        SELECT  IssueID          = iss.IssueID
+              , FirmCategoriesID = fcs.FirmCategoriesID
+              , FirmID           = fcs.FirmID
+              , FirmCategoryID   = fcs.FirmCategoryID
+              , Category         = fcs.Category
+              , FirmName         = NULL
+          FROM  edata.Issues    AS iss
+    INNER JOIN  firmCategories  AS fcs ON fcs.FirmID = iss.FAFirmID AND fcs.Category = 'faf'
+    INNER JOIN  legacyIssues    AS leg ON leg.IssueID = iss.IssueID
          WHERE  @Source = 'Legacy' ) ,
 
         converted AS (

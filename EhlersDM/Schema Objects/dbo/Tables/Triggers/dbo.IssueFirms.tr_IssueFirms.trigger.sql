@@ -12,65 +12,110 @@ AS
     revisor         date                description
     ---------       ----------          ----------------------------
     ccarson         2013-01-24          created
+    ccarson         ###DATE###          Issues Conversion Bug #40 ( FA Firm not appearing )
 
 
     Logic Summary:
-    1)  Stop processing when trigger is invoked by Conversion.processIssueFirms procedure
-    2)  Stop processing unless the new FirmCategories actually appear on edata.IssueProfSvcs
-    3)  Update edata.Issues with relevant data from dbo.Issue
+    1)  do not process when trigger is invoked by conversion package
+    2)  INSERT IssueID into @changedIssues
+    3)  Clear out edata.IssueProfSvcs for affected firms
+    4)  UPDATE edata.IssueProfSvcs with current dbo.IssueFirms data
+    5)  UPDATE edata.Issues with FA Firm Data
+
 
 ************************************************************************************************************************************
 */
 BEGIN
-    IF  @@ROWCOUNT = 0 RETURN ;
+BEGIN TRY
 
     SET NOCOUNT ON ;
 
-    DECLARE @processIssueFirms AS VARBINARY(128) = CAST( 'processIssueFirms' AS VARBINARY(128) ) ;
+    IF  NOT EXISTS ( SELECT 1 FROM inserted CROSS JOIN deleted )
+        RETURN ;
 
-    DECLARE @changedIssues AS TABLE ( IssueID INT ) ;
+    DECLARE @processIssueFirms  AS VARBINARY(128) = CAST( 'processIssueFirms' AS VARBINARY(128) ) ;
 
-    DECLARE @legacyChecksum AS INT = 0
-          , @convertedChecksum AS INT = 0 ;
+    DECLARE @codeBlockDesc01    AS VARCHAR (128)    = 'do not process when trigger is invoked by conversion package'
+          , @codeBlockDesc02    AS VARCHAR (128)    = 'INSERT IssueID into @changedIssues'
+          , @codeBlockDesc03    AS VARCHAR (128)    = 'Clear out edata.IssueProfSvcs for affected firms'
+          , @codeBlockDesc04    AS VARCHAR (128)    = 'UPDATE edata.IssueProfSvcs with current dbo.IssueFirms data'
+          , @codeBlockDesc05    AS VARCHAR (128)    = 'UPDATE edata.Issues with FA Firm Data' ;
+
+    DECLARE @codeBlockNum       AS INT
+          , @codeBlockDesc      AS VARCHAR (128)
+          , @errorTypeID        AS INT
+          , @errorSeverity      AS INT
+          , @errorState         AS INT
+          , @errorNumber        AS INT
+          , @errorLine          AS INT
+          , @errorProcedure     AS VARCHAR (128)
+          , @errorMessage       AS VARCHAR (MAX) = NULL
+          , @errorData          AS VARCHAR (MAX) = NULL ;
+
+    DECLARE @changedIssues      AS TABLE ( IssueID INT PRIMARY KEY CLUSTERED ) ;
+
+    DECLARE @legacyChecksum     AS INT = 0
+          , @convertedChecksum  AS INT = 0 ;
 
 
---  1)  Stop processing when trigger is invoked by Conversion.processIssues procedure
+/**/SELECT  @codeBlockNum  = 1
+/**/      , @codeBlockDesc = @codeBlockDesc01 ; -- do not process when trigger is invoked by conversion package
+
     IF  CONTEXT_INFO() = @processIssueFirms
         RETURN ;
 
 
---  2)  INSERT IssueID from trigger tables into @changedIssues
+/**/SELECT  @codeBlockNum  = 2
+/**/      , @codeBlockDesc = @codeBlockDesc02 ; -- INSERT IssueID into @changedIssues
+
     INSERT  @changedIssues
     SELECT  IssueID FROM inserted
         UNION
     SELECT  IssueID FROM deleted ;
 
 
---  2)  Continue processing only if data that relates edata.IssueProfSvcs has changed
-    SELECT  @legacyChecksum = CHECKSUM_AGG(CHECKSUM(*)) FROM Conversion.tvf_IssueFirms( 'Legacy' ) AS l
-     WHERE  EXISTS ( SELECT 1 FROM @changedIssues AS i WHERE i.IssueID = l.IssueID ) ;
+/**/SELECT  @codeBlockNum  = 3
+/**/      , @codeBlockDesc = @codeBlockDesc03 ; -- Clear out edata.IssueProfSvcs for affected firms
 
-    SELECT  @convertedChecksum = CHECKSUM_AGG(CHECKSUM(*)) FROM Conversion.tvf_IssueFirms( 'Converted' ) AS c
-     WHERE  EXISTS ( SELECT 1 FROM @changedIssues AS i WHERE i.IssueID = c.IssueID ) ;
-
-    IF  ( @legacyChecksum = @convertedChecksum )
-        RETURN ;
-
-
---  3)  Clear out edata.IssueProfSvcs for affected firms
     UPDATE  edata.IssueProfSvcs
        SET  FirmID   = 0
           , Firmname = NULL
       FROM  edata.IssueProfSvcs AS ips
-INNER JOIN  @changedIssues          AS iss ON iss.IssueID = ips.IssueID ;
+INNER JOIN  @changedIssues      AS iss ON iss.IssueID = ips.IssueID ;
 
 
---  4)  UPDATE edata.IssueProfSvcs with current dbo.IssueFirms data
+/**/SELECT  @codeBlockNum  = 4
+/**/      , @codeBlockDesc = @codeBlockDesc04 ; -- UPDATE edata.IssueProfSvcs with current dbo.IssueFirms data
+
+      WITH  newData AS (
+            SELECT  IssueID, FirmID, FirmName, Category
+              FROM  Conversion.tvf_IssueFirms( 'Converted' ) AS isf
+             WHERE  EXISTS ( SELECT 1 FROM @changedIssues AS chg WHERE chg.IssueID = isf.IssueID ) )
     UPDATE  edata.IssueProfSvcs
        SET  FirmID   = isf.FirmID
           , Firmname = isf.FirmName
-      FROM  edata.IssueProfSvcs                  AS ips
-INNER JOIN  Conversion.tvf_IssueFirms( 'Converted' ) AS isf ON isf.IssueID = ips.IssueID AND isf.Category = ips.Category
-INNER JOIN  @changedIssues AS iss ON iss.IssueID = ips.IssueID ;
+      FROM  edata.IssueProfSvcs AS ips
+INNER JOIN  newData             AS isf ON isf.IssueID = ips.IssueID ;
 
+
+/**/SELECT  @codeBlockNum  = 5
+/**/      , @codeBlockDesc = @codeBlockDesc05 ; -- UPDATE edata.Issues with FA Firm Data
+
+      WITH  newData AS (
+            SELECT  IssueID, FirmID, FirmName, Category
+              FROM  Conversion.tvf_IssueFirms( 'Converted' ) AS isf
+             WHERE  EXISTS ( SELECT 1 FROM @changedIssues AS chg WHERE chg.IssueID = isf.IssueID )
+               AND  isf.Category = 'faf' )
+    UPDATE  edata.Issues
+       SET  FAFirmID    = isf.FirmID
+          , FAFirm      = isf.FirmName
+      FROM  edata.Issues    AS iss
+INNER JOIN  newData         AS isf ON isf.IssueID = iss.IssueID ;
+
+
+END TRY
+BEGIN CATCH
+    ROLLBACK TRANSACTION ;
+    EXECUTE dbo.processEhlersError ;
+END CATCH
 END
