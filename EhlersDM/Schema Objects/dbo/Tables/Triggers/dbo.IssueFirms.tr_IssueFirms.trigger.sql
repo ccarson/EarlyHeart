@@ -54,7 +54,7 @@ BEGIN TRY
           , @errorMessage       AS VARCHAR (MAX) = NULL
           , @errorData          AS VARCHAR (MAX) = NULL ;
 
-    DECLARE @changedIssueData   AS TABLE ( IssueID  INT PRIMARY KEY CLUSTERED ) 
+    DECLARE @changedIssueData   AS TABLE ( IssueID  INT PRIMARY KEY CLUSTERED
                                          , Category VARCHAR (5) 
                                          , FirmID   INT 
                                          , FirmName VARCHAR (100) ) ; 
@@ -118,7 +118,7 @@ BEGIN TRY
       WITH  newData AS (
             SELECT  IssueID, FirmID, FirmName, Category
               FROM  Conversion.tvf_IssueFirms( 'Converted' ) AS isf
-             WHERE  EXISTS ( SELECT 1 FROM @changedIssues AS chg WHERE chg.IssueID = isf.IssueID )
+             WHERE  EXISTS ( SELECT 1 FROM @changedIssueData AS chg WHERE chg.IssueID = isf.IssueID )
                AND  isf.Category = 'faf' )
     UPDATE  edata.Issues
        SET  FAFirmID    = isf.FirmID
