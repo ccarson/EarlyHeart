@@ -30,7 +30,9 @@ BEGIN TRY
 
     SET NOCOUNT ON ;
 
-    IF  NOT EXISTS ( SELECT 1 FROM inserted CROSS JOIN deleted )
+    IF  NOT EXISTS ( SELECT 1 FROM inserted ) 
+            AND
+        NOT EXISTS ( SELECT 1 FROM deleted ) 
         RETURN ;
 
     DECLARE @processIssueFirms  AS VARBINARY(128) = CAST( 'processIssueFirms' AS VARBINARY(128) ) ;
@@ -52,10 +54,15 @@ BEGIN TRY
           , @errorMessage       AS VARCHAR (MAX) = NULL
           , @errorData          AS VARCHAR (MAX) = NULL ;
 
-    DECLARE @changedIssues      AS TABLE ( IssueID INT PRIMARY KEY CLUSTERED ) ;
+    DECLARE @changedIssueData   AS TABLE ( IssueID  INT PRIMARY KEY CLUSTERED ) 
+                                         , Category VARCHAR (5) 
+                                         , FirmID   INT 
+                                         , FirmName VARCHAR (100) ) ; 
 
     DECLARE @legacyChecksum     AS INT = 0
           , @convertedChecksum  AS INT = 0 ;
+          
+    DECLARE @categories         AS TABLE ( Category VARCHAR(5) ) ; 
 
 
 /**/SELECT  @codeBlockNum  = 1
@@ -66,37 +73,44 @@ BEGIN TRY
 
 
 /**/SELECT  @codeBlockNum  = 2
-/**/      , @codeBlockDesc = @codeBlockDesc02 ; -- INSERT IssueID into @changedIssues
+/**/      , @codeBlockDesc = @codeBlockDesc02 ; -- build temp storage with data from trigger tables 
 
-    INSERT  @changedIssues
-    SELECT  IssueID FROM inserted
-        UNION
-    SELECT  IssueID FROM deleted ;
-
-
-/**/SELECT  @codeBlockNum  = 3
-/**/      , @codeBlockDesc = @codeBlockDesc03 ; -- Clear out edata.IssueProfSvcs for affected firms
-
-    UPDATE  edata.IssueProfSvcs
-       SET  FirmID   = 0
-          , Firmname = NULL
-      FROM  edata.IssueProfSvcs AS ips
-INNER JOIN  @changedIssues      AS iss ON iss.IssueID = ips.IssueID ;
-
+      WITH  changedIssues AS ( 
+            SELECT  IssueID FROM inserted
+                UNION
+            SELECT  IssueID FROM deleted ) , 
+            
+            categories ( Category ) AS ( 
+            SELECT 'esa' UNION ALL
+            SELECT 'esc' UNION ALL
+            SELECT 'pay' UNION ALL
+            SELECT 'tru' UNION ALL
+            SELECT 'und' UNION ALL
+            SELECT 'bc' ) 
+            
+    INSERT  @changedIssueData
+    SELECT  IssueID, Category FROM changedIssues CROSS JOIN categories ;
+    
+    UPDATE  @changedIssueData
+       SET  FirmID      = ISNULL( isf.FirmID, 0 )
+          , FirmName    = isf.FirmName
+      FROM  @changedIssueData AS a
+ LEFT JOIN  Conversion.tvf_IssueFirms( 'Converted' ) AS isf ON isf.IssueID = a.IssueID AND isf.Category = a.Category ;
+    
 
 /**/SELECT  @codeBlockNum  = 4
-/**/      , @codeBlockDesc = @codeBlockDesc04 ; -- UPDATE edata.IssueProfSvcs with current dbo.IssueFirms data
+/**/      , @codeBlockDesc = @codeBlockDesc04 ; -- MERGE temp storage into edata.IssueProfSvcs
 
-      WITH  newData AS (
-            SELECT  IssueID, FirmID, FirmName, Category
-              FROM  Conversion.tvf_IssueFirms( 'Converted' ) AS isf
-             WHERE  EXISTS ( SELECT 1 FROM @changedIssues AS chg WHERE chg.IssueID = isf.IssueID ) )
-    UPDATE  edata.IssueProfSvcs
-       SET  FirmID   = isf.FirmID
-          , Firmname = isf.FirmName
-      FROM  edata.IssueProfSvcs AS ips
-INNER JOIN  newData             AS isf ON isf.IssueID = ips.IssueID ;
-
+     MERGE  edata.IssueProfSvcs AS tgt
+     USING  @changedIssueData   AS src ON src.IssueID = tgt.IssueID AND src.Category = tgt.Category
+      WHEN  MATCHED THEN 
+            UPDATE SET FirmID      = src.FirmID
+                     , FirmName    = src.FirmName
+                              
+      WHEN  NOT MATCHED BY TARGET THEN 
+            INSERT ( IssueID, Category, FirmID, FirmName ) 
+            VALUES ( src.IssueID, src.Category, src.FirmID, src.FirmName ) ; 
+            
 
 /**/SELECT  @codeBlockNum  = 5
 /**/      , @codeBlockDesc = @codeBlockDesc05 ; -- UPDATE edata.Issues with FA Firm Data

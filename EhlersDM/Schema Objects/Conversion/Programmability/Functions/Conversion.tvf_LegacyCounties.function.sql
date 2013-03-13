@@ -34,7 +34,7 @@ RETURN
         overlap AS (
         SELECT  co.ClientID
               , ordinal
-              , CountyName = LEFT(c.ClientName, LEN(c.ClientName) - 7 )
+              , CountyName = REPLACE( c.ClientName, ' County', '' ) 
           FROM  dbo.ClientOverlap AS co
     INNER JOIN  dbo.client        AS c  ON c.ClientID = co.OverlapClientID AND c.JurisdictionTypeID = 6 ) ,
 

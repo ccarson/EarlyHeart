@@ -10,6 +10,7 @@
     revisor         date                description
     ---------       -----------         ----------------------------
     ccarson         2013-01-24          created
+    ccarson         ###DATE###          Issues Conversion Bug 39, modified BondFormTypeID selection criteria
 
     Notes:
 
@@ -60,7 +61,8 @@ INNER JOIN  edata.Clients       AS c   ON c.ClientID      = i.ClientID
  LEFT JOIN  dbo.IssueStatus         AS sta ON sta.LegacyValue = i.IssueStatus
  LEFT JOIN  dbo.IssueType           AS ist ON ist.LegacyValue = i.IssueType
  LEFT JOIN  dbo.MethodOfSale        AS mos ON mos.LegacyValue = i.SaleType
- LEFT JOIN  dbo.BondFormType        AS bft ON bft.LegacyValue = i.BondForm
+ LEFT JOIN  dbo.BondFormType        AS bft ON ( bft.LegacyValue = i.BondForm ) OR 
+                                              ( bft.LegacyValue = 'C' AND i.BondForm = 'BT' ) 
  LEFT JOIN  dbo.SecurityType        AS sct ON sct.LegacyValue = i.SecurityType
  LEFT JOIN  dbo.InterestPaymentFreq AS ipf ON ipf.LegacyValue = i.IntPmtFreq
  LEFT JOIN  dbo.InterestCalcMethod  AS icm ON icm.LegacyValue = i.IntCalcMeth

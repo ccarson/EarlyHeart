@@ -22,43 +22,43 @@ RETURNS TABLE AS
 */
 RETURN
   WITH  legacy AS (
-        SELECT  BiddingParameterID    = ISNULL( bp.BiddingParameterID, 0 )
-              , IssueID               = i.IssueID
-              , MinimumBidPercent     = CASE ISNULL( i.Amount, 0 )
+        SELECT  BiddingParameterID    = ISNULL( bdp.BiddingParameterID, 0 )
+              , IssueID               = iss.IssueID
+              , MinimumBidPercent     = CASE ISNULL( iss.Amount, 0 )
                                             WHEN 0 THEN 0
-                                            ELSE CAST( ISNULL( ( i.MinimumBid / i.Amount * 100 ), 0 ) AS DECIMAL(6, 2) )
+                                            ELSE CAST( ISNULL( ( iss.MinimumBid / iss.Amount * 100 ), 0 ) AS DECIMAL(6, 2) )
                                         END
-              , MaximumBidPercent     = CASE ISNULL( i.Amount, 0 )
+              , MaximumBidPercent     = CASE ISNULL( iss.Amount, 0 )
                                             WHEN 0 THEN 0
-                                            ELSE CAST( ISNULL( ( i.MaximumBid / i.Amount * 100 ), 0 ) AS DECIMAL(6, 2) )
+                                            ELSE CAST( ISNULL( ( iss.MaximumBid / iss.Amount * 100 ), 0 ) AS DECIMAL(6, 2) )
                                         END
-              , AllowDecrease         = i.AllowDecrease
-              , TermBonds             = i.TermBonds
-              , AdjustIssue           = i.AdjustIssue
-              , PctInterest           = i.PctInterest
-              , MaximumDecrease       = i.MaximumDecrease
-              , DateDecrease          = CONVERT( VARCHAR(10) , ISNULL( i.DateDecrease , '1900-01-01' ) , 120 )
-              , AwardBasis            = CASE i.AwardBasis WHEN 1 THEN 'TIC' ELSE 'NIC' END
+              , AllowDecrease         = iss.AllowDecrease
+              , TermBonds             = iss.TermBonds
+              , AdjustIssue           = iss.AdjustIssue
+              , PctInterest           = iss.PctInterest
+              , MaximumDecrease       = iss.MaximumDecrease
+              , DateDecrease          = CONVERT( VARCHAR(10) , ISNULL( iss.DateDecrease , '1900-01-01' ) , 120 )
+              , AwardBasis            = CASE iss.AwardBasis WHEN 1 THEN 'TIC' ELSE 'NIC' END
               , InternetSale          = ISNULL( ibt.InternetBiddingTypeID, 2 )
-          FROM  edata.Issues        AS i
-     LEFT JOIN  dbo.BiddingParameter    AS bp  ON  bp.IssueID = i.IssueID
-     LEFT JOIN  dbo.InternetBiddingType AS ibt ON  ibt.LegacyValue = i.InternetSale
+          FROM  edata.Issues            AS iss
+     LEFT JOIN  dbo.BiddingParameter    AS bdp ON bdp.IssueID = iss.IssueID
+     LEFT JOIN  dbo.InternetBiddingType AS ibt ON ibt.LegacyValue = iss.InternetSale
          WHERE  @Source = 'Legacy' ) ,
 
         converted AS (
-        SELECT  BiddingParameterID    = bp.BiddingParameterID
-              , IssueID               = bp.IssueID
-              , MinimumBidPercent     = bp.MinimumBidPercent
-              , MaximumBidPercent     = bp.MaximumBidPercent
-              , AllowDecrease         = bp.AllowDescendingRate
-              , TermBonds             = bp.AllowTerm
-              , AdjustIssue           = bp.AllowParAdjustment
-              , PctInterest           = bp.AllowPercentIncrement
-              , MaximumDecrease       = bp.DescMaxPct
-              , DateDecrease          = CONVERT( VARCHAR(10), ISNULL( bp.DescRateDate , '1900-01-01' ), 120 )
-              , AwardBasis            = bp.AwardBasis
-              , InternetSale          = bp.InternetBiddingTypeID
-          FROM  dbo.BiddingParameter AS bp
+        SELECT  BiddingParameterID    = bdp.BiddingParameterID
+              , IssueID               = bdp.IssueID
+              , MinimumBidPercent     = bdp.MinimumBidPercent
+              , MaximumBidPercent     = bdp.MaximumBidPercent
+              , AllowDecrease         = bdp.AllowDescendingRate
+              , TermBonds             = bdp.AllowTerm
+              , AdjustIssue           = bdp.AllowParAdjustment
+              , PctInterest           = bdp.AllowPercentIncrement
+              , MaximumDecrease       = bdp.DescMaxPct
+              , DateDecrease          = CONVERT( VARCHAR(10), ISNULL( bdp.DescRateDate , '1900-01-01' ), 120 )
+              , AwardBasis            = bdp.AwardBasis
+              , InternetSale          = bdp.InternetBiddingTypeID
+          FROM  dbo.BiddingParameter AS bdp
          WHERE  @Source = 'Converted' ) ,
 
         inputData AS (

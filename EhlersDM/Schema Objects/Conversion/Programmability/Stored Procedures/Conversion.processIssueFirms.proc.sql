@@ -34,13 +34,36 @@ BEGIN
     SET NOCOUNT ON ;
 
 
-    DECLARE @processName        AS VARCHAR (100)    = 'processIssueFirms'
-          , @errorMessage       AS VARCHAR (MAX)    = NULL
-          , @errorQuery         AS VARCHAR (MAX)    = NULL
-          , @processIssueFirms  AS VARBINARY (128)  = CAST( 'processIssueFirms' AS VARBINARY(128) )
-          , @processStartTime   AS DATETIME         = GETDATE()
-          , @processEndTime     AS DATETIME         = NULL
-          , @processElapsedTime AS INT              = 0 ;
+    DECLARE @processIssueFirms      AS VARBINARY (128)  = CAST( 'processIssueFirms' AS VARBINARY(128) )
+          , @processStartTime       AS VARCHAR (30)     = CONVERT( VARCHAR(30), GETDATE(), 121 )
+          , @processEndTime         AS VARCHAR (30)     = NULL
+          , @processElapsedTime     AS INT              = 0 ;
+
+
+    DECLARE @codeBlockDesc01        AS VARCHAR (128)    = 'Validate input parameters'
+          , @codeBlockDesc02        AS VARCHAR (128)    = 'SET CONTEXT_INFO, inhibiting triggers when invoked'
+          , @codeBlockDesc03        AS VARCHAR (128)    = 'SELECT initial control counts'
+          , @codeBlockDesc04        AS VARCHAR (128)    = 'INSERT changed data into temp storage'
+          , @codeBlockDesc05        AS VARCHAR (128)    = 'Stop processing if there are no data changes'
+          , @codeBlockDesc06        AS VARCHAR (128)    = 'INSERT new data into temp storage'
+          , @codeBlockDesc07        AS VARCHAR (128)    = 'INSERT updated data into temp storage'
+          , @codeBlockDesc08        AS VARCHAR (128)    = 'MERGE temp storage into dbo.Firm'
+          , @codeBlockDesc09        AS VARCHAR (128)    = 'SELECT final control counts'
+          , @codeBlockDesc10        AS VARCHAR (128)    = 'Control Total Validation'
+          , @codeBlockDesc11        AS VARCHAR (128)    = 'Reset CONTEXT_INFO, allowing triggers to fire when invoked'
+          , @codeBlockDesc12        AS VARCHAR (128)    = 'Print control totals' ;
+
+
+    DECLARE @codeBlockNum           AS INT
+          , @codeBlockDesc          AS VARCHAR (128)
+          , @errorTypeID            AS INT
+          , @errorSeverity          AS INT
+          , @errorState             AS INT
+          , @errorNumber            AS INT
+          , @errorLine              AS INT
+          , @errorProcedure         AS VARCHAR (128)
+          , @errorMessage           AS VARCHAR (MAX) = NULL
+          , @errorData              AS VARCHAR (MAX) = NULL ;
 
 
     DECLARE @changesCount       AS INT = 0

@@ -70,6 +70,3 @@ INNER JOIN  sys.dm_exec_sessions    AS s
 
 END
 GO
-DISABLE TRIGGER [ddlDatabaseChangeLog]
-    ON DATABASE;
-

@@ -13,14 +13,10 @@ SELECT  'BidSource'                        AS Category, Value, DisplaySequence, 
 SELECT  'BondFormType'                     AS Category, Value, DisplaySequence, Active FROM BondFormType UNION ALL
 SELECT  'CallFrequency'                    AS Category, Value, DisplaySequence, Active FROM CallFrequency UNION ALL
 SELECT  'CallType'                         AS Category, Value, DisplaySequence, Active FROM CallType UNION ALL
---SELECT  'ClientAnalystType'              AS Category, Value, DisplaySequence, Active FROM ClientAnalystType UNION ALL
 SELECT  'ClientStatus'                     AS Category, Value, DisplaySequence, Active FROM ClientStatus UNION ALL
 SELECT  'CommissionType'                   AS Category, Value, DisplaySequence, Active FROM CommissionType UNION ALL
---SELECT  'ContactRole'                      AS Category, Value, DisplaySequence, Active FROM ContactRole UNION ALL
 SELECT  'ContractStatus'                   AS Category, Value, DisplaySequence, Active FROM ContractStatus UNION ALL
 SELECT  'DeliveryMethod'                   AS Category, Value, DisplaySequence, Active FROM DeliveryMethod UNION ALL
---SELECT  'DisclosureFeeType'              AS Category, Value, DisplaySequence, Active FROM DisclosureFeeType UNION ALL
---SELECT  'DisclosureFrequency'            AS Category, Value, DisplaySequence, Active FROM DisclosureFrequency UNION ALL
 SELECT  'DisclosureType'                   AS Category, Value, DisplaySequence, Active FROM DisclosureType UNION ALL
 SELECT  'DocumentType'                     AS Category, Value, DisplaySequence, Active FROM DocumentType UNION ALL
 SELECT  'EhlersJobGroup'                   AS Category, Value, 0 AS DisplaySequence, Active FROM EhlersJobGroup UNION ALL
@@ -47,13 +43,10 @@ SELECT  'MethodOfSale'                     AS Category, Value, DisplaySequence, 
 SELECT  'MSA'                              AS Category, Value, DisplaySequence, Active FROM MSA UNION ALL
 SELECT  'PaymentMethod'                    AS Category, Value, DisplaySequence, Active FROM PaymentMethod UNION ALL
 SELECT  'PaymentType'                      AS Category, Value, DisplaySequence, Active FROM PaymentType UNION ALL
---SELECT  'ProceedUseType'                 AS Category, Value, DisplaySequence, Active FROM ProceedUseType UNION ALL
 SELECT  'RatingType'                       AS Category, Value, DisplaySequence, Active FROM RatingType UNION ALL
 SELECT  'RefundType'                       AS Category, Value, DisplaySequence, Active FROM RefundType UNION ALL
 SELECT  'SecurityType'                     AS Category, Value, DisplaySequence, Active FROM SecurityType UNION ALL
 SELECT  'ServiceCategory'                  AS Category, Value, DisplaySequence, Active FROM ServiceCategory UNION ALL
-SELECT  'StatutoryAuthority'               AS Category, Value, 0 AS DisplaySequence, 1 AS Active FROM StatutoryAuthority UNION ALL
---SELECT  'TypeJurisdiction'               AS Category, Value, DisplaySequence, Active FROM TypeJurisdiction UNION ALL
 SELECT  'UnusedChoice'                     AS Category, Value, DisplaySequence, Active FROM UnusedChoice UNION ALL 
 SELECT  'StaticList -> ' + lc.CategoryName AS Category, DisplayValue AS Value, DisplaySequence, sl.Active
   FROM  dbo.StaticList sl 
