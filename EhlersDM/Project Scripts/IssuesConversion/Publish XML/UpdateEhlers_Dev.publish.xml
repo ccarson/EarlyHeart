@@ -12,8 +12,8 @@
     <DeployDatabaseInSingleUserMode>False</DeployDatabaseInSingleUserMode>
     <BackupDatabaseBeforeChanges>True</BackupDatabaseBeforeChanges>
     <DropObjectsNotInSource>True</DropObjectsNotInSource>
-    <DropPermissionsNotInSource>True</DropPermissionsNotInSource>
-    <DropRoleMembersNotInSource>True</DropRoleMembersNotInSource>
+    <DropPermissionsNotInSource>False</DropPermissionsNotInSource>
+    <DropRoleMembersNotInSource>False</DropRoleMembersNotInSource>
     <IgnoreAnsiNulls>False</IgnoreAnsiNulls>
     <IgnoreFillFactor>False</IgnoreFillFactor>
     <IgnoreFullTextCatalogFilePath>False</IgnoreFullTextCatalogFilePath>
