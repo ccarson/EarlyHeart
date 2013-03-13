@@ -88,7 +88,7 @@ BEGIN TRY
             SELECT 'und' UNION ALL
             SELECT 'bc' ) 
             
-    INSERT  @changedIssueData
+    INSERT  @changedIssueData ( IssueID, Category )
     SELECT  IssueID, Category FROM changedIssues CROSS JOIN categories ;
     
     UPDATE  @changedIssueData

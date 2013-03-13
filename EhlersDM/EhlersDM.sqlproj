@@ -155,7 +155,6 @@
     <Folder Include="Schema Objects\Import\Views" />
     <Folder Include="Schema Objects\edata" />
     <Folder Include="Schema Objects\edata\Synonyms" />
-    <Folder Include="dbo\" />
   </ItemGroup>
   <ItemGroup>
     <BuildContributorArgument Include="OutDir=$(OutDir)" />

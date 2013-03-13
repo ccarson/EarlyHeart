@@ -2,7 +2,6 @@
     IssueStatutoryAuthorityID               INT             NOT NULL    CONSTRAINT PK_IssueStatutoryAuthority PRIMARY KEY CLUSTERED IDENTITY
   , IssueID                                 INT             NOT NULL    
   , StatutoryAuthorityJurisdictionTypesID   INT             NOT NULL    
-  , Active                                  BIT             NOT NULL    CONSTRAINT DF_IssueStatutoryAuthority_Active        DEFAULT 0
   , ModifiedDate                            DATE            NOT NULL    CONSTRAINT DF_IssueStatutoryAuthority_ModifiedDate  DEFAULT GETDATE()
   , ModifiedUser                            VARCHAR (20)    NOT NULL    CONSTRAINT DF_IssueStatutoryAuthority_ModifiedUser  DEFAULT ''
 
