@@ -56,6 +56,17 @@ RETURN
           FROM  edata.Issues    AS iss
     INNER JOIN  firmCategories  AS fcs ON fcs.FirmID = iss.FAFirmID AND fcs.Category = 'faf'
     INNER JOIN  legacyIssues    AS leg ON leg.IssueID = iss.IssueID
+         WHERE  @Source = 'Legacy' 
+            UNION ALL 
+        SELECT  IssueID          = iss.IssueID
+              , FirmCategoriesID = fcs.FirmCategoriesID
+              , FirmID           = fcs.FirmID
+              , FirmCategoryID   = fcs.FirmCategoryID
+              , Category         = fcs.Category
+              , FirmName         = NULL
+          FROM  edata.Issues    AS iss
+    INNER JOIN  firmCategories  AS fcs ON fcs.FirmID = iss.DissemAgentID AND fcs.Category = 'ds'
+    INNER JOIN  legacyIssues    AS leg ON leg.IssueID = iss.IssueID
          WHERE  @Source = 'Legacy' ) ,
 
         converted AS (
