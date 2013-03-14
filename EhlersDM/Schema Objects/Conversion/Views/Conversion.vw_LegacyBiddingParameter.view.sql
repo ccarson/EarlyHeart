@@ -10,8 +10,8 @@
     revisor         date                description
     ---------       -----------         ----------------------------
     ccarson         2013-01-24          created
-    ccarson         ###DATE###          updated for Issues Conversion
-    
+    ccarson         ###DATE###          updated for Issues Conversion, Bug #41
+
 
     Notes:
 
@@ -32,7 +32,7 @@ AS
           , TermBonds              = iss.TermBonds
           , AdjustIssue            = iss.AdjustIssue
           , PctInterest            = iss.PctInterest
-          , MaximumDecrease        = iss.MaximumDecrease
+          , MaximumDecrease        = ISNULL( iss.MaximumDecrease, 0 )
           , DateDecrease           = iss.DateDecrease
           , AwardBasis             = CASE iss.AwardBasis WHEN 1 THEN 'TIC' ELSE 'NIC' END
           , InternetSale           = ISNULL( ibt.InternetBiddingTypeID, 2 )
@@ -40,5 +40,5 @@ AS
           , ChangeBy               = ISNULL( NULLIF( iss.ChangeBy, '' ), 'processBidParam' )
       FROM  edata.Issues            AS iss
  LEFT JOIN  dbo.BiddingParameter    AS bdp ON bdp.IssueID     = iss.IssueID
- LEFT JOIN  dbo.InternetBiddingType AS ibt ON ibt.LegacyValue = iss.InternetSale 
-     WHERE  EXISTS ( SELECT 1 FROM edata.Clients AS cli WHERE cli.ClientID = iss.IssueID ) ;
+ LEFT JOIN  dbo.InternetBiddingType AS ibt ON ibt.LegacyValue = iss.InternetSale
+     WHERE  EXISTS ( SELECT 1 FROM edata.Clients AS cli WHERE cli.ClientID = iss.ClientID ) ;

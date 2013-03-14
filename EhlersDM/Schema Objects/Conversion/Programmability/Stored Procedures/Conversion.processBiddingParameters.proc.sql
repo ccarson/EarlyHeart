@@ -11,7 +11,7 @@ AS
     revisor         date                description
     ---------       -----------         ----------------------------
     ccarson         2013-01-24          created
-    ccarson         ###DATE###          updated for Issues Conversion
+    ccarson         ###DATE###          updated for Issues Conversion, Bug # 41
 
     Logic Summary:
     1)  SET CONTEXT_INFO, inhibiting triggers when invoked
@@ -109,7 +109,7 @@ BEGIN TRY
 /**/SELECT  @codeBlockNum   = 2
 /**/      , @codeBlockDesc  = @codeBlockDesc02 ; -- SELECT initial control counts
 
-    SELECT  @legacyCount        = COUNT(*) FROM Conversion.vw_LegacyBiddingParameter WHERE BiddingParameterID > 0 ;
+    SELECT  @legacyCount        = COUNT(*) FROM Conversion.vw_LegacyBiddingParameter ;
     SELECT  @convertedCount     = COUNT(*) FROM Conversion.vw_ConvertedBiddingParameter ;
     SELECT  @convertedActual    = @convertedCount ;
 

@@ -11,6 +11,7 @@ RETURNS TABLE AS
     revisor         date                description
     ---------       ----------          ----------------------------
     ccarson         2013-01-24          created
+    ccarson         ###DATE###          updated for Issues conversion, Bug # 41
 
 
     Function Arguments:
@@ -22,27 +23,19 @@ RETURNS TABLE AS
 */
 RETURN
   WITH  legacy AS (
-        SELECT  BiddingParameterID    = ISNULL( bdp.BiddingParameterID, 0 )
-              , IssueID               = iss.IssueID
-              , MinimumBidPercent     = CASE ISNULL( iss.Amount, 0 )
-                                            WHEN 0 THEN 0
-                                            ELSE CAST( ISNULL( ( iss.MinimumBid / iss.Amount * 100 ), 0 ) AS DECIMAL(6, 2) )
-                                        END
-              , MaximumBidPercent     = CASE ISNULL( iss.Amount, 0 )
-                                            WHEN 0 THEN 0
-                                            ELSE CAST( ISNULL( ( iss.MaximumBid / iss.Amount * 100 ), 0 ) AS DECIMAL(6, 2) )
-                                        END
-              , AllowDecrease         = iss.AllowDecrease
-              , TermBonds             = iss.TermBonds
-              , AdjustIssue           = iss.AdjustIssue
-              , PctInterest           = iss.PctInterest
-              , MaximumDecrease       = iss.MaximumDecrease
-              , DateDecrease          = CONVERT( VARCHAR(10) , ISNULL( iss.DateDecrease , '1900-01-01' ) , 120 )
-              , AwardBasis            = CASE iss.AwardBasis WHEN 1 THEN 'TIC' ELSE 'NIC' END
-              , InternetSale          = ISNULL( ibt.InternetBiddingTypeID, 2 )
-          FROM  edata.Issues            AS iss
-     LEFT JOIN  dbo.BiddingParameter    AS bdp ON bdp.IssueID = iss.IssueID
-     LEFT JOIN  dbo.InternetBiddingType AS ibt ON ibt.LegacyValue = iss.InternetSale
+        SELECT  BiddingParameterID
+              , IssueID           
+              , MinimumBidPercent   = MinimumBid
+              , MaximumBidPercent   = MaximumBid
+              , AllowDecrease     
+              , TermBonds         
+              , AdjustIssue       
+              , PctInterest       
+              , MaximumDecrease   
+              , DateDecrease        = CONVERT( VARCHAR(10) , ISNULL( DateDecrease , '1900-01-01' ) , 120 )
+              , AwardBasis          
+              , InternetSale        
+          FROM  Conversion.vw_LegacyBiddingParameter
          WHERE  @Source = 'Legacy' ) ,
 
         converted AS (
