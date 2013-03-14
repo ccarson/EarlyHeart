@@ -112,7 +112,7 @@ INNER JOIN  #legacyBiddersData   AS b
           , ModifiedDate, ModifiedUser )
 
     SELECT  BidderID, IssueID, FirmID
-          , 99, PurchasePrice, TICPercent
+          , 6, PurchasePrice, TICPercent
           , NICPercent, NICAmount
           , BABTICPercent, 0
           , HasWinningBid, IsRecoveryAct

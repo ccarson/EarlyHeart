@@ -17,6 +17,8 @@ RETURNS TABLE AS
     @Source     VARCHAR(20)    'Legacy'|'Converted'
 
     Notes:
+    This function restricts the view of IssueFirms only to the records that appear in the legacy system
+    Other issue firms are not viewable through this function
 
 ************************************************************************************************************************************
 */
@@ -33,7 +35,10 @@ RETURN
           FROM  dbo.FirmCategories AS fcs
     INNER JOIN  Conversion.tvf_ConvertedFirmCategories( @Source ) AS tvf
             ON  tvf.FirmID = fcs.FirmID AND tvf.FirmCategoryID = fcs.FirmCategoryID
-    INNER JOIN  dbo.FirmCategory AS fc ON fc.FirmCategoryID = fcs.FirmCategoryID ) , 
+    INNER JOIN  dbo.FirmCategory AS fc ON fc.FirmCategoryID = fcs.FirmCategoryID 
+         WHERE  EXISTS ( SELECT 1 FROM edata.IssueProfSvcs AS ips 
+                          WHERE ips.Category = fc.LegacyValue ) 
+            OR  fc.LegacyValue IN ( 'faf', 'ds' ) ) , 
 
         legacy AS (
         SELECT  IssueID          = ips.IssueID
