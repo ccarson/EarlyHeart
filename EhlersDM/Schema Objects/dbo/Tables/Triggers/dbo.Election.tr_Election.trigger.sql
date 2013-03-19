@@ -12,6 +12,7 @@ AS
     revisor         date            description
     ---------       ----------      ----------------------------
     ccarson         2013-01-24      created
+    ccarson         ###DATE###      Issues conversion 
 
     Logic Summary:
     1)  Stop processing when trigger is invoked by Conversion.processFirms procedure
@@ -46,7 +47,7 @@ BEGIN
 
 --  3)  MERGE converted election data onto edata.Elections
 
-    SET IDENTITY_INSERT edata.Elections ON ;
+    SET IDENTITY_INSERT [$(edata)].dbo.Elections ON ;
 
       WITH  legacyElections AS (
             SELECT * FROM edata.Elections AS e
@@ -76,7 +77,7 @@ BEGIN
       WHEN  NOT MATCHED BY SOURCE THEN 
             DELETE ; 
 
-    SET IDENTITY_INSERT edata.Elections OFF ;
+    SET IDENTITY_INSERT [$(edata)].dbo.Elections OFF ;
 
     END TRY
     BEGIN CATCH

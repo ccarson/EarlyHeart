@@ -56,7 +56,7 @@ BEGIN TRY
           , @errorMessage       AS VARCHAR (MAX) = NULL
           , @errorData          AS VARCHAR (MAX) = NULL ;
 
-    DECLARE @changedIssueData   AS TABLE ( IssueID  INT PRIMARY KEY CLUSTERED
+    DECLARE @changedIssueData   AS TABLE ( IssueID  INT
                                          , Category VARCHAR (5)
                                          , FirmID   INT
                                          , FirmName VARCHAR (100) ) ;

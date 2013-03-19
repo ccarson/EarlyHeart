@@ -2,9 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
-    <TargetDatabaseName>Ehlers_Dev</TargetDatabaseName>
-    <DeployScriptFileName>Ehlers_Dev.sql</DeployScriptFileName>
-    <TargetConnectionString>Data Source=EHLERS-SS4;Integrated Security=True;Pooling=False</TargetConnectionString>
+    <TargetDatabaseName>Ehlers</TargetDatabaseName>
+    <DeployScriptFileName>Ehlers.sql</DeployScriptFileName>
+    <TargetConnectionString>Data Source=EHLERS-SS3;Integrated Security=True;Pooling=False</TargetConnectionString>
     <ScriptDatabaseOptions>True</ScriptDatabaseOptions>
     <BlockOnPossibleDataLoss>False</BlockOnPossibleDataLoss>
     <CreateNewDatabase>False</CreateNewDatabase>
@@ -26,12 +26,12 @@
     <ScriptDeployStateChecks>True</ScriptDeployStateChecks>
     <ScriptDatabaseCompatibility>False</ScriptDatabaseCompatibility>
     <TreatVerificationErrorsAsWarnings>True</TreatVerificationErrorsAsWarnings>
-    <IgnoreRoleMembership>True</IgnoreRoleMembership>
     <IgnorePermissions>True</IgnorePermissions>
+    <IgnoreRoleMembership>True</IgnoreRoleMembership>
   </PropertyGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
-      <Value>edata_dev</Value>
+      <Value>edata</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="PostDeployChanges">
       <Value>NO</Value>

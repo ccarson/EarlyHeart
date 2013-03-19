@@ -26,6 +26,8 @@
     <ScriptDeployStateChecks>True</ScriptDeployStateChecks>
     <ScriptDatabaseCompatibility>False</ScriptDatabaseCompatibility>
     <TreatVerificationErrorsAsWarnings>True</TreatVerificationErrorsAsWarnings>
+    <IgnorePermissions>True</IgnorePermissions>
+    <IgnoreRoleMembership>True</IgnoreRoleMembership>
   </PropertyGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">

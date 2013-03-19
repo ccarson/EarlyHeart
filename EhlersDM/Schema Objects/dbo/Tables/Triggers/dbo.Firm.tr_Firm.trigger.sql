@@ -12,11 +12,13 @@ AS
     revisor         date            description
     ---------       ----------      ----------------------------
     ccarson         2013-01-24      created
-
+    mkiemen         ###DATE###      added insert to FirmCategories on insert trigger
+    
     Logic Summary:
     1)  Stop processing when trigger is invoked by Conversion.processFirms procedure
     2)  Stop processing unless Firm data has actually changed
     3)  Merge data from dbo.Firm back to edata.Firms
+    4)  Insert Miscellaneous Firm Category
 
     Notes:
 
@@ -74,6 +76,13 @@ BEGIN TRY
                         , WebSite, GoodFaith, Notes, ChangeDate, ChangeCode, ChangeBy )
             VALUES ( src.FirmID, src.Firm, src.FirmStatus, src.ShortName, src.Phone, src.Fax, src.TollFree
                         , src.WebSite, src.GoodFaith, src.Notes, src.ChangeDate, 'cvFirmINS', src.ChangeBy ) ;
+                        
+                        
+--  4)  INSERT Miscellaneous FirmCategory
+        INSERT  dbo.FirmCategories ( FirmID, FirmCategoryID, Active, ModifiedDate, ModifiedUser )
+        SELECT  FirmID, 63, 0, ModifiedDate, ModifiedUser 
+          FROM  inserted AS i
+         WHERE  NOT EXISTS ( SELECT 1 FROM dbo.FirmCategories AS fc WHERE fc.FirmID = i.FirmID AND fc.FirmCategoryID = 63 ) ;
 
 
 END TRY
