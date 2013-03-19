@@ -554,6 +554,7 @@
     <Build Include="Schema Objects\dbo\Tables\dbo.IssueStatutoryAuthority.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.StatutoryAuthorityJurisdictionTypes.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.StatutoryAuthority.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.loadStaticLists.proc.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
