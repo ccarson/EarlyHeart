@@ -1,4 +1,4 @@
-﻿CREATE FUNCTION dbo.udf_GetGoodFaithAmount( @input AS DECIMAL )
+﻿CREATE FUNCTION [dbo].[udf_GetGoodFaithAmount]( @input AS DECIMAL )
 RETURNS DECIMAL
 WITH SCHEMABINDING AS
 -- =============================================
@@ -9,7 +9,7 @@ WITH SCHEMABINDING AS
 BEGIN
     DECLARE @ret    AS DECIMAL ;
 
-    SELECT  @ret = @input * .2 ;
+    SELECT  @ret = @input * .02 ;
 
     RETURN  @ret ;
 END

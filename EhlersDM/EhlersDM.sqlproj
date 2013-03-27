@@ -155,6 +155,7 @@
     <Folder Include="Schema Objects\Import\Views" />
     <Folder Include="Schema Objects\edata" />
     <Folder Include="Schema Objects\edata\Synonyms" />
+    <Folder Include="Security\" />
   </ItemGroup>
   <ItemGroup>
     <BuildContributorArgument Include="OutDir=$(OutDir)" />
@@ -560,6 +561,7 @@
       <ApplicationScope>False</ApplicationScope>
       <SuppressTSqlWarnings>71562</SuppressTSqlWarnings>
     </Build>
+    <Build Include="Security\EhlersReportUser.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
