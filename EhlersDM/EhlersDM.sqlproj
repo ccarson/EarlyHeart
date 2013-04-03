@@ -571,6 +571,7 @@
     <None Include="Project Scripts\IssuesConversion\PostDeployChanges\LoadStaticLists.script.sql" />
     <Build Include="Database Security\Users\EhlersReportUser.user.sql" />
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_DCAfterSale.function.sql" />
+    <Build Include="Database Security\Users\EhlersSQLUsers.user.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">

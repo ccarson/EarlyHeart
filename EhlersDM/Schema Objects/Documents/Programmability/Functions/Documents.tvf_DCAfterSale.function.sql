@@ -33,7 +33,7 @@ RETURN
              WHERE  i.IssueID = @IssueID ) ,
 
           clientData AS (
-            SELECT  IssueID                 = i.IssueID
+            SELECT  IssueID					= i.IssueID
                   , SchoolDistrictNumber    = c.SchoolDistrictNumber
                   , ClientName              = c.ClientName
                   , ClientPrefix            = cp.Value
@@ -45,7 +45,7 @@ RETURN
                   , City                    = a.City
                   , State                   = a.State
                   , Zip                     = a.Zip
-              FROM  dbo.Issue               AS i
+              FROM  dbo.Issue				AS i
         INNER JOIN  dbo.Client              AS c  ON c.ClientID = i.ClientID
         INNER JOIN  dbo.ClientPrefix        AS cp ON cp.ClientPrefixID = c.ClientPrefixID
         INNER JOIN  dbo.JurisdictionType    AS jt ON jt.JurisdictionTypeID = c.JurisdictionTypeID
@@ -53,19 +53,24 @@ RETURN
         INNER JOIN  dbo.ClientAddresses     AS ca ON ca.ClientID = c.ClientID
         INNER JOIN  dbo.Address             AS a  ON a.AddressID = ca.AddressID
              WHERE  i.IssueID = @IssueID ) ,
-
+          
           bondAttorneyFirm AS (
             SELECT  IssueID          = isf.IssueID
                   , IssueFirmsID     = isf.IssueFirmsID
                   , FirmName         = frm.FirmName
                   , City             = adr.City
                   , State            = adr.State
-              FROM  dbo.IssueFirms      AS isf
-        INNER JOIN  dbo.FirmCategories  AS fcs ON fcs.FirmCategoriesID = isf.FirmCategoriesID
-        INNER JOIN  dbo.Firm            AS frm ON frm.FirmID = fcs.FirmID
-        INNER JOIN  dbo.FirmAddresses   AS fma ON fma.FirmID = frm.FirmID
-        INNER JOIN  dbo.Address         AS adr ON adr.AddressID = fma.AddressID
-             WHERE  isf.IssueID = @IssueID AND fcs.FirmCategoryID = 3 ) ,
+                  , FirstName        = con.FirstName
+                  , LastName         = con.LastName
+              FROM  dbo.IssueFirms			AS isf
+        INNER JOIN  dbo.FirmCategories		AS fcs ON fcs.FirmCategoriesID = isf.FirmCategoriesID
+        INNER JOIN  dbo.Firm				AS frm ON frm.FirmID = fcs.FirmID
+        INNER JOIN  dbo.FirmAddresses		AS fma ON fma.FirmID = frm.FirmID
+        INNER JOIN  dbo.Address				AS adr ON adr.AddressID = fma.AddressID
+        INNER JOIN  dbo.IssueFirmsContacts  AS ifc ON ifc.IssueFirmsID = isf.IssueFirmsID
+        INNER JOIN  dbo.ContactJobFunctions AS cjf ON cjf.ContactJobFunctionsID = ifc.ContactJobFunctionsID
+        INNER JOIN  dbo.Contact             AS con ON con.ContactID = cjf.ContactID
+             WHERE  isf.IssueID = @IssueID AND fcs.FirmCategoryID = 3 AND cjf.JobFunctionID = 30 AND ifc.Ordinal = 1) ,
 
              bondAttorneyPrimary AS (
             SELECT  IssueID          = baf.IssueID
