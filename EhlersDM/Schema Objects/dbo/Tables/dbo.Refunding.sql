@@ -5,9 +5,10 @@
   , RefundTypeID        INT             NULL
   , TotalSavingsAmount  DECIMAL (15,2)  NOT NULL    CONSTRAINT DF_Refunding_TotalSavingsAmount  DEFAULT 0
   , NPVSavingsAmount    DECIMAL (15,2)  NOT NULL    CONSTRAINT DF_Refunding_NPVSavingsAmount    DEFAULT 0
-  , NPVSavingsPercent   DECIMAL (5,3)   NOT NULL    CONSTRAINT DF_Refunding_NPVSavingsPercent   DEFAULT 0
+  , NPVBenefitPercent   DECIMAL (5,3)   NOT NULL    CONSTRAINT DF_Refunding_NPVSavingsPercent   DEFAULT 0
   , CallDate            DATE            NULL
   , CallPricePercent    DECIMAL (5,2)   NOT NULL    CONSTRAINT DF_Refunding_CallPricePercent    DEFAULT 0
+  , Note                VARCHAR (MAX)   NOT NULL    CONSTRAINT DF_Refunding_Note                DEFAULT ''
   , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_Refunding_ModifiedDate        DEFAULT GETDATE()
   , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_Refunding_ModifiedUser        DEFAULT dbo.udf_GetSystemUser()
 
