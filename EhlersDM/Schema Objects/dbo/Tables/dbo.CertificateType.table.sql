@@ -5,7 +5,7 @@
   , Active            BIT           NOT NULL    CONSTRAINT DF_CertificateType_Active            DEFAULT 1
   , Description       VARCHAR (200) NULL
   , ModifiedDate      DATETIME      NOT NULL    CONSTRAINT DF_CertificateType_ModifiedDate      DEFAULT GETDATE()
-  , ModifiedUser      VARCHAR (20)  NOT NULL    CONSTRAINT DF_CertificateType_ModifiedUser      DEFAULT dbo.udf_GetSystemUser())
+  , ModifiedUser      VARCHAR (20)  NOT NULL    CONSTRAINT DF_CertificateType_ModifiedUser      DEFAULT dbo.udf_GetSystemUser()
   , LegacyValue       VARCHAR (50)  NULL
 
   , CONSTRAINT UX_CertificateType_Value UNIQUE NONCLUSTERED (Value ASC)
