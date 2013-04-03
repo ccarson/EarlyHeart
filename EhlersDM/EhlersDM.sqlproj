@@ -563,6 +563,10 @@
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.deletePurpose.proc.sql" />
     <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyIssuePostBond.view.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssuePostBond.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.deleteIssue.proc.sql" />
+    <Build Include="Schema Objects\Import\Stored Procedures\Import.updatePurposeFromMunex.proc.sql" />
+    <Build Include="Schema Objects\Import\Stored Procedures\Import.loadRefunding.proc.sql" />
+    <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeMaturityRefunding.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">

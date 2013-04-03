@@ -96,7 +96,6 @@ BEGIN TRY
                                           , NICPercent      DECIMAL (11,8)
                                           , TICPercent      DECIMAL (11,8)
                                           , AICPercent      DECIMAL (11,8)
-                                          , BBI             DECIMAL (11,8) 
                                           , ModifiedDate    DATETIME
                                           , ModifiedUser    VARCHAR(20) ) ;
 
@@ -130,7 +129,6 @@ BEGIN TRY
     INSERT  @changedIssueData
     SELECT  IssueID, AccruedInterest, ArbitrageYield
                 , NICAmount, NICPercent, TICPercent, AICPercent
---              , BBI
                 , ModifiedDate, ModifiedUser
       FROM  Conversion.vw_LegacyIssuePostBond AS psb
      WHERE  EXISTS ( SELECT 1 FROM dbo.IssuePostBond AS ipb
@@ -143,7 +141,6 @@ BEGIN TRY
                             AND ips.NICPercent      = psb.NICPercent
                             AND ips.TICPercent      = psb.TICPercent
                             AND ips.AICPercent      = psb.AICPercent
-                            --AND ips.BBI             = psb.BBI 
                             ) ; 
     SELECT  @updatedCount = @@ROWCOUNT ;
     SELECT  @changesCount = @newCount + @updatedCount ;
@@ -170,18 +167,15 @@ BEGIN TRY
                       , NICPercent      = src.NICPercent
                       , TICPercent      = src.TICPercent
                       , AICPercent      = src.AICPercent
-                     --- , BBI             = src.BBI
                       , ModifiedDate    = src.ModifiedDate
                       , ModifiedUser    = src.ModifiedUser
 
       WHEN  NOT MATCHED BY TARGET THEN
             INSERT ( IssueID, AccruedInterest, ArbitrageYield
                         , NICAmount, NICPercent, TICPercent, AICPercent
-                        -- , BBI
                         , ModifiedDate, ModifiedUser ) 
             VALUES ( src.IssueID, src.AccruedInterest, src.ArbitrageYield
                         , src.NICAmount, src.NICPercent, src.TICPercent, src.AICPercent
---                      , src.BBI
                         , src.ModifiedDate, src.ModifiedUser ) 
     OUTPUT  $action, inserted.IssueID INTO @issueMergeResults ;
     SELECT  @recordMERGEs = @@ROWCOUNT ;

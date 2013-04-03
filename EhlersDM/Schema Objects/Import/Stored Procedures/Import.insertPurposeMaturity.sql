@@ -29,7 +29,7 @@ SET NOCOUNT ON ;
 
     SELECT  @PurposeID = PurposeID
       FROM  dbo.Purpose
-     WHERE  IssueID = @IssueID and PurposeName = @PurposeName ;
+     WHERE  IssueID = CAST( @IssueID AS INT ) AND PurposeName = @PurposeName ;
 
 --  1)  Insert PurposeMaturity
     IF  ( CAST( @PaymentAmount AS DECIMAL(15,2) ) > 0 )

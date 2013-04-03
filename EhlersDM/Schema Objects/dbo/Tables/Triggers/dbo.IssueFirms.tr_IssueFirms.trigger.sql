@@ -15,14 +15,6 @@ AS
     ccarson         ###DATE###          Issues Conversion Bug #40 ( FA Firm not appearing )
 
 
-    Logic Summary:
-    1)  do not process when trigger is invoked by conversion package
-    2)  INSERT IssueID into @changedIssues
-    3)  Clear out edata.IssueProfSvcs for affected firms
-    4)  UPDATE edata.IssueProfSvcs with current dbo.IssueFirms data
-    5)  UPDATE edata.Issues with FA Firm Data
-    6)  UPDATE edata.Issues with Dissemination Agent Data
-
 
 ************************************************************************************************************************************
 */
@@ -36,33 +28,35 @@ BEGIN TRY
         NOT EXISTS ( SELECT 1 FROM deleted )
         RETURN ;
 
-    DECLARE @processIssueFirms  AS VARBINARY(128) = CAST( 'processIssueFirms' AS VARBINARY(128) ) ;
+    DECLARE @processIssueFirms  AS VARBINARY(128)   = CAST( 'processIssueFirms' AS VARBINARY(128) ) ;
 
-    DECLARE @codeBlockDesc01    AS VARCHAR (128)    = 'do not process when trigger is invoked by conversion package'
-          , @codeBlockDesc02    AS VARCHAR (128)    = 'INSERT IssueID into @changedIssues'
-          , @codeBlockDesc03    AS VARCHAR (128)    = 'Clear out edata.IssueProfSvcs for affected firms'
-          , @codeBlockDesc04    AS VARCHAR (128)    = 'UPDATE edata.IssueProfSvcs with current dbo.IssueFirms data'
-          , @codeBlockDesc05    AS VARCHAR (128)    = 'UPDATE edata.Issues with FA Firm Data'
-          , @codeBlockDesc06    AS VARCHAR (128)    = 'UPDATE edata.Issues with Dissemination Agent Data' ;
-
+    DECLARE @codeBlockDesc01    AS SYSNAME          = ' do not process when trigger is invoked by conversion package'
+          , @codeBlockDesc02    AS SYSNAME          = ' build temp storage with data from trigger tables'
+          , @codeBlockDesc03    AS SYSNAME          = ' zero out temp storage where category does not exist in converted system'
+          , @codeBlockDesc04    AS SYSNAME          = ' MERGE temp storage into edata.IssueProfSvcs ON INSERTs and UPDATEs'
+          , @codeBlockDesc05    AS SYSNAME          = ' UPDATE edata.IssueProfSvcs FROM temp storage on DELETEs'
+          , @codeBlockDesc06    AS SYSNAME          = ' UPDATE edata.Issues with FA Firm Data'
+          , @codeBlockDesc07    AS SYSNAME          = ' UPDATE edata.Issues with DisseminationAgent Data' ;
+    
     DECLARE @codeBlockNum       AS INT
-          , @codeBlockDesc      AS VARCHAR (128)
+          , @codeBlockDesc      AS SYSNAME
           , @errorTypeID        AS INT
           , @errorSeverity      AS INT
           , @errorState         AS INT
           , @errorNumber        AS INT
           , @errorLine          AS INT
-          , @errorProcedure     AS VARCHAR (128)
-          , @errorMessage       AS VARCHAR (MAX) = NULL
-          , @errorData          AS VARCHAR (MAX) = NULL ;
+          , @errorProcedure     AS SYSNAME
+          , @errorMessage       AS VARCHAR (MAX)    = NULL
+          , @errorData          AS VARCHAR (MAX)    = NULL ;
+          
 
     DECLARE @changedIssueData   AS TABLE ( IssueID  INT
                                          , Category VARCHAR (5)
                                          , FirmID   INT
                                          , FirmName VARCHAR (100) ) ;
 
-    DECLARE @legacyChecksum     AS INT = 0
-          , @convertedChecksum  AS INT = 0 ;
+    DECLARE @legacyChecksum     AS INT              = 0
+          , @convertedChecksum  AS INT              = 0 ;
 
     DECLARE @categories         AS TABLE ( Category VARCHAR(5) ) ;
 
@@ -93,6 +87,10 @@ BEGIN TRY
     INSERT  @changedIssueData ( IssueID, Category )
     SELECT  IssueID, Category FROM changedIssues CROSS JOIN categories ;
 
+    
+/**/SELECT  @codeBlockNum  = 3
+/**/      , @codeBlockDesc = @codeBlockDesc03 ; -- zero out temp storage where category does not exist in converted system
+
     UPDATE  @changedIssueData
        SET  FirmID      = ISNULL( isf.FirmID, 0 )
           , FirmName    = isf.FirmName
@@ -101,21 +99,33 @@ BEGIN TRY
 
 
 /**/SELECT  @codeBlockNum  = 4
-/**/      , @codeBlockDesc = @codeBlockDesc04 ; -- MERGE temp storage into edata.IssueProfSvcs
+/**/      , @codeBlockDesc = @codeBlockDesc04 ; -- MERGE temp storage into edata.IssueProfSvcs ON INSERTs and UPDATEs
 
-     MERGE  edata.IssueProfSvcs AS tgt
-     USING  @changedIssueData   AS src ON src.IssueID = tgt.IssueID AND src.Category = tgt.Category
-      WHEN  MATCHED THEN
-            UPDATE SET FirmID      = src.FirmID
-                     , FirmName    = src.FirmName
+    IF  EXISTS ( SELECT 1 FROM inserted ) 
+         MERGE  edata.IssueProfSvcs AS tgt
+         USING  @changedIssueData   AS src ON src.IssueID = tgt.IssueID AND src.Category = tgt.Category
+          WHEN  MATCHED THEN
+                UPDATE SET FirmID      = src.FirmID
+                         , FirmName    = src.FirmName
 
-      WHEN  NOT MATCHED BY TARGET THEN
-            INSERT ( IssueID, Category, FirmID, FirmName )
-            VALUES ( src.IssueID, src.Category, src.FirmID, src.FirmName ) ;
-
+          WHEN  NOT MATCHED BY TARGET THEN
+                INSERT ( IssueID, Category, FirmID, FirmName )
+                VALUES ( src.IssueID, src.Category, src.FirmID, src.FirmName ) ;
+                
+    ELSE
 
 /**/SELECT  @codeBlockNum  = 5
-/**/      , @codeBlockDesc = @codeBlockDesc05 ; -- UPDATE edata.Issues with FA Firm Data
+/**/      , @codeBlockDesc = @codeBlockDesc05 ; -- UPDATE edata.IssueProfSvcs FROM temp storage on DELETEs
+
+        UPDATE  edata.IssueProfSvcs
+           SET  FirmID      = chg.FirmID
+              , FirmName    = chg.FirmName
+          FROM  edata.IssueProfSvcs AS ips
+    INNER JOIN  @changedIssueData   AS chg ON chg.IssueID = ips.IssueID AND chg.Category = ips.Category ; 
+
+
+/**/SELECT  @codeBlockNum  = 6
+/**/      , @codeBlockDesc = @codeBlockDesc06 ; -- UPDATE edata.Issues with FA Firm Data
 
       WITH  newData AS (
             SELECT  IssueID, FirmID, FirmName, Category
@@ -129,8 +139,8 @@ BEGIN TRY
 INNER JOIN  newData         AS isf ON isf.IssueID = iss.IssueID ;
 
 
-/**/SELECT  @codeBlockNum  = 6
-/**/      , @codeBlockDesc = @codeBlockDesc06 ; -- UPDATE edata.Issues with DisseminationAgent Data
+/**/SELECT  @codeBlockNum  = 7
+/**/      , @codeBlockDesc = @codeBlockDesc07 ; -- UPDATE edata.Issues with DisseminationAgent Data
 
       WITH  newData AS (
             SELECT  IssueID, FirmID, FirmName, Category

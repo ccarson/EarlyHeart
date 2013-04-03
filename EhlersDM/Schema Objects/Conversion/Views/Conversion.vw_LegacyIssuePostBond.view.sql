@@ -23,7 +23,6 @@ AS
           , NICPercent      =   CAST( ISNULL( iss.NICpct, 0 )            AS DECIMAL (11,8) )
           , TICPercent      =   CAST( ISNULL( iss.TIC, 0 )               AS DECIMAL (11,8) )
           , AICPercent      =   CAST( ISNULL( iss.AIC, 0 )               AS DECIMAL (11,8) )
-          , BBI             =   CAST( ISNULL( iss.BBI, 0 )               AS DECIMAL (11,8) )
           , ModifiedDate    =   ISNULL( iss.ChangeDate, GETDATE() )
           , ModifiedUser    =   ISNULL( NULLIF( iss.ChangeBy, '' ), 'processIssuePostBond' )
       FROM  edata.Issues    AS iss

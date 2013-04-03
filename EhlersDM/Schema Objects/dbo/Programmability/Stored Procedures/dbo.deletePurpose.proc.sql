@@ -1,29 +1,20 @@
-﻿CREATE PROCEDURE dbo.deletePurpose ( @purposeID                 AS INT 
-                                   , @ignoreErrors              AS BIT          = 0
-                                   , @adminAuthority            AS VARCHAR(20)  = NULL ) 
+﻿CREATE PROCEDURE dbo.deletePurpose ( @purposeID     AS VARCHAR (30)
+                                   , @keepOrPurge   AS VARCHAR (30) )
 AS
 /*
 ************************************************************************************************************************************
 
-  Procedure:    dbo.deletePurpose
+  Procedure:    dbo.deleteIssue
      Author:    Chris Carson
     Purpose:    drops a purpose from the Ehlers System
 
 
     revisor         date                description
     ---------       -----------         ----------------------------
-    ccarson         ###DATE###          created ( Issues Conversion ) 
+    ccarson         ###DATE###          created ( Issues Conversion )
 
     Logic Summary:
-    1)  Validate purpose delete
-    2)  delete sources for purpose
-    3)  delete uses for purpose
-    4)  delete other stuff for purpose
-    5)  delete pm refunding for purpose
-    6)  delete refunding for purpose
-    7)  delete pm interest
-    8)  delete pm
-    9)  delete purpose
+
 
 
     Notes:
@@ -36,121 +27,201 @@ BEGIN TRY
 
     SET NOCOUNT ON ;
 
---    DECLARE @codeBlockDesc01        AS VARCHAR (128)    = 'SET CONTEXT_INFO, to inhibit triggers that would ordinarily fire'
---          , @codeBlockDesc02        AS VARCHAR (128)    = 'SELECT initial control counts'
---          , @codeBlockDesc03        AS VARCHAR (128)    = 'INSERT changed recordIDs into temp storage'
---          , @codeBlockDesc04        AS VARCHAR (128)    = 'Stop processing if there are no data changes'
---          , @codeBlockDesc05        AS VARCHAR (128)    = 'INSERT new data into temp storage'
---          , @codeBlockDesc06        AS VARCHAR (128)    = 'INSERT updated data into temp storage'
---          , @codeBlockDesc07        AS VARCHAR (128)    = 'UPDATE changed data to remove invalid ObligorClientID'
---          , @codeBlockDesc08        AS VARCHAR (128)    = 'MERGE temp storage into dbo.Issues'
---          , @codeBlockDesc09        AS VARCHAR (128)    = 'SELECT final control counts'
---          , @codeBlockDesc10        AS VARCHAR (128)    = 'Control Total Validation'
---          , @codeBlockDesc11        AS VARCHAR (128)    = 'Reset CONTEXT_INFO to remove restrictions on triggers'
---          , @codeBlockDesc12        AS VARCHAR (128)    = 'Print control totals' ;
+    DECLARE @codeBlockDesc01    AS SYSNAME          = 'transaction processing'
+          , @codeBlockDesc02    AS SYSNAME          = 'DELETE dbo.PurposeSource'
+          , @codeBlockDesc03    AS SYSNAME          = 'DELETE dbo.PurposeUse'
+          , @codeBlockDesc04    AS SYSNAME          = 'DELETE dbo.PaymentTypeAssessment'
+          , @codeBlockDesc05    AS SYSNAME          = 'DELETE dbo.PaymentTypeEqualSingle'
+          , @codeBlockDesc06    AS SYSNAME          = 'DELETE dbo.PaymentTypeVaryingAmount'
+          , @codeBlockDesc07    AS SYSNAME          = 'DELETE dbo.PaymentTypeVarying'
+          , @codeBlockDesc08    AS SYSNAME          = 'DELETE dbo.PurposeMaturityRefunding'
+          , @codeBlockDesc09    AS SYSNAME          = 'DELETE dbo.Refunding'
+          , @codeBlockDesc10    AS SYSNAME          = 'UPDATE dbo.Refunding to set RefundingPurposeID to NULL'
+          , @codeBlockDesc11    AS SYSNAME          = 'DELETE dbo.PurposeMaturityInterest'
+          , @codeBlockDesc12    AS SYSNAME          = 'DELETE dbo.PurposeMaturity'
+          , @codeBlockDesc13    AS SYSNAME          = 'DELETE dbo.Purpose'
+
+    DECLARE @codeBlockNum       AS INT
+          , @codeBlockDesc      AS SYSNAME
+          , @errorTypeID        AS INT
+          , @errorSeverity      AS INT
+          , @errorState         AS INT
+          , @errorNumber        AS INT
+          , @errorLine          AS INT
+          , @errorProcedure     AS SYSNAME
+          , @errorMessage       AS VARCHAR (MAX)    = NULL
+          , @errorData          AS VARCHAR (MAX)    = NULL ;
+
+    DECLARE @outerTransaction   AS BIT              = CASE WHEN @@TRANCOUNT > 0 THEN 1 ELSE 0 END
+          , @rollbackPoint      AS NCHAR(32)        = REPLACE( CAST( NEWID() AS NCHAR(36) ), N'-', N'') ;
+
+
+    DECLARE @purposeIDValue     AS INT              = CAST( @purposeID      AS INT ) ;
+
+
+/**/SELECT  @codeBlockNum   = 1
+/**/      , @codeBlockDesc  = @codeBlockDesc01 ; -- transaction processing
+
+    IF  ( @outerTransaction = 1 )
+        SAVE TRANSACTION    @rollbackPoint ;
+    ELSE
+        BEGIN TRANSACTION   @rollbackPoint ;
+
+
+/**/SELECT  @codeBlockNum   = 2
+/**/      , @codeBlockDesc  = @codeBlockDesc02 ; -- DELETE dbo.PurposeSource
+
+    DELETE  dbo.PurposeSource
+     WHERE  PurposeID = @purposeIDValue ;
+
+
+/**/SELECT  @codeBlockNum   = 3
+/**/      , @codeBlockDesc  = @codeBlockDesc03 ; -- DELETE dbo.PurposeUse
+
+    DELETE  dbo.PurposeUse
+     WHERE  PurposeID = @purposeIDValue ;
+
+
+/**/SELECT  @codeBlockNum   = 4
+/**/      , @codeBlockDesc  = @codeBlockDesc04 ; -- DELETE dbo.PaymentTypeAssessment
+
+    DELETE  dbo.PaymentTypeAssessment
+     WHERE  PurposeID = @purposeIDValue
+       AND  @KeepOrPurge = 'PurgeData' ;
+
+/**/SELECT  @codeBlockNum   = 5
+/**/      , @codeBlockDesc  = @codeBlockDesc05 ; -- DELETE dbo.PaymentTypeEqualSingle
+
+    DELETE  dbo.PaymentTypeEqualSingle
+     WHERE  PurposeID = @purposeIDValue
+       AND  @KeepOrPurge = 'PurgeData' ;
+
+
+/**/SELECT  @codeBlockNum   = 6
+/**/      , @codeBlockDesc  = @codeBlockDesc06 ; -- DELETE dbo.PaymentTypeVaryingAmount
+
+    DELETE  dbo.PaymentTypeVaryingAmount
+      FROM  dbo.PaymentTypeVaryingAmount AS pva
+     WHERE  EXISTS ( SELECT 1 FROM dbo.PaymentTypeVarying AS ptv
+                      WHERE ptv.PaymentTypeVaryingID = pva.PaymentTypeVaryingID
+                        AND ptv.PurposeID = @purposeIDValue )
+       AND  @KeepOrPurge = 'PurgeData' ;
+
+
+/**/SELECT  @codeBlockNum   = 7
+/**/      , @codeBlockDesc  = @codeBlockDesc07 ; -- DELETE dbo.PaymentTypeVarying
+
+    DELETE  dbo.PaymentTypeVarying
+     WHERE  PurposeID = @purposeIDValue
+       AND  @KeepOrPurge = 'PurgeData' ;
+
+
+/**/SELECT  @codeBlockNum   = 8
+/**/      , @codeBlockDesc  = @codeBlockDesc08 ; -- DELETE dbo.PurposeMaturityRefunding
+
+      WITH  refundPurposes AS ( 
+            SELECT PurposeID = RefundedPurposeID
+              FROM dbo.Refunding
+             WHERE RefundingPurposeID = @PurposeIDValue
+                    union
+            SELECT @PurposeIDValue ) 
+
+    DELETE  dbo.PurposeMaturityRefunding
+      FROM  dbo.PurposeMaturityRefunding AS pmr
+     WHERE  EXISTS ( SELECT 1 
+                       FROM dbo.PurposeMaturity AS pm
+                 INNER JOIN refundPurposes      AS ref ON ref.PurposeID = pm.PurposeID  
+                      WHERE pm.PurposeMaturityID = pmr.PurposeMaturityID ) 
+
+
+/**/SELECT  @codeBlockNum   = 9
+/**/      , @codeBlockDesc  = @codeBlockDesc09 ; -- DELETE dbo.Refunding
+
+    DELETE  dbo.Refunding
+     WHERE  RefundedPurposeID = @purposeIDValue 
+                OR
+            RefundingPurposeID = @purposeIDValue 
+
+
+
+/**/SELECT  @codeBlockNum   = 10
+/**/      , @codeBlockDesc  = @codeBlockDesc10 ; -- DELETE dbo.PurposeMaturityInterest
+
+    DELETE  dbo.PurposeMaturityInterest
+      FROM  dbo.PurposeMaturityInterest AS pmi
+     WHERE  EXISTS ( SELECT 1 FROM dbo.PurposeMaturity AS pma
+                      WHERE pma.PurposeMaturityID = pmi.PurposeMaturityID
+                        AND pma.PurposeID = @purposeIDValue ) ;
+
+
+/**/SELECT  @codeBlockNum   = 12
+/**/      , @codeBlockDesc  = @codeBlockDesc12 ; -- DELETE dbo.PurposeMaturity
+
+    DELETE  dbo.PurposeMaturity
+     WHERE  PurposeID = @purposeIDValue ;
+
+
+/**/SELECT  @codeBlockNum   = 13
+/**/      , @codeBlockDesc  = @codeBlockDesc13 ; -- DELETE dbo.Purpose
+
+    DELETE  dbo.Purpose
+     WHERE  PurposeID = @purposeIDValue
+       AND  @KeepOrPurge = 'PurgeData' ;
+
+    IF  ( @outerTransaction = 0 )
+        COMMIT TRANSACTION ;
+
+END TRY
+BEGIN CATCH
+
+    IF  ( XACT_STATE() = 1 )
+        ROLLBACK TRANSACTION @rollbackPoint ;
+
+    EXECUTE dbo.processEhlersError ;
+
+
+--    SELECT  @errorTypeID    = 1
+--          , @errorSeverity  = ERROR_SEVERITY()
+--          , @errorState     = ERROR_STATE()
+--          , @errorNumber    = ERROR_NUMBER()
+--          , @errorLine      = ERROR_LINE()
+--          , @errorProcedure = ISNULL( ERROR_PROCEDURE(), '-' )
 --
+--    IF  @errorMessage IS NULL
+--    BEGIN
+--        SELECT  @errorMessage = N'Error occurred in Code Block %d, %s ' + CHAR(13)
+--                              + N'Error %d, Level %d, State %d, Procedure %s, Line %d, Message: ' + ERROR_MESSAGE() ;
 --
---    DECLARE @codeBlockNum           AS INT
---          , @codeBlockDesc          AS VARCHAR (128)
---          , @errorTypeID            AS INT
---          , @errorSeverity          AS INT
---          , @errorState             AS INT
---          , @errorNumber            AS INT
---          , @errorLine              AS INT
---          , @errorProcedure         AS VARCHAR (128)
---          , @errorMessage           AS VARCHAR (MAX) = NULL
---          , @errorData              AS VARCHAR (MAX) = NULL ;
---          
---    DECLARE @adminOverride          AS BIT = 0 ; 
---          
---          
---/**/SELECT  @codeBlockNum   = 1
---/**/      , @codeBlockDesc  = @codeBlockDesc01 ; -- validate override authority
+--        RAISERROR( @errorMessage, @errorSeverity, 1
+--                 , @codeBlockNum
+--                 , @codeBlockDesc
+--                 , @errorNumber
+--                 , @errorSeverity
+--                 , @errorState
+--                 , @errorProcedure
+--                 , @errorLine ) ;
 --
---    IF  ( @ignoreErrors = 1 ) 
---        IF  ( @adminAuthority = 'FULL PURGE' ) 
---            SELECT  @adminOverride = 1 ; 
---        ELSE 
---            RAISERROR ( 'Cannot allow override without correct adminAuthority' 16, 1 ) ; 
---            
---        
---        
---/**/SELECT  @codeBlockNum   = 2
---/**/      , @codeBlockDesc  = @codeBlockDesc01 ; -- validate purpose delete
+--        SELECT  @errorMessage = ERROR_MESSAGE() ;
 --
---    SELECT  @saleDate = ISNULL( SaleDate, DatedDate ) 
---      FROM  dbo.Issue AS iss
---     WHERE  EXISTS ( SELECT 1 FROM dbo.Purpose AS pur
---                      WHERE pur.IssueID = iss.IssueID ) ;
---                      
---    IF  ( @saleData < GETDATE() )
---            AND
---        ( @adminOverride = 0 ) 
---        RAISERROR ( 'Cannot purge purposes after sale date is passed' 16, 1 ) ; 
+--        EXECUTE dbo.processEhlersError  @errorTypeID
+--                                      , @codeBlockNum
+--                                      , @codeBlockDesc
+--                                      , @errorNumber
+--                                      , @errorSeverity
+--                                      , @errorState
+--                                      , @errorProcedure
+--                                      , @errorLine
+--                                      , @errorMessage
+--                                      , @errorData ;
 --
---        
---/**/SELECT  @codeBlockNum   = 3
---/**/      , @codeBlockDesc  = @codeBlockDesc01 ; -- delete sources for Purpose
+--    END
+--        ELSE
+--    BEGIN
+--        SELECT  @errorSeverity  = ERROR_SEVERITY()
+--              , @errorState     = ERROR_STATE()
 --
---    DELETE  dbo.PurposeSource
---     WHERE  purposeID = @purposeID ; 
---     
---     
---/**/SELECT  @codeBlockNum   = 4
---/**/      , @codeBlockDesc  = @codeBlockDesc01 ; -- delete uses for Purpose
---
---    DELETE  dbo.PurposeUses
---     WHERE  purposeID = @purposeID ; 
---     
---     
---/**/SELECT  @codeBlockNum   = 2
---/**/      , @codeBlockDesc  = @codeBlockDesc01 ; -- validate purpose delete
---
---    SELECT  @saleDate = ISNULL( SaleDate, DatedDate ) 
---      FROM  dbo.Issue AS iss
---     WHERE  EXISTS ( SELECT 1 FROM dbo.Purpose AS pur
---                      WHERE pur.IssueID = iss.IssueID ) ;
---                      
---    IF  ( @saleData < GETDATE() )
---            AND
---        ( @adminOverride = 0 ) 
---        RAISERROR ( 'Cannot purge purposes after sale date is passed' 16, 1 ) ; 
---        
---        
---
---
---
---
---        SELECT  @issueSaleDate = ISNULL( iss.saleDate, iss.DatedDate ) 
---      FROM  dbo.issue AS iss
---INNER JOIN  dbo.Purpose AS pur ON pur.IssueID = iss.IssueID 
---     WHERE  pur.PurposeID = @purposeID     
---    SET CONTEXT_INFO @processIssues ;
---
---
---/**/SELECT  @codeBlockNum   = 2
---/**/      , @codeBlockDesc  = @codeBlockDesc02 ; -- SELECT initial control counts
---
---    SELECT  @legacyCount        = COUNT(*) FROM Conversion.vw_LegacyIssues ;
---    SELECT  @convertedCount     = COUNT(*) FROM Conversion.vw_ConvertedIssues ;
---    SELECT  @convertedActual    = @convertedCount ;
---
---
---/**/SELECT  @codeBlockNum   = 3
---/**/      , @codeBlockDesc  = @codeBlockDesc03 ; -- INSERT changed recordIDs into temp storage
---
---    INSERT  @changedIssueIDs
---    SELECT  IssueID           = a.IssueID
---          , legacyChecksum    = a.IssueChecksum
---          , convertedChecksum = b.IssueChecksum
---      FROM  Conversion.tvf_IssueChecksum( 'Legacy' )    AS a
--- LEFT JOIN  Conversion.tvf_IssueChecksum( 'Converted' ) AS b
---        ON  a.IssueID = b.IssueID
---     WHERE  b.IssueChecksum IS NULL OR a.IssueChecksum <> b.IssueChecksum ;
---    SELECT  @changesCount = @@ROWCOUNT ;          
-    
-    
-end try
-begin catch
-end catch
-end
+--        RAISERROR( @errorMessage, @errorSeverity, @errorState ) ;
+--    END
+
+END CATCH
+END

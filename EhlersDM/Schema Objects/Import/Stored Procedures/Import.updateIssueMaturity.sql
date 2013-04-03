@@ -10,7 +10,7 @@ AS
 
     revisor         date                description
     ---------       -----------         ----------------------------
-    ccarson         2013-01-24          created
+    ccarson         ###DATE###          created
 
     Logic Summary:
     1)  SELECT first and last payment dates for Issue
@@ -21,6 +21,8 @@ AS
     The MunexImport spreadsheet Pricing Summary contains a summary of all maturities for an issue.
     Sometimes ( for Term Bonds ) certain maturity years are not shown in the Pricing Summary
     Those payment dates need to be kept in the system, so we use a recursive CTE to "fill in the blanks"
+    
+    This proc also needs to update records, because 
 
 ************************************************************************************************************************************
 */

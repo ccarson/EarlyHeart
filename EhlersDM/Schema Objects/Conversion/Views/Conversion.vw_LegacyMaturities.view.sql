@@ -11,12 +11,20 @@
     ---------   -----------     ----------------------------
     ccarson     2012-09-10      Created
     ccarson     2013-02-01      Modified to exclude orphaned issues
+    ccarson     ###DATE###      Issues Conversion
     
     Notes:
 
 ************************************************************************************************************************************
 */
 AS
+      WITH  insurance AS ( 
+            SELECT  m.issueID
+                  , a.InsuranceFirmCategoriesID
+                  , a.Insurance
+                  , N = ROW_NUMBER() OVER ( PARTITION BY IssueID ORDER BY (SELECT NULL) ) 
+              FROM  edata.Maturities AS m
+        INNER JOIN  Conversion.tvf_transformInsurance() AS a ON a.Insurance = m.Insurance ) 
     SELECT  IssueID                     = m.IssueID
           , InsuranceFirmCategoriesID   = a.InsuranceFirmCategoriesID
           , Insurance                   = ISNULL( m.Insurance , '' )
@@ -31,5 +39,4 @@ AS
           , NotReoffered                = m.nro
       FROM  edata.Maturities AS m
 INNER JOIN  dbo.Issue        AS i ON i.IssueID = m.IssueID
- LEFT JOIN  Conversion.tvf_transformInsurance() AS a
-        ON  m.Insurance = a.Insurance ;
+ LEFT JOIN  insurance        AS a ON m.IssueID = a.IssueID AND ISNULL(a.N, 1) = 1 
