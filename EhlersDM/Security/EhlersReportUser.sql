@@ -1,2 +1,2 @@
-﻿CREATE USER [EhlersReportUser] FOR LOGIN [EhlersReportUser];
+﻿--CREATE USER [EhlersReportUser] FOR LOGIN [EhlersReportUser];
 

@@ -1,4 +1,9 @@
-﻿CREATE SCHEMA Import AUTHORIZATION dbo ;
+﻿CREATE SCHEMA [Import]
+    AUTHORIZATION [dbo];
+
+
+
+
 
 
 

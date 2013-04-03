@@ -1,5 +1,5 @@
-﻿CREATE TRIGGER  tr_Issue
-            ON  dbo.Issue
+﻿CREATE TRIGGER  [dbo].[tr_Issue]
+            ON  [dbo].[Issue]
 AFTER INSERT, UPDATE
 AS
 /*
@@ -13,10 +13,11 @@ AS
     ---------       ----------          ----------------------------
     ccarson         2013-01-24          created
     ccarson         ###DATE###          Issues Conversion changes
+    mkiemen			2013-04-03			change the good faith calc 
     
     
     Logic Summary:
-    1)  UPDATE dbo.Issue.GoodFaithPercent to 2% of the IssueAmount on Issue Creation
+    1)  UPDATE dbo.Issue.GoodFaithPercent to 2% of the IssueAmount when new
     2)  INSERT IssueFeeCounty for each CountyClient record that exists
     3)  Stop processing when trigger is invoked by Conversion.processIssues procedure
     4)  Stop processing unless Issue data has actually changed
@@ -39,10 +40,9 @@ BEGIN TRY
        SET  GoodFaithPercent = 2.0
       FROM  dbo.Issue AS a
      WHERE  EXISTS ( SELECT 1 FROM inserted AS b
-                      WHERE a.IssueID = b.IssueID AND DATEDIFF( dd, GETDATE(), SaleDate ) > 0 ) 
-       AND  NOT EXISTS ( SELECT 1 FROM deleted ) ; 
-                      
-                      
+                      WHERE b.MethodOfSaleID = 1 AND a.IssueID = b.IssueID AND DATEDIFF( dd, GETDATE(), SaleDate ) > 0 )
+            AND NOT EXISTS (SELECT 1 FROM deleted) ;
+                                               
 --  2)  INSERT IssueFeeCounty for each CountyClient record that exists
       WITH  clientCounties AS ( 
             SELECT  IssueID         = ins.IssueID
@@ -145,7 +145,7 @@ BEGIN TRY
                         , src.IntCalcMeth, src.CouponType, src.CallFrequency, src.DisclosureType
                         , src.PurchasePrice, src.Notes, src.NotesRefundedBy, src.NotesRefunds
                         , src.ArbitrageYield, src.QualityControlDate, src.Purpose, src.ChangeDate
-                        , src.ChangeBy, src.ObligorClientID, src.EIPInvest ) ;
+  , src.ChangeBy, src.ObligorClientID, src.EIPInvest ) ;
 
 END TRY
 BEGIN CATCH

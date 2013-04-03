@@ -3,7 +3,7 @@
                                        , @RefundedPurposeID     AS VARCHAR (30)
                                        , @TotalSavingsAmount    AS VARCHAR (30)
                                        , @NPVSavingsAmount      AS VARCHAR (30)
-                                       , @NPVSavingsPercent     AS VARCHAR (30) 
+                                       , @NPVBenefitPercent     AS VARCHAR (30) 
                                        , @CallDate              AS VARCHAR (30) )
 AS
 /*
@@ -30,7 +30,7 @@ BEGIN
                   , refundedPurposeID   = CAST( @refundedPurposeID  AS INT )
                   , TotalSavingsAmount  = CAST( @TotalSavingsAmount AS DECIMAL (15,2) )
                   , NPVSavingsAmount    = CAST( @NPVSavingsAmount   AS DECIMAL (15,2) )
-                  , NPVSavingsPercent   = CAST( @NPVSavingsPercent  AS DECIMAL (5,3)  )
+                  , NPVBenefitPercent   = CAST( @NPVBenefitPercent  AS DECIMAL (5,3)  )
                   , CallDate            = CAST( @CallDate           AS DATE ) 
               FROM  dbo.Purpose 
              WHERE  PurposeName = @RefundingPurposeName 
@@ -41,17 +41,17 @@ BEGIN
       WHEN  MATCHED THEN
             UPDATE SET  TotalSavingsAmount  = src.TotalSavingsAmount
                       , NPVSavingsAmount    = src.NPVSavingsAmount
-                      , NPVSavingsPercent   = src.NPVSavingsPercent
+                      , NPVBenefitPercent   = src.NPVBenefitPercent
                       , ModifiedDate        = GETDATE()
                       , ModifiedUser        = dbo.udf_GetSystemUser()
 
       WHEN  NOT MATCHED BY TARGET THEN
             INSERT ( RefundingPurposeID, RefundedPurposeID
-                        , TotalSavingsAmount, NPVSavingsAmount, NPVSavingsPercent
+                        , TotalSavingsAmount, NPVSavingsAmount, NPVBenefitPercent
                         , ModifiedDate, ModifiedUser )
 
             VALUES ( src.PurposeID, src.refundedPurposeID
-                        , src.TotalSavingsAmount, src.NPVSavingsAmount, src.NPVSavingsPercent
+                        , src.TotalSavingsAmount, src.NPVSavingsAmount, src.NPVBenefitPercent
                         , GETDATE(), dbo.udf_GetSystemUser() ) ;
 
 END

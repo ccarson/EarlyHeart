@@ -155,6 +155,9 @@
     <Folder Include="Schema Objects\Import\Views" />
     <Folder Include="Schema Objects\edata" />
     <Folder Include="Schema Objects\edata\Synonyms" />
+    <Folder Include="Security\" />
+    <Folder Include="Documents\" />
+    <Folder Include="Documents\Functions\" />
   </ItemGroup>
   <ItemGroup>
     <BuildContributorArgument Include="OutDir=$(OutDir)" />
@@ -569,6 +572,7 @@
     <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeMaturityRefunding.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.CertificateType.table.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.sp_GetIssueTermGroupTotals.proc.sql" />
+    <Build Include="Documents\Functions\Documents.tvf_DCAfterSale.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
