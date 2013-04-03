@@ -9,7 +9,7 @@ CREATE VIEW Import.vw_IssuesData
 
     revisor         date                description
     ---------       -----------         ----------------------------
-    ccarson         2013-02-13          created
+    ccarson         ###DATE###          created ( Issues Conversion )
 
     Notes:
 

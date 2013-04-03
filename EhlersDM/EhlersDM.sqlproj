@@ -155,7 +155,6 @@
     <Folder Include="Schema Objects\Import\Views" />
     <Folder Include="Schema Objects\edata" />
     <Folder Include="Schema Objects\edata\Synonyms" />
-    <Folder Include="Security\" />
   </ItemGroup>
   <ItemGroup>
     <BuildContributorArgument Include="OutDir=$(OutDir)" />
@@ -537,8 +536,7 @@
     <Build Include="Schema Objects\Import.schema.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.deleteExistingIssueData.proc.sql" />
     <Build Include="Schema Objects\Import\Views\Import.vw_IssuesData.view.sql" />
-    <Build Include="Schema Objects\Import\Stored Procedures\Import.insertIssueMaturity.sql" />
-    <Build Include="Schema Objects\Import\Stored Procedures\Import.insertIssuePostBond.sql" />
+    <Build Include="Schema Objects\Import\Stored Procedures\Import.loadMunexIssuePostBond.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.updateIssueMaturity.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurpose.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeMaturity.sql" />
@@ -561,7 +559,8 @@
       <ApplicationScope>False</ApplicationScope>
       <SuppressTSqlWarnings>71562</SuppressTSqlWarnings>
     </Build>
-    <Build Include="Security\EhlersReportUser.sql" />
+    <Build Include="Schema Objects\Import\Stored Procedures\Import.loadMunexIssueMaturity.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssueRating.proc.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
