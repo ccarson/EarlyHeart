@@ -155,9 +155,6 @@
     <Folder Include="Schema Objects\Import\Views" />
     <Folder Include="Schema Objects\edata" />
     <Folder Include="Schema Objects\edata\Synonyms" />
-    <Folder Include="Security\" />
-    <Folder Include="Documents\" />
-    <Folder Include="Documents\Functions\" />
   </ItemGroup>
   <ItemGroup>
     <BuildContributorArgument Include="OutDir=$(OutDir)" />
@@ -572,7 +569,9 @@
     <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeMaturityRefunding.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.CertificateType.table.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.sp_GetIssueTermGroupTotals.proc.sql" />
-    <Build Include="Documents\Functions\Documents.tvf_DCAfterSale.sql" />
+    <None Include="Project Scripts\IssuesConversion\PostDeployChanges\LoadStaticLists.script.sql" />
+    <Build Include="Database Security\Users\EhlersReportUser.user.sql" />
+    <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_DCAfterSale.function.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
@@ -586,6 +585,18 @@
     <SqlCmdVariable Include="PostDeployChanges">
       <DefaultValue>NO</DefaultValue>
       <Value>$(SqlCmdVar__18)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="Server">
+      <DefaultValue>EHLERS-SS4</DefaultValue>
+      <Value>$(SqlCmdVar__21)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="ServerLogins">
+      <DefaultValue>ServerLogins</DefaultValue>
+      <Value>$(SqlCmdVar__23)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="SourceDatabase">
+      <DefaultValue>Ehlers_Dev</DefaultValue>
+      <Value>$(SqlCmdVar__22)</Value>
     </SqlCmdVariable>
   </ItemGroup>
   <ItemGroup>
@@ -606,15 +617,15 @@
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
-    <ArtifactReference Include="Database References\ServerLogins.dacpac">
-      <HintPath>Database References\ServerLogins.dacpac</HintPath>
-      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
-      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
-    </ArtifactReference>
     <ArtifactReference Include="Database References\edata.dacpac">
       <HintPath>Database References\edata.dacpac</HintPath>
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
       <DatabaseSqlCmdVariable>edata</DatabaseSqlCmdVariable>
+    </ArtifactReference>
+    <ArtifactReference Include="Database References\ServerLogins.dacpac">
+      <HintPath>Database References\ServerLogins.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseSqlCmdVariable>ServerLogins</DatabaseSqlCmdVariable>
     </ArtifactReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Publish' ">

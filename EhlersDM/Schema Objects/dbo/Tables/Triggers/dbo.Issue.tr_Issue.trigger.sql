@@ -1,5 +1,5 @@
-﻿CREATE TRIGGER  [dbo].[tr_Issue]
-            ON  [dbo].[Issue]
+﻿CREATE TRIGGER  tr_Issue
+            ON  dbo.Issue
 AFTER INSERT, UPDATE
 AS
 /*
@@ -13,11 +13,10 @@ AS
     ---------       ----------          ----------------------------
     ccarson         2013-01-24          created
     ccarson         ###DATE###          Issues Conversion changes
-    mkiemen			2013-04-03			change the good faith calc 
-    
-    
+
+
     Logic Summary:
-    1)  UPDATE dbo.Issue.GoodFaithPercent to 2% of the IssueAmount when new
+    1)  UPDATE dbo.Issue.GoodFaithPercent to 2% of the IssueAmount on Issue Creation
     2)  INSERT IssueFeeCounty for each CountyClient record that exists
     3)  Stop processing when trigger is invoked by Conversion.processIssues procedure
     4)  Stop processing unless Issue data has actually changed
@@ -40,28 +39,31 @@ BEGIN TRY
        SET  GoodFaithPercent = 2.0
       FROM  dbo.Issue AS a
      WHERE  EXISTS ( SELECT 1 FROM inserted AS b
-                      WHERE b.MethodOfSaleID = 1 AND a.IssueID = b.IssueID AND DATEDIFF( dd, GETDATE(), SaleDate ) > 0 )
-            AND NOT EXISTS (SELECT 1 FROM deleted) ;
-                                               
+                      WHERE a.IssueID = b.IssueID
+                        AND DATEDIFF( dd, GETDATE(), SaleDate ) > 0
+                        AND b.MethodOfSaleID = 1 )
+       AND  NOT EXISTS ( SELECT 1 FROM deleted ) ;
+
+
 --  2)  INSERT IssueFeeCounty for each CountyClient record that exists
-      WITH  clientCounties AS ( 
+      WITH  clientCounties AS (
             SELECT  IssueID         = ins.IssueID
-                  , CountyClientID  = cov.OverlapClientID 
+                  , CountyClientID  = cov.OverlapClientID
                   , Ordinal         = cov.Ordinal
                   , ModifiedDate    = ins.ModifiedDate
-                  , ModifiedUser    = ins.ModifiedUser 
+                  , ModifiedUser    = ins.ModifiedUser
               FROM  dbo.ClientOverlap AS cov
-        INNER JOIN  dbo.OverlapType   AS ovt ON ovt.OverlapTypeID = cov.OverlapTypeID AND ovt.Value = 'Counties' 
-        INNER JOIN  inserted          AS ins ON ins.ClientID = cov.ClientID 
-             WHERE  NOT EXISTS ( SELECT 1 FROM deleted AS del WHERE del.IssueID = ins.IssueID ) ) 
-          
-    INSERT  dbo.IssueFeeCounty ( 
-            IssueID, CountyClientID, Ordinal, ModifiedDate, ModifiedUser ) 
-    SELECT  IssueID, CountyClientID, Ordinal, ModifiedDate, ModifiedUser 
-      FROM  clientCounties 
-     ORDER  BY Ordinal ;                      
-                      
-                      
+        INNER JOIN  dbo.OverlapType   AS ovt ON ovt.OverlapTypeID = cov.OverlapTypeID AND ovt.Value = 'Counties'
+        INNER JOIN  inserted          AS ins ON ins.ClientID = cov.ClientID
+             WHERE  NOT EXISTS ( SELECT 1 FROM deleted AS del WHERE del.IssueID = ins.IssueID ) )
+
+    INSERT  dbo.IssueFeeCounty (
+            IssueID, CountyClientID, Ordinal, ModifiedDate, ModifiedUser )
+    SELECT  IssueID, CountyClientID, Ordinal, ModifiedDate, ModifiedUser
+      FROM  clientCounties
+     ORDER  BY Ordinal ;
+
+
 --  3)  Stop processing when trigger is invoked by Conversion.processIssues procedure
     IF  CONTEXT_INFO() = @processIssues
         RETURN ;
@@ -145,7 +147,7 @@ BEGIN TRY
                         , src.IntCalcMeth, src.CouponType, src.CallFrequency, src.DisclosureType
                         , src.PurchasePrice, src.Notes, src.NotesRefundedBy, src.NotesRefunds
                         , src.ArbitrageYield, src.QualityControlDate, src.Purpose, src.ChangeDate
-  , src.ChangeBy, src.ObligorClientID, src.EIPInvest ) ;
+                        , src.ChangeBy, src.ObligorClientID, src.EIPInvest ) ;
 
 END TRY
 BEGIN CATCH
