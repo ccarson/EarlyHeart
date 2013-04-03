@@ -11,6 +11,7 @@
   , SubjectToDebtLimit  BIT             NOT NULL    CONSTRAINT DF_Purpose_SubjectToDebtLimit    DEFAULT 0
   , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_Purpose_ModifiedDate          DEFAULT GETDATE()
   , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_Purpose_ModifiedUser          DEFAULT dbo.udf_GetSystemUser()
+  
   , CONSTRAINT FK_Purpose_FinanceType
         FOREIGN KEY ( FinanceTypeID ) REFERENCES dbo.FinanceType ( FinanceTypeID )
   , CONSTRAINT FK_Purpose_FundingSourceType
@@ -23,3 +24,6 @@
 GO
 
 CREATE INDEX IX_Purpose_IssueID ON dbo.Purpose ( IssueID ASC ) ;
+GO
+
+CREATE INDEX IX_Purpose_IssuePurpose ON dbo.Purpose ( IssueID ASC, PurposeID ASC ) INCLUDE ( PurposeName ) ; 

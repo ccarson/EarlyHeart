@@ -16,12 +16,23 @@ CREATE VIEW Import.vw_IssuesData
 ************************************************************************************************************************************
 */
 AS
-    SELECT  TOP 100 PERCENT 
-            IssueID                 =  i.IssueID
-          , IssuerName              =  c.ClientName
-          , IssueName               =  ISNULL( i.IssueName,'' )
-          , Amount                  =  ISNULL( i.IssueAmount, 0.00 )
-          , SaleDate                =  i.SaleDate
-      FROM  dbo.Issue   AS i   
-INNER JOIN  dbo.Client  AS c ON c.ClientID = i.ClientID
-     ORDER  BY IssueID ;
+      WITH  purposeAmounts AS ( 
+            SELECT  PurposeID = PurposeID
+                  , Amount    = SUM( PaymentAmount ) 
+              FROM  dbo.PurposeMaturity
+             GROUP  BY PurposeID ) 
+
+    SELECT  IssueID                 =  iss.IssueID
+          , ClientID                =  iss.ClientID
+          , PurposeID               =  pur.PurposeID
+          , PurposeName             =  pur.PurposeName
+          , PurposeAmount           =  ppa.Amount
+          , IssuerName              =  cli.ClientName
+          , IssueName               =  ISNULL( iss.IssueName,'' )
+          , Amount                  =  ISNULL( iss.IssueAmount, 0.00 )
+          , SaleDate                =  iss.SaleDate
+      FROM  dbo.Issue       AS iss   
+INNER JOIN  dbo.Client      AS cli ON cli.ClientID = iss.ClientID
+INNER JOIN  dbo.Purpose     AS pur ON pur.IssueID  = iss.IssueID
+INNER JOIN  purposeAmounts  AS ppa ON ppa.PurposeID = pur.PurposeID
+; 

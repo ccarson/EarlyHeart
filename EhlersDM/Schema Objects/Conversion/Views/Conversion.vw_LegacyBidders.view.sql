@@ -29,6 +29,8 @@ AS
      CROSS  APPLY Conversion.tvf_transformPercentage ( tic )     AS x
      CROSS  APPLY Conversion.tvf_transformPercentage ( nicPct )  AS y
      CROSS  APPLY Conversion.tvf_transformPercentage ( ARRAtic ) AS z
+    WHERE   EXISTS ( SELECT 1 FROM edata.Firms AS f WHERE f.FirmID = b.FirmID ) 
+      AND   EXISTS ( SELECT 1 FROM edata.Issues AS i WHERE i.IssueID = b.IssueID ) 
         UNION  ALL
     SELECT  IssueID       = b.IssueID
           , FirmID        = b.FirmID
@@ -42,5 +44,7 @@ AS
       FROM  edata.InternetBidders AS b
      CROSS  APPLY Conversion.tvf_transformPercentage ( tic )    AS x
      CROSS  APPLY Conversion.tvf_transformPercentage ( nicPct ) AS y
-     WHERE NOT EXISTS ( SELECT 1 FROM edata.bidders AS z
-                         WHERE z.FirmID = b.FirmID AND z.IssueID = b.IssueID ) ;
+     WHERE  NOT EXISTS ( SELECT 1 FROM edata.bidders AS z
+                          WHERE z.FirmID = b.FirmID AND z.IssueID = b.IssueID ) 
+       AND  EXISTS ( SELECT 1 FROM edata.Firms AS f WHERE f.FirmId = b.FirmId ) 
+       AND  EXISTS ( SELECT 1 FROM edata.Issues AS i WHERE i.IssueID = b.IssueID ) ;

@@ -267,8 +267,6 @@
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.AppEmployeeAddUpdate.proc.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.AppEmployeeDelete.proc.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.ClientAddUpdate.proc.sql" />
-    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.IssueAddUpdate.proc.sql" />
-    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.IssueAddUpdateII.proc.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.IssueMeetingAddUpdate.proc.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.processEhlersError.proc.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.ProjectAddUpdate.proc.sql" />
@@ -538,7 +536,7 @@
     <Build Include="Schema Objects\Import\Views\Import.vw_IssuesData.view.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.loadMunexIssuePostBond.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.updateIssueMaturity.sql" />
-    <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurpose.sql" />
+    <Build Include="Schema Objects\Import\Stored Procedures\Import.loadPurposeFromMunex.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeMaturity.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeSource.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeUse.sql" />
@@ -561,6 +559,10 @@
     </Build>
     <Build Include="Schema Objects\Import\Stored Procedures\Import.loadMunexIssueMaturity.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssueRating.proc.sql" />
+    <Build Include="Schema Objects\Import\Stored Procedures\Import.updateIssue.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.deletePurpose.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyIssuePostBond.view.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssuePostBond.proc.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">

@@ -1,5 +1,4 @@
-﻿
-CREATE VIEW Conversion.vw_LegacyBidAnnual
+﻿CREATE VIEW Conversion.vw_LegacyBidAnnual
 /*
 ************************************************************************************************************************************
 
@@ -27,7 +26,9 @@ AS
           , OrginalPaymentAmount    = CAST( OriginalMaturity AS DECIMAL(15,2) )
           , InterestRate            = CAST( coupon           AS DECIMAL(6,3) )
           , TermBond                = TermBond
-      FROM  edata.BidAnnual
+      FROM  edata.BidAnnual AS ba
+     WHERE  EXISTS ( SELECT 1 FROM edata.Firms AS f WHERE f.FirmID = ba.FirmID ) 
+       AND  EXISTS ( SELECT 1 FROM edata.Issues AS i WHERE i.IssueID = ba.IssueID ) 
         UNION ALL
     SELECT  BidderID                = CAST( NULL AS INT )
           , IssueID                 = iba.IssueID
@@ -41,4 +42,6 @@ AS
      WHERE  NOT EXISTS ( SELECT 1 FROM edata.BidAnnual AS ba
                           WHERE ba.IssueID = iba.IssueID
                             AND ba.FirmID = iba.FirmID
-                            AND ba.MaturityDate = iba.MaturityDate ) ;
+                            AND ba.MaturityDate = iba.MaturityDate ) 
+       AND  EXISTS ( SELECT 1 FROM edata.Firms AS f WHERE f.FirmID = iba.FirmID ) 
+       AND  EXISTS ( SELECT 1 FROM edata.Issues AS i WHERE i.IssueID = iba.IssueID ) ; 
