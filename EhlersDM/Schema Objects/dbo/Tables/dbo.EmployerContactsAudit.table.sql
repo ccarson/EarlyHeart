@@ -4,8 +4,8 @@
   , EmployerID         INT          NOT NULL
   , ContactID          INT          NOT NULL
   , ChangeType         CHAR (1)     NOT NULL
-  , ModifiedDate       DATETIME     NOT NULL    CONSTRAINT DF_EmployerContactsAudit_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser       VARCHAR (20) NOT NULL    CONSTRAINT DF_EmployerContactsAudit_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate       DATETIME     NOT NULL    CONSTRAINT DF_EmployerContactsAudit_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser       VARCHAR (20) NOT NULL    CONSTRAINT DF_EmployerContactsAudit_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
 ) ;
 GO
 

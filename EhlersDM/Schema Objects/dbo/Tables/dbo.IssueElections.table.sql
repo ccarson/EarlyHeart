@@ -2,8 +2,8 @@
     IssueElectionsID INT          NOT NULL  IDENTITY
   , IssueID          INT          NOT NULL
   , ElectionID       INT          NOT NULL
-  , ModifiedDate     DATETIME     NOT NULL    CONSTRAINT DF_IssueElections_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser     VARCHAR (20) NOT NULL    CONSTRAINT DF_IssueElections_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate     DATETIME     NOT NULL    CONSTRAINT DF_IssueElections_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser     VARCHAR (20) NOT NULL    CONSTRAINT DF_IssueElections_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_IssueElections PRIMARY KEY CLUSTERED ( IssueElectionsID ASC )
   , CONSTRAINT UX_IssueElections UNIQUE NONCLUSTERED ( ElectionID ASC, IssueID ASC )
   , CONSTRAINT FK_IssueElections_Election

@@ -3,17 +3,17 @@
   , IssueID       INT             NOT NULL
   , FirmID        INT             NOT NULL
   , BidSourceID   INT             NULL
-  , PurchasePrice DECIMAL (15, 2) NOT NULL  CONSTRAINT DF_Bidder_BidPurchasePrice DEFAULT 0.00
-  , TICPercent    DECIMAL (12, 8) NOT NULL  CONSTRAINT DF_Bidder_TICPercent       DEFAULT 0
-  , NICPercent    DECIMAL (12, 8) NOT NULL  CONSTRAINT DF_Bidder_BidNIC           DEFAULT 0
-  , NICAmount     DECIMAL (15, 2) NOT NULL  CONSTRAINT DF_Bidder_BidNICAmount     DEFAULT 0.00
-  , BABTICPercent DECIMAL (12, 8) NOT NULL  CONSTRAINT DF_Bidder_BABTICPercent    DEFAULT 0
-  , BABNICPercent DECIMAL (12, 8) NOT NULL  CONSTRAINT DF_Bidder_BABNICPercent    DEFAULT 0
-  , BABNICAmount  DECIMAL (15, 2) NOT NULL  CONSTRAINT DF_Bidder_BABNICAmount     DEFAULT 0
-  , HasWinningBID BIT             NOT NULL  CONSTRAINT DF_Bidder_WinningBidInd    DEFAULT 0
-  , IsRecoveryAct BIT             NOT NULL  CONSTRAINT DF_Bidder_IsRecoveryAct    DEFAULT 0
-  , ModifiedDate  DATETIME        NOT NULL    CONSTRAINT DF_Bidder_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser  VARCHAR (20)    NOT NULL    CONSTRAINT DF_Bidder_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , PurchasePrice DECIMAL (15, 2) NOT NULL  CONSTRAINT DF_Bidder_BidPurchasePrice DEFAULT ((0.00))
+  , TICPercent    DECIMAL (12, 8) NOT NULL  CONSTRAINT DF_Bidder_TICPercent       DEFAULT ((0))
+  , NICPercent    DECIMAL (12, 8) NOT NULL  CONSTRAINT DF_Bidder_BidNIC           DEFAULT ((0))
+  , NICAmount     DECIMAL (15, 2) NOT NULL  CONSTRAINT DF_Bidder_BidNICAmount     DEFAULT ((0.00))
+  , BABTICPercent DECIMAL (12, 8) NOT NULL  CONSTRAINT DF_Bidder_BABTICPercent    DEFAULT ((0))
+  , BABNICPercent DECIMAL (12, 8) NOT NULL  CONSTRAINT DF_Bidder_BABNICPercent    DEFAULT ((0))
+  , BABNICAmount  DECIMAL (15, 2) NOT NULL  CONSTRAINT DF_Bidder_BABNICAmount     DEFAULT ((0))
+  , HasWinningBID BIT             NOT NULL  CONSTRAINT DF_Bidder_WinningBidInd    DEFAULT ((0))
+  , IsRecoveryAct BIT             NOT NULL  CONSTRAINT DF_Bidder_IsRecoveryAct    DEFAULT ((0))
+  , ModifiedDate  DATETIME        NOT NULL    CONSTRAINT DF_Bidder_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser  VARCHAR (20)    NOT NULL    CONSTRAINT DF_Bidder_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_Bidder PRIMARY KEY CLUSTERED ( BidderID ASC )
   , CONSTRAINT FK_Bidder_BidSource
         FOREIGN KEY ( BidSourceID ) REFERENCES dbo.BidSource ( BidSourceID )

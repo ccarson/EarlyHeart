@@ -2,8 +2,8 @@
     ClientMaterialEventIssuesID INT             NOT NULL    IDENTITY
   , ClientMaterialEventID       INT             NOT NULL
   , IssueID                     INT             NOT NULL
-  , ModifiedDate                DATETIME        NOT NULL    CONSTRAINT DF_ClientMaterialEventIssues_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser                VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientMaterialEventIssues_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate                DATETIME        NOT NULL    CONSTRAINT DF_ClientMaterialEventIssues_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser                VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientMaterialEventIssues_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_ClientMaterialEventIssues PRIMARY KEY CLUSTERED ( ClientMaterialEventIssuesID ASC )
   , CONSTRAINT UX_ClientMaterialEventIssues UNIQUE NONCLUSTERED ( ClientMaterialEventID ASC, IssueID ASC )
   , CONSTRAINT FK_ClientMaterialEventIssues_ClientMaterialEvent

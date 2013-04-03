@@ -7,8 +7,8 @@
   , MeetingDate        DATE         NULL
   , MeetingTime        TIME (7)     NULL
   , AwardTime          TIME (7)     NULL
-  , ModifiedDate       DATETIME     NOT NULL    CONSTRAINT DF_IssueMeeting_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser       VARCHAR (20) NOT NULL    CONSTRAINT DF_IssueMeeting_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate       DATETIME     NOT NULL    CONSTRAINT DF_IssueMeeting_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser       VARCHAR (20) NOT NULL    CONSTRAINT DF_IssueMeeting_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_IssueMeeting PRIMARY KEY CLUSTERED ( IssueMeetingID ASC )
   , CONSTRAINT FK_IssueMeeting_Issue
         FOREIGN KEY ( IssueID ) REFERENCES dbo.Issue ( IssueID )

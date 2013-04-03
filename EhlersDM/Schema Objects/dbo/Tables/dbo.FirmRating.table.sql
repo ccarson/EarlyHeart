@@ -4,8 +4,8 @@
   , RatingID     INT          NOT NULL
   , RatedDate    DATE         NOT NULL
   , Event        VARCHAR (50) NOT NULL  CONSTRAINT DF_FirmRating_Event DEFAULT ('')
-  , ModifiedDate DATETIME     NOT NULL    CONSTRAINT DF_FirmRating_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser VARCHAR (20) NOT NULL    CONSTRAINT DF_FirmRating_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate DATETIME     NOT NULL    CONSTRAINT DF_FirmRating_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser VARCHAR (20) NOT NULL    CONSTRAINT DF_FirmRating_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_FirmRating PRIMARY KEY CLUSTERED ( FirmRatingID ASC )
   , CONSTRAINT FK_FirmRating_Firm
         FOREIGN KEY ( FirmID ) REFERENCES dbo.Firm ( FirmID )

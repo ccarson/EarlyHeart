@@ -9,8 +9,8 @@
   , Zip             VARCHAR (10)    NOT NULL
   , Verified        BIT             NOT NULL
   , ChangeType      CHAR (1)        NOT NULL
-  , ModifiedDate    DATETIME        NOT NULL    CONSTRAINT DF_AddressAudit_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser    VARCHAR (20)    NOT NULL    CONSTRAINT DF_AddressAudit_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate    DATETIME        NOT NULL    CONSTRAINT DF_AddressAudit_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser    VARCHAR (20)    NOT NULL    CONSTRAINT DF_AddressAudit_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_AddressAudit PRIMARY KEY CLUSTERED ( AddressAuditID ASC )
   , CONSTRAINT FK_AddressAudit_Address
         FOREIGN KEY ( AddressID ) REFERENCES dbo.Address ( AddressID )

@@ -2,9 +2,9 @@
     ClientReportFeeID   INT             NOT NULL    IDENTITY
   , ClientReportID      INT             NOT NULL
   , FeeTypeID           INT             NOT NULL
-  , Amount              DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_ClientReportFee_Amount DEFAULT 0
-  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_ClientReportFee_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientReportFee_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , Amount              DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_ClientReportFee_Amount DEFAULT ((0))
+  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_ClientReportFee_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientReportFee_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_ClientReportFee PRIMARY KEY CLUSTERED ( ClientReportFeeID ASC )
   , CONSTRAINT FK_ClientReportFee_Client
         FOREIGN KEY ( ClientReportID ) REFERENCES dbo.ClientReport ( ClientReportID )

@@ -1,16 +1,16 @@
 ﻿CREATE TABLE dbo.Purpose (
     PurposeID           INT             NOT NULL    CONSTRAINT PK_Purpose PRIMARY KEY CLUSTERED IDENTITY
   , IssueID             INT             NOT NULL
-  , PurposeName         VARCHAR (150)   NOT NULL    CONSTRAINT DF_Purpose_PurposeName           DEFAULT ''
+  , PurposeName         VARCHAR (150)   NOT NULL    CONSTRAINT DF_Purpose_PurposeName           DEFAULT ('')
   , FinanceTypeID       INT             NULL
   , UseProceedID        INT             NULL
-  , SubIssue            INT             NOT NULL    CONSTRAINT DF_Purpose_SubIssue              DEFAULT 0
-  , PurposeOrder        INT             NOT NULL    CONSTRAINT DF_Purpose_PurposeOrder          DEFAULT 0
+  , SubIssue            INT             NOT NULL    CONSTRAINT DF_Purpose_SubIssue              DEFAULT ((0))
+  , PurposeOrder        INT             NOT NULL    CONSTRAINT DF_Purpose_PurposeOrder          DEFAULT ((0))
   , FundingSourceTypeID INT             NULL
-  , BackingPayment      VARCHAR (100)   NOT NULL    CONSTRAINT DF_Purpose_BackingPayment        DEFAULT ''
-  , SubjectToDebtLimit  BIT             NOT NULL    CONSTRAINT DF_Purpose_SubjectToDebtLimit    DEFAULT 0
-  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_Purpose_ModifiedDate          DEFAULT GETDATE()
-  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_Purpose_ModifiedUser          DEFAULT dbo.udf_GetSystemUser()
+  , BackingPayment      VARCHAR (100)   NOT NULL    CONSTRAINT DF_Purpose_BackingPayment        DEFAULT ('')
+  , SubjectToDebtLimit  BIT             NOT NULL    CONSTRAINT DF_Purpose_SubjectToDebtLimit    DEFAULT ((0))
+  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_Purpose_ModifiedDate          DEFAULT (getdate())
+  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_Purpose_ModifiedUser          DEFAULT ([dbo].[udf_GetSystemUser]())
   
   , CONSTRAINT FK_Purpose_FinanceType
         FOREIGN KEY ( FinanceTypeID ) REFERENCES dbo.FinanceType ( FinanceTypeID )

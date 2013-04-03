@@ -2,9 +2,9 @@
     FirmCategoriesID    INT             NOT NULL    IDENTITY
   , FirmID              INT             NOT NULL
   , FirmCategoryID      INT             NOT NULL
-  , Active              BIT             NOT NULL    CONSTRAINT DF_FirmCategories_Active DEFAULT 1
-  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_FirmCategories_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_FirmCategories_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , Active              BIT             NOT NULL    CONSTRAINT DF_FirmCategories_Active DEFAULT ((1))
+  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_FirmCategories_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_FirmCategories_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_FirmCategories PRIMARY KEY CLUSTERED ( FirmCategoriesID ASC )
   , CONSTRAINT UX_FirmCategories UNIQUE NONCLUSTERED ( FirmCategoryID ASC, FirmID ASC )
   , CONSTRAINT FK_FirmCategories_Firm

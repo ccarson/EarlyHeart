@@ -5,8 +5,8 @@
   , RatingTypeID    INT             NOT NULL
   , RatedDate       DATE            NOT NULL
   , Event           VARCHAR (50)    NOT NULL    CONSTRAINT DF_ClientRating_Event    DEFAULT ('')
-  , ModifiedDate    DATETIME        NOT NULL    CONSTRAINT DF_ClientRating_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser    VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientRating_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate    DATETIME        NOT NULL    CONSTRAINT DF_ClientRating_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser    VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientRating_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_ClientRating PRIMARY KEY CLUSTERED ( ClientRatingID ASC )
   , CONSTRAINT FK_ClientRating_Client
         FOREIGN KEY ( ClientID ) REFERENCES dbo.Client ( ClientID )

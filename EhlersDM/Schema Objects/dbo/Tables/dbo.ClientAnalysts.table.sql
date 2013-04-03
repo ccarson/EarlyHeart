@@ -2,9 +2,9 @@
     ClientAnalystsID            INT             NOT NULL    IDENTITY
   , ClientID                    INT             NOT NULL
   , EhlersEmployeeJobGroupsID   INT             NOT NULL
-  , Ordinal                     INT             NOT NULL    CONSTRAINT DF_ClientAnalysts_Ordinal DEFAULT 0
-  , ModifiedDate                DATETIME        NOT NULL    CONSTRAINT DF_ClientAnalysts_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser                VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientAnalysts_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , Ordinal                     INT             NOT NULL    CONSTRAINT DF_ClientAnalysts_Ordinal DEFAULT ((0))
+  , ModifiedDate                DATETIME        NOT NULL    CONSTRAINT DF_ClientAnalysts_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser                VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientAnalysts_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_ClientAnalysts PRIMARY KEY CLUSTERED ( ClientAnalystsID ASC )
   , CONSTRAINT FK_ClientAnalysts_Client
         FOREIGN KEY ( ClientID ) REFERENCES dbo.Client ( ClientID )

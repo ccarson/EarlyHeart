@@ -2,8 +2,8 @@
     EmployerContactsID INT          NOT NULL  IDENTITY
   , EmployerID         INT          NOT NULL
   , ContactID          INT          NOT NULL
-  , ModifiedDate       DATETIME     NOT NULL    CONSTRAINT DF_EmployerContacts_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser       VARCHAR (20) NOT NULL    CONSTRAINT DF_EmployerContacts_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate       DATETIME     NOT NULL    CONSTRAINT DF_EmployerContacts_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser       VARCHAR (20) NOT NULL    CONSTRAINT DF_EmployerContacts_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_EmployerContacts PRIMARY KEY CLUSTERED ( EmployerContactsID ASC )
   , CONSTRAINT FK_EmployerContacts_Contact 
         FOREIGN KEY ( ContactID ) REFERENCES dbo.Contact ( ContactID )

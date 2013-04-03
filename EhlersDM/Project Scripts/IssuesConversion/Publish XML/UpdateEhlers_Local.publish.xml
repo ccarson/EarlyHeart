@@ -37,5 +37,11 @@
     <SqlCmdVariable Include="PreDeployChanges">
       <Value>NO</Value>
     </SqlCmdVariable>
+    <SqlCmdVariable Include="Server">
+      <Value>EHLERS-SS4</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="SourceDatabase">
+      <Value>Ehlers_Dev</Value>
+    </SqlCmdVariable>
   </ItemGroup>
 </Project>

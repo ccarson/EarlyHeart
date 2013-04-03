@@ -162,7 +162,6 @@
   <ItemGroup>
     <None Include="Database References\edata.dacpac" />
     <None Include="Database References\ServerLogins.dacpac" />
-    <None Include="Project Scripts\IssuesConversion\Publish XML\UpdateLocal.publish.xml" />
     <None Include="Project Scripts\SetRevisionDate.ps1" />
     <None Include="Project Scripts\IssuesConversion\Project notes and Comments.comments.txt" />
     <None Include="Project Scripts\IssuesConversion\Publish XML\UpdateEhlers_Dev.publish.xml" />
@@ -590,10 +589,6 @@
       <DefaultValue>EHLERS-SS4</DefaultValue>
       <Value>$(SqlCmdVar__21)</Value>
     </SqlCmdVariable>
-    <SqlCmdVariable Include="ServerLogins">
-      <DefaultValue>ServerLogins</DefaultValue>
-      <Value>$(SqlCmdVar__23)</Value>
-    </SqlCmdVariable>
     <SqlCmdVariable Include="SourceDatabase">
       <DefaultValue>Ehlers_Dev</DefaultValue>
       <Value>$(SqlCmdVar__22)</Value>
@@ -625,7 +620,7 @@
     <ArtifactReference Include="Database References\ServerLogins.dacpac">
       <HintPath>Database References\ServerLogins.dacpac</HintPath>
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
-      <DatabaseSqlCmdVariable>ServerLogins</DatabaseSqlCmdVariable>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Publish' ">

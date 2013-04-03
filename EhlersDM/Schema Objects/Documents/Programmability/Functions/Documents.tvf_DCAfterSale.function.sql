@@ -1,4 +1,4 @@
-﻿CREATE FUNCTION [Documents].[tvf_DCAfterSale] ( @IssueID AS INT )
+﻿CREATE FUNCTION Documents.tvf_DCAfterSale ( @IssueID AS INT )
 RETURNS TABLE AS
 /*
 ************************************************************************************************************************************

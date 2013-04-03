@@ -4,8 +4,8 @@
   , ClientID            INT             NOT NULL
   , FirmCategoriesID    INT             NOT NULL
   , ChangeType          CHAR (1)        NOT NULL
-  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_ClientFirmsAudit_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientFirmsAudit_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_ClientFirmsAudit_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientFirmsAudit_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_ClientFirmsAudit PRIMARY KEY CLUSTERED ( AuditID ASC )
 ) ;
 GO

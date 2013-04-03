@@ -2,8 +2,8 @@
     ClientContactsID    INT             NOT NULL    IDENTITY
   , ClientID            INT             NOT NULL
   , ContactID           INT             NOT NULL
-  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_ClientContacts_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientContacts_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_ClientContacts_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientContacts_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_ClientContacts PRIMARY KEY CLUSTERED ( ClientContactsID ASC )
   , CONSTRAINT FK_ClientContacts_Client
         FOREIGN KEY ( ClientID ) REFERENCES dbo.Client ( ClientID )

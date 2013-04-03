@@ -2,11 +2,11 @@
     ContactMailingsID   INT             NOT NULL    IDENTITY
   , ContactID           INT             NOT NULL
   , MailingTypeID       INT             NOT NULL
-  , DeliveryMethodID    INT             NOT NULL    CONSTRAINT DF_ContactMailings_DeliveryMethodID  DEFAULT 0
-  , OptOut              BIT             NOT NULL    CONSTRAINT DF_ContactMailings_OptOut            DEFAULT 0
+  , DeliveryMethodID    INT             NOT NULL    CONSTRAINT DF_ContactMailings_DeliveryMethodID  DEFAULT ((0))
+  , OptOut              BIT             NOT NULL    CONSTRAINT DF_ContactMailings_OptOut            DEFAULT ((0))
   , OptOutDate          DATETIME        NULL
-  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_ContactMailings_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_ContactMailings_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_ContactMailings_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_ContactMailings_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_ContactMailings PRIMARY KEY CLUSTERED ( ContactMailingsID ASC )
   , CONSTRAINT UX_ContactMailings UNIQUE NONCLUSTERED ( ContactID ASC, MailingTypeID ASC )
   , CONSTRAINT FK_ContactMailings_Contact

@@ -4,8 +4,8 @@
   , OverlapClientID INT             NOT NULL
   , OverlapTypeID   INT             NOT NULL
   , Ordinal         INT             NOT NULL
-  , ModifiedDate    DATETIME        NOT NULL    CONSTRAINT DF_ClientOverlap_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser    VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientOverlap_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate    DATETIME        NOT NULL    CONSTRAINT DF_ClientOverlap_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser    VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientOverlap_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_ClientOverlap PRIMARY KEY CLUSTERED ( ClientOverlapID ASC )
   , CONSTRAINT UX_ClientOverlap UNIQUE NONCLUSTERED ( ClientID ASC, OverlapClientID ASC, Ordinal ASC, OverlapTypeID ASC )
   , CONSTRAINT FK_ClientOverlap_ClientID

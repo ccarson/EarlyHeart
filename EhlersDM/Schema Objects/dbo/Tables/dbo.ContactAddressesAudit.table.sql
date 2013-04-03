@@ -5,8 +5,8 @@
   , AddressID          INT          NOT NULL
   , AddressTypeID      INT          NOT NULL
   , ChangeType         CHAR (1)     NOT NULL
-  , ModifiedDate       DATETIME     NOT NULL    CONSTRAINT DF_ContactAddressesAudit_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser       VARCHAR (20) NOT NULL    CONSTRAINT DF_ContactAddressesAudit_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate       DATETIME     NOT NULL    CONSTRAINT DF_ContactAddressesAudit_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser       VARCHAR (20) NOT NULL    CONSTRAINT DF_ContactAddressesAudit_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
 ) ;
 GO
 

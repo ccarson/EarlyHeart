@@ -5,11 +5,11 @@
   , ProjectServiceID INT            NOT NULL
   , CommissionTypeID INT            NULL
   , Name             VARCHAR (150)  NOT NULL
-  , InterTeam        BIT            NOT NULL    CONSTRAINT DF_Project_InterTeam         DEFAULT 0
-  , InvestProceeds   BIT            NOT NULL    CONSTRAINT DF_Project_InvestProceeds    DEFAULT 0
-  , Notes            VARCHAR (MAX)  NOT NULL    CONSTRAINT DF_Project_Notes             DEFAULT ''
-  , ModifiedDate     DATETIME       NOT NULL    CONSTRAINT DF_Project_ModifiedDate      DEFAULT GETDATE()
-  , ModifiedUser     VARCHAR (20)   NOT NULL    CONSTRAINT DF_Project_ModifiedUser      DEFAULT dbo.udf_GetSystemUser()
+  , InterTeam        BIT            NOT NULL    CONSTRAINT DF_Project_InterTeam         DEFAULT ((0))
+  , InvestProceeds   BIT            NOT NULL    CONSTRAINT DF_Project_InvestProceeds    DEFAULT ((0))
+  , Notes            VARCHAR (MAX)  NOT NULL    CONSTRAINT DF_Project_Notes             DEFAULT ('')
+  , ModifiedDate     DATETIME       NOT NULL    CONSTRAINT DF_Project_ModifiedDate      DEFAULT (getdate())
+  , ModifiedUser     VARCHAR (20)   NOT NULL    CONSTRAINT DF_Project_ModifiedUser      DEFAULT ([dbo].[udf_GetSystemUser]())
 
   , CONSTRAINT FK_Project_Client
         FOREIGN KEY ( ClientID ) REFERENCES dbo.Client ( ClientID )

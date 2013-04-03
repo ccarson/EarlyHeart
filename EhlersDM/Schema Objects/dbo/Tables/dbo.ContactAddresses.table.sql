@@ -3,8 +3,8 @@
   , ContactID           INT             NOT NULL
   , AddressID           INT             NOT NULL
   , AddressTypeID       INT             NOT NULL
-  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_ContactAddresses_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_ContactAddresses_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_ContactAddresses_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_ContactAddresses_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_ContactAddresses PRIMARY KEY CLUSTERED ( ContactAddressesID ASC )
   , CONSTRAINT UX_ContactAddresses UNIQUE NONCLUSTERED ( AddressID ASC, ContactID ASC, AddressTypeID ASC )
   , CONSTRAINT FK_ContactAddresses_Address

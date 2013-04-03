@@ -4,14 +4,14 @@
   , CountyClientID   INT             NOT NULL
   , Ordinal          INT             NOT NULL
   , AuditorFeeTypeID INT             NULL
-  , EntireFee        DECIMAL (15, 2) NOT NULL   CONSTRAINT DF_IssueFeeCounty_EntireFee       DEFAULT 0
-  , FinalFee         DECIMAL (15, 2) NOT NULL   CONSTRAINT DF_IssueFeeCounty_FinalFee        DEFAULT 0
-  , IsInvoiceWithCD  BIT             NOT NULL   CONSTRAINT DF_IssueFeeCounty_IsInvoiceWithCD DEFAULT 0
-  , IsProrated       BIT             NOT NULL   CONSTRAINT DF_IssueFeeCounty_IsProrated      DEFAULT 0
+  , EntireFee        DECIMAL (15, 2) NOT NULL   CONSTRAINT DF_IssueFeeCounty_EntireFee       DEFAULT ((0))
+  , FinalFee         DECIMAL (15, 2) NOT NULL   CONSTRAINT DF_IssueFeeCounty_FinalFee        DEFAULT ((0))
+  , IsInvoiceWithCD  BIT             NOT NULL   CONSTRAINT DF_IssueFeeCounty_IsInvoiceWithCD DEFAULT ((0))
+  , IsProrated       BIT             NOT NULL   CONSTRAINT DF_IssueFeeCounty_IsProrated      DEFAULT ((0))
   , VerifiedDate     DATE            NULL
-  , VerifiedUser     VARCHAR (20)    NOT NULL   CONSTRAINT DF_IssueFeeCounty_VerifyUser      DEFAULT ''
-  , ModifiedDate     DATETIME        NOT NULL   CONSTRAINT DF_IssueFeeCounty_ModifiedDate    DEFAULT GETDATE()
-  , ModifiedUser     VARCHAR (20)    NOT NULL   CONSTRAINT DF_IssueFeeCounty_ModifiedUser    DEFAULT dbo.udf_GetSystemUser()
+  , VerifiedUser     VARCHAR (20)    NOT NULL   CONSTRAINT DF_IssueFeeCounty_VerifyUser      DEFAULT ('')
+  , ModifiedDate     DATETIME        NOT NULL   CONSTRAINT DF_IssueFeeCounty_ModifiedDate    DEFAULT (getdate())
+  , ModifiedUser     VARCHAR (20)    NOT NULL   CONSTRAINT DF_IssueFeeCounty_ModifiedUser    DEFAULT ([dbo].[udf_GetSystemUser]())
 
   , CONSTRAINT FK_IssueFeeCounty_AuditorFeeType
         FOREIGN KEY ( AuditorFeeTypeID ) REFERENCES dbo.ClientAuditorFee ( ClientAuditorFeeID )

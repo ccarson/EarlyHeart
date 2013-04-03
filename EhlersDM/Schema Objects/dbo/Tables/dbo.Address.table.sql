@@ -7,7 +7,7 @@
   , State           VARCHAR (2)     NOT NULL
   , Zip             VARCHAR (10)    NOT NULL
   , Verified        BIT             NOT NULL
-  , ModifiedDate    DATETIME        NOT NULL    CONSTRAINT DF_Address_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser    VARCHAR (20)    NOT NULL    CONSTRAINT DF_Address_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate    DATETIME        NOT NULL    CONSTRAINT DF_Address_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser    VARCHAR (20)    NOT NULL    CONSTRAINT DF_Address_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_Address PRIMARY KEY CLUSTERED ( AddressID ASC )
 ) ;

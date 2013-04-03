@@ -4,62 +4,62 @@
   , IssueName                       VARCHAR (150)   NOT NULL
   , IssueAmount                     DECIMAL (15, 2) NOT NULL
   , IssueShortNameID                INT             NULL
-  , IssueShortNameOS                VARCHAR (100)   NOT NULL    CONSTRAINT DF_Issue_IssueShortNameOS             DEFAULT ''
+  , IssueShortNameOS                VARCHAR (100)   NOT NULL    CONSTRAINT DF_Issue_IssueShortNameOS             DEFAULT ('')
   , DatedDate                       DATE            NULL
   , IssueStatusID                   INT             NULL
-  , IssueTypeID                     INT             NULL        CONSTRAINT DF_Issue_IssueTypeListID              DEFAULT 0
+  , IssueTypeID                     INT             NULL        CONSTRAINT DF_Issue_IssueTypeListID              DEFAULT ((0))
   , MethodOfSaleID                  INT             NULL
   , SecurityTypeID                  INT             NULL
   , BondFormTypeID                  INT             NULL
   , InitialOfferingDocumentID       INT             NULL
-  , TaxStatus                       VARCHAR (20)    NOT NULL    CONSTRAINT DF_Issue_TaxStatus                    DEFAULT ''
-  , AltMinimumTax                   BIT             NULL        CONSTRAINT DF_Issue_AltMinimumTax                DEFAULT 0
-  , PrivateActBond                  BIT             NOT NULL    CONSTRAINT DF_Issue_PrivateActBond               DEFAULT 0
-  , Bond501C3                       BIT             NOT NULL    CONSTRAINT DF_Issue_Bond501C3                    DEFAULT 0
-  , Cusip6                          VARCHAR (6)     NULL        CONSTRAINT DF_Issue_Cusip6                       DEFAULT ''
-  , BankQualified                   BIT             NOT NULL    CONSTRAINT DF_Issue_BankQualified                DEFAULT 1
-  , Callable                        BIT             NOT NULL    CONSTRAINT DF_Issue_Callable                     DEFAULT 1
+  , TaxStatus                       VARCHAR (20)    NOT NULL    CONSTRAINT DF_Issue_TaxStatus                    DEFAULT ('')
+  , AltMinimumTax                   BIT             NULL        CONSTRAINT DF_Issue_AltMinimumTax                DEFAULT ((0))
+  , PrivateActBond                  BIT             NOT NULL    CONSTRAINT DF_Issue_PrivateActBond               DEFAULT ((0))
+  , Bond501C3                       BIT             NOT NULL    CONSTRAINT DF_Issue_Bond501C3                    DEFAULT ((0))
+  , Cusip6                          VARCHAR (6)     NULL        CONSTRAINT DF_Issue_Cusip6                       DEFAULT ('')
+  , BankQualified                   BIT             NOT NULL    CONSTRAINT DF_Issue_BankQualified                DEFAULT ((1))
+  , Callable                        BIT             NOT NULL    CONSTRAINT DF_Issue_Callable                     DEFAULT ((1))
   , CallFrequencyID                 INT             NULL
   , SaleDate                        DATE            NULL
   , SaleTime                        TIME (7)        NULL
   , SettlementDate                  DATE            NULL
   , OSPrintDate                     DATE            NULL
-  , AnticipationCertificate         VARCHAR (50)    NOT NULL    CONSTRAINT DF_Issue_AnticipationCertificate      DEFAULT ''
-  , InterestPaymentFreqID           INT             NULL        CONSTRAINT DF_Issue_InterestPaymentFreqID        DEFAULT 5
-  , InterestCalcMethodID            INT             NULL        CONSTRAINT DF_Issue_InterestCalcMethodID         DEFAULT 1
-  , InterestTypeID                  INT             NULL        CONSTRAINT DF_Issue_InterestTypeID               DEFAULT 1
+  , AnticipationCertificate         VARCHAR (50)    NOT NULL    CONSTRAINT DF_Issue_AnticipationCertificate      DEFAULT ('')
+  , InterestPaymentFreqID           INT             NULL        CONSTRAINT DF_Issue_InterestPaymentFreqID        DEFAULT ((5))
+  , InterestCalcMethodID            INT             NULL        CONSTRAINT DF_Issue_InterestCalcMethodID         DEFAULT ((1))
+  , InterestTypeID                  INT             NULL        CONSTRAINT DF_Issue_InterestTypeID               DEFAULT ((1))
   , FirstInterestDate               DATE            NULL
-  , DebtServiceYear                 VARCHAR (50)    NOT NULL    CONSTRAINT DF_Issue_DebtServiceYear              DEFAULT ''
-  , PurchasePrice                   DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_PurchasePrice                DEFAULT 0.00
-  , ArbitrageYield                  DECIMAL (11, 8) NOT NULL    CONSTRAINT DF_Issue_ArbitrageYield               DEFAULT 0.00
-  , QualifiedForDebtServiceEqual    BIT             NOT NULL    CONSTRAINT DF_Issue_QualifiedForDebtServiceEqual DEFAULT 0
-  , GoodFaithPercent                DECIMAL (5, 2)  NOT NULL    CONSTRAINT DF_Issue_GoodFaithPercent             DEFAULT 0.00
+  , DebtServiceYear                 VARCHAR (50)    NOT NULL    CONSTRAINT DF_Issue_DebtServiceYear              DEFAULT ('')
+  , PurchasePrice                   DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_PurchasePrice                DEFAULT ((0.00))
+  , ArbitrageYield                  DECIMAL (11, 8) NOT NULL    CONSTRAINT DF_Issue_ArbitrageYield               DEFAULT ((0.00))
+  , QualifiedForDebtServiceEqual    BIT             NOT NULL    CONSTRAINT DF_Issue_QualifiedForDebtServiceEqual DEFAULT ((0))
+  , GoodFaithPercent                DECIMAL (5, 2)  NOT NULL    CONSTRAINT DF_Issue_GoodFaithPercent             DEFAULT ((0.00))
   , QCDate                          DATETIME        NULL
-  , ShortDescription                VARCHAR (200)   NOT NULL    CONSTRAINT DF_Issue_ShortDescription             DEFAULT ''
-  , LongDescription                 VARCHAR (MAX)   NOT NULL    CONSTRAINT DF_Issue_LongDescription              DEFAULT ''
-  , IsTargetList                    BIT             NOT NULL    CONSTRAINT DF_Issue_IsTargetList                 DEFAULT 0
-  , RefundedByNote                  VARCHAR (MAX)   NOT NULL    CONSTRAINT DF_Issue_RefundedByNote               DEFAULT ''
-  , RefundsNote                     VARCHAR (MAX)   NOT NULL    CONSTRAINT DF_Issue_RefundsNote                  DEFAULT ''
-  , DisclosureTypeID                INT             NULL        CONSTRAINT DF_Issue_DisclosureTypeID             DEFAULT 0
-  , IsEIPInvest                     BIT             NOT NULL    CONSTRAINT DF_Issue_IsEIPInvest                  DEFAULT 0
-  , IsTwoPercentLimit               BIT             NOT NULL    CONSTRAINT DF_Issue_IsTwoPercentLimit            DEFAULT 0
-  , TwoPercentLimitBasedOn          VARCHAR (100)   NOT NULL    CONSTRAINT DF_Issue_TwoPercentLimitBasedOn       DEFAULT ''
-  , CreditEnhanceFee                DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_CreditEnhanceFee             DEFAULT 0
-  , PostIssuanceFee                 DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_PostIssuanceFee              DEFAULT 0
-  , TotalEstimatedEhlersFee         DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_TotalEstimatedEhlersFee      DEFAULT 0
-  , TotalFinalEhlersFee             DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_TotalFinalEhlersFee          DEFAULT 0
+  , ShortDescription                VARCHAR (200)   NOT NULL    CONSTRAINT DF_Issue_ShortDescription             DEFAULT ('')
+  , LongDescription                 VARCHAR (MAX)   NOT NULL    CONSTRAINT DF_Issue_LongDescription              DEFAULT ('')
+  , IsTargetList                    BIT             NOT NULL    CONSTRAINT DF_Issue_IsTargetList                 DEFAULT ((0))
+  , RefundedByNote                  VARCHAR (MAX)   NOT NULL    CONSTRAINT DF_Issue_RefundedByNote               DEFAULT ('')
+  , RefundsNote                     VARCHAR (MAX)   NOT NULL    CONSTRAINT DF_Issue_RefundsNote                  DEFAULT ('')
+  , DisclosureTypeID                INT             NULL        CONSTRAINT DF_Issue_DisclosureTypeID             DEFAULT ((0))
+  , IsEIPInvest                     BIT             NOT NULL    CONSTRAINT DF_Issue_IsEIPInvest                  DEFAULT ((0))
+  , IsTwoPercentLimit               BIT             NOT NULL    CONSTRAINT DF_Issue_IsTwoPercentLimit            DEFAULT ((0))
+  , TwoPercentLimitBasedOn          VARCHAR (100)   NOT NULL    CONSTRAINT DF_Issue_TwoPercentLimitBasedOn       DEFAULT ('')
+  , CreditEnhanceFee                DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_CreditEnhanceFee             DEFAULT ((0))
+  , PostIssuanceFee                 DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_PostIssuanceFee              DEFAULT ((0))
+  , TotalEstimatedEhlersFee         DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_TotalEstimatedEhlersFee      DEFAULT ((0))
+  , TotalFinalEhlersFee             DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_TotalFinalEhlersFee          DEFAULT ((0))
   , TotalFeePaymentMethodID         INT             NULL
   , TotalFeeVerifyDate              DATE            NULL
-  , TotalFeeVerifyUser              VARCHAR (20)    NOT NULL    CONSTRAINT DF_Issue_TotalFeeVerifyUser           DEFAULT ''
-  , GoodFaithDestination            VARCHAR (50)    NOT NULL    CONSTRAINT DF_Issue_GoodFaithDestination         DEFAULT 'To Ehlers'
+  , TotalFeeVerifyUser              VARCHAR (20)    NOT NULL    CONSTRAINT DF_Issue_TotalFeeVerifyUser           DEFAULT ('')
+  , GoodFaithDestination            VARCHAR (50)    NOT NULL    CONSTRAINT DF_Issue_GoodFaithDestination         DEFAULT ('To Ehlers')
   , Notes                           VARCHAR (MAX)   NULL
   , ObligorClientID                 INT             NULL
   , CertificateTypeID               INT             NULL
   , FirstDeadline                   DATE            NULL
-  , IsAAC                           BIT             NOT NULL    CONSTRAINT DF_Issue_IsAAC                       DEFAULT 0 
-  , IsTAC                           BIT             NOT NULL    CONSTRAINT DF_Issue_IsTAC                       DEFAULT 0 
-  , ModifiedDate                    DATETIME        NOT NULL    CONSTRAINT DF_Issue_ModifiedDate                DEFAULT GETDATE()
-  , ModifiedUser                    VARCHAR (20)    NOT NULL    CONSTRAINT DF_Issue_ModifiedUser                DEFAULT dbo.udf_GetSystemUser()
+  , IsAAC                           BIT             NOT NULL    CONSTRAINT DF_Issue_IsAAC                       DEFAULT ((0)) 
+  , IsTAC                           BIT             NOT NULL    CONSTRAINT DF_Issue_IsTAC                       DEFAULT ((0)) 
+  , ModifiedDate                    DATETIME        NOT NULL    CONSTRAINT DF_Issue_ModifiedDate                DEFAULT (getdate())
+  , ModifiedUser                    VARCHAR (20)    NOT NULL    CONSTRAINT DF_Issue_ModifiedUser                DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_Issue PRIMARY KEY CLUSTERED ( IssueID ASC )
   , CONSTRAINT FK_Issue_BondFormType
         FOREIGN KEY ( BondFormTypeID ) REFERENCES dbo.BondFormType ( BondFormTypeID )

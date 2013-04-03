@@ -3,8 +3,8 @@
   , EmployerID          INT          NOT NULL
   , AddressID           INT          NOT NULL
   , AddressTypeID       INT          NOT NULL
-  , ModifiedDate        DATETIME     NOT NULL    CONSTRAINT DF_EmployerAddresses_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser        VARCHAR (20) NOT NULL    CONSTRAINT DF_EmployerAddresses_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate        DATETIME     NOT NULL    CONSTRAINT DF_EmployerAddresses_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser        VARCHAR (20) NOT NULL    CONSTRAINT DF_EmployerAddresses_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_EmployerAddresses PRIMARY KEY CLUSTERED ( EmployerAddressesID ASC )
   , CONSTRAINT UX_EmployerAddresses UNIQUE NONCLUSTERED ( AddressID ASC, EmployerID ASC, AddressTypeID ASC )
   , CONSTRAINT FK_EmployerAddresses_Address

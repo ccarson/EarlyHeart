@@ -2,8 +2,8 @@
     ClientEmployersID   INT             NOT NULL    IDENTITY
   , ClientID            INT             NOT NULL
   , EmployerID          INT             NOT NULL
-  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_ClientEmployers_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientEmployers_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate        DATETIME        NOT NULL    CONSTRAINT DF_ClientEmployers_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser        VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientEmployers_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_ClientEmployers PRIMARY KEY CLUSTERED ( ClientEmployersID ASC )
   , CONSTRAINT FK_ClientEmployers_Client
         FOREIGN KEY ( ClientID ) REFERENCES dbo.Client ( ClientID )

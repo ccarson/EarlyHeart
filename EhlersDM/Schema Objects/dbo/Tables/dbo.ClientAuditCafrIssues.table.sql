@@ -2,8 +2,8 @@
     ClientAuditCafrIssuesID INT             NOT NULL    IDENTITY
   , ClientAuditCafrID       INT             NOT NULL
   , IssueID                 INT             NOT NULL
-  , ModifiedDate            DATETIME        NOT NULL    CONSTRAINT DF_ClientAuditCafrIssues_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser            VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientAuditCafrIssues_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate            DATETIME        NOT NULL    CONSTRAINT DF_ClientAuditCafrIssues_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser            VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientAuditCafrIssues_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_ClientAuditCafrIssues PRIMARY KEY CLUSTERED ( ClientAuditCafrIssuesID ASC )
   , CONSTRAINT UX_ClientAuditCafrIssues UNIQUE NONCLUSTERED ( ClientAuditCafrID ASC, IssueID ASC )
   , CONSTRAINT FK_ClientAuditCafrIssues_ClientAuditCafr

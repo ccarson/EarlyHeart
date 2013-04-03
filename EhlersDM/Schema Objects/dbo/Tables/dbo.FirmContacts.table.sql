@@ -2,8 +2,8 @@
     FirmContactsID  INT             NOT NULL    IDENTITY
   , FirmID          INT             NOT NULL
   , ContactID       INT             NOT NULL
-  , ModifiedDate    DATETIME        NOT NULL    CONSTRAINT DF_FirmContacts_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser    VARCHAR (20)    NOT NULL    CONSTRAINT DF_FirmContacts_ModifiedUser DEFAULT dbo.udf_GetSystemUser()
+  , ModifiedDate    DATETIME        NOT NULL    CONSTRAINT DF_FirmContacts_ModifiedDate DEFAULT (getdate())
+  , ModifiedUser    VARCHAR (20)    NOT NULL    CONSTRAINT DF_FirmContacts_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_FirmContacts PRIMARY KEY CLUSTERED ( FirmContactsID ASC )
   , CONSTRAINT UX_FirmContacts UNIQUE NONCLUSTERED ( FirmID ASC, ContactID ASC )
   , CONSTRAINT FK_FirmContacts_Contact
