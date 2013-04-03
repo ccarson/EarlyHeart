@@ -16,7 +16,7 @@ AS
     
     
     Logic Summary:
-    1)  UPDATE dbo.Issue.GoodFaithAmount to 20% of the IssueAmount unless after SaleDate
+    1)  UPDATE dbo.Issue.GoodFaithPercent to 2% of the IssueAmount on Issue Creation
     2)  INSERT IssueFeeCounty for each CountyClient record that exists
     3)  Stop processing when trigger is invoked by Conversion.processIssues procedure
     4)  Stop processing unless Issue data has actually changed
@@ -34,12 +34,13 @@ BEGIN
           , @convertedChecksum  AS INT = 0 ;
 
 BEGIN TRY
---  1)  UPDATE dbo.Issue.GoodFaithAmount to 20% of the IssueAmount unless after SaleDate
+--  1)  UPDATE dbo.Issue.GoodFaithPercent to 2% of the IssueAmount when new
     UPDATE  dbo.Issue
-       SET  GoodFaithAmt = dbo.udf_GetGoodFaithAmount( IssueAmount )
+       SET  GoodFaithPercent = 2.0
       FROM  dbo.Issue AS a
      WHERE  EXISTS ( SELECT 1 FROM inserted AS b
-                      WHERE a.IssueID = b.IssueID AND DATEDIFF( dd, GETDATE(), SaleDate ) > 0 ) ;
+                      WHERE a.IssueID = b.IssueID AND DATEDIFF( dd, GETDATE(), SaleDate ) > 0 ) 
+       AND  NOT EXISTS ( SELECT 1 FROM deleted ) ; 
                       
                       
 --  2)  INSERT IssueFeeCounty for each CountyClient record that exists

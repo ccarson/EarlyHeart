@@ -567,6 +567,7 @@
     <Build Include="Schema Objects\Import\Stored Procedures\Import.updatePurposeFromMunex.proc.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.loadRefunding.proc.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeMaturityRefunding.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.CertificateType.table.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
