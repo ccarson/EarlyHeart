@@ -97,7 +97,7 @@ BEGIN
     ELSE
 --  5)  Log SQL Server database errors
         INSERT  dbo.SQLErrorLog (
-                ErrorTime, UserName, ErrorNumber, ErrorSeverity, ErrorState, ErrorProcedure, ErrorLine, ErrorMessage )
+                ModifiedDate, ModifiedUser, ErrorNumber, ErrorSeverity, ErrorState, ErrorProcedure, ErrorLine, ErrorMessage )
         SELECT  SYSDATETIME(), @userName, @errorState, @errorNumber, @errorSeverity, @errorProcedure, @errorLine, @SQLErrorMessage
          WHERE  @errorNumber IS NOT NULL ;
 

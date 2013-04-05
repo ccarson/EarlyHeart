@@ -1,12 +1,14 @@
 ﻿CREATE TABLE dbo.SQLErrorLog (
-    SQLErrorLogID  INT              NOT NULL  IDENTITY
-  , ErrorTime      DATETIME         NOT NULL
-  , UserName       SYSNAME          NOT NULL
-  , ErrorNumber    INT              NOT NULL
-  , ErrorSeverity  INT              NULL
-  , ErrorState     INT              NULL
-  , ErrorProcedure NVARCHAR (126)   NULL
-  , ErrorLine      INT              NULL
-  , ErrorMessage   NVARCHAR (4000)  NOT NULL
-  , CONSTRAINT PK_SQLErrorLog PRIMARY KEY CLUSTERED ( SQLErrorLogID ASC )
+    SQLErrorLogID   INT             NOT NULL   CONSTRAINT PK_SQLErrorLog PRIMARY KEY CLUSTERED IDENTITY
+  , CodeBlockNum    INT             NOT NULL
+  , CodeBlockDesc   VARCHAR (128)   NOT NULL
+  , ErrorNumber     INT             NOT NULL
+  , ErrorSeverity   INT             NULL
+  , ErrorState      INT             NULL
+  , ErrorProcedure  SYSNAME         NULL
+  , ErrorLine       INT             NULL
+  , ErrorMessage    NVARCHAR (4000) NOT NULL
+  , ErrorData       VARCHAR (MAX)   NULL
+  , ModifiedDate    DATETIME        NOT NULL   CONSTRAINT DF_SQLErrorLog_ModifiedDate DEFAULT GETDATE()
+  , ModifiedUser    VARCHAR (20)    NOT NULL   CONSTRAINT DF_SQLErrorLog_ModifiedUser DEFAULT dbo.udf_getSystemUser() 
 ) ;

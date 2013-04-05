@@ -27,7 +27,8 @@ BEGIN
 
     DECLARE @SystemUser AS VARCHAR(20) = dbo.udf_GetSystemUser() ;
 
---  1)  Create dbo.AddressHistory records reflecting DELETEs
+/**/SELECT  @codeBlockNum  = 1
+/**/      , @codeBlockDesc = @codeBlockDesc1 ; -- Create dbo.AddressHistory records reflecting DELETEs
     INSERT  dbo.AddressAudit (
                 AddressID
                     , Address1, Address2, Address3
