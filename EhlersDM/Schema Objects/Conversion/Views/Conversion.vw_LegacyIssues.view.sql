@@ -17,6 +17,11 @@
 ************************************************************************************************************************************
 */
 AS
+      WITH  bondFormType AS (
+            SELECT  BondFormTypeID, LegacyValue = x.Item
+              FROM  dbo.BondFormType
+       CROSS APPLY  dbo.tvf_CSVSplit( LegacyValue, ',') AS x )
+
     SELECT  IssueID                 =  i.IssueID
           , DatedDate               =  i.DatedDate
           , Amount                  =  ISNULL( i.Amount, 0.00 )
@@ -41,10 +46,8 @@ AS
           , CouponType              =  itt.InterestTypeID
           , CallFrequency           =  clf.CallFrequencyID
           , DisclosureType          =  dst.DisclosureTypeID
-    --    , FinanceType             =  FinanceType
-    --    , UseProceeds             =  UseProceeds
           , PurchasePrice           =  ISNULL( i.PurchasePrice, 0.00 )
-          , Notes                   =  CAST( ISNULL( i.Notes, '' ) AS VARCHAR(MAX) ) 
+          , Notes                   =  CAST( ISNULL( i.Notes, '' ) AS VARCHAR(MAX) )
           , NotesRefundedBy         =  CAST( ISNULL( i.NotesRefundedBy, '' ) AS VARCHAR(MAX) )
           , NotesRefunds            =  CAST( ISNULL( i.NotesRefunds, '' ) AS VARCHAR(MAX) )
           , ArbitrageYield          =  ISNULL( i.ArbitrageYield, 0.00 )
@@ -54,18 +57,17 @@ AS
           , ChangeBy                =  ISNULL( NULLIF( i.ChangeBy, '' ), 'processIssues' )
           , ObligorClientID         =  oc.ClientID
           , EIPInvest               =  ISNULL( i.EIPInvest, 0 )
-      FROM  edata.Issues        AS i
-INNER JOIN  edata.Clients       AS c   ON c.ClientID      = i.ClientID
- LEFT JOIN  edata.Clients       AS oc  ON oc.ClientID     = i.ObligorClientID
+      FROM  edata.Issues            AS i
+INNER JOIN  edata.Clients           AS c   ON c.ClientID      = i.ClientID
+ LEFT JOIN  edata.Clients           AS oc  ON oc.ClientID     = i.ObligorClientID
  LEFT JOIN  dbo.IssueShortName      AS shn ON shn.LegacyValue = i.ShortName
  LEFT JOIN  dbo.IssueStatus         AS sta ON sta.LegacyValue = i.IssueStatus
  LEFT JOIN  dbo.IssueType           AS ist ON ist.LegacyValue = i.IssueType
  LEFT JOIN  dbo.MethodOfSale        AS mos ON mos.LegacyValue = i.SaleType
- LEFT JOIN  dbo.BondFormType        AS bft ON ( bft.LegacyValue = i.BondForm ) OR 
-                                              ( bft.LegacyValue = 'C' AND i.BondForm = 'BT' ) 
  LEFT JOIN  dbo.SecurityType        AS sct ON sct.LegacyValue = i.SecurityType
  LEFT JOIN  dbo.InterestPaymentFreq AS ipf ON ipf.LegacyValue = i.IntPmtFreq
  LEFT JOIN  dbo.InterestCalcMethod  AS icm ON icm.LegacyValue = i.IntCalcMeth
  LEFT JOIN  dbo.InterestType        AS itt ON itt.LegacyValue = i.CouponType
  LEFT JOIN  dbo.CallFrequency       AS clf ON clf.LegacyValue = i.CallFrequency
- LEFT JOIN  dbo.DisclosureType      AS dst ON dst.LegacyValue = i.DisclosureType ;
+ LEFT JOIN  dbo.DisclosureType      AS dst ON dst.LegacyValue = i.DisclosureType
+ LEFT JOIN  bondFormType            AS bft ON bft.LegacyValue = i.BondForm ;

@@ -34,7 +34,7 @@ BEGIN
     SET NOCOUNT ON ;
 
 
-    DECLARE @processIssueFirms      AS VARBINARY (128)  = CAST( 'processIssueFirms' AS VARBINARY(128) )
+    DECLARE @fromConversion         AS VARBINARY (128)  = CAST( 'fromConversion' AS VARBINARY(128) )
           , @processStartTime       AS VARCHAR (30)     = CONVERT( VARCHAR(30), GETDATE(), 121 )
           , @processEndTime         AS VARCHAR (30)     = NULL
           , @processElapsedTime     AS INT              = 0 ;
@@ -93,7 +93,7 @@ BEGIN
 
 --  1)  Set CONTEXT_INFO to prevent converted tables from triggering changes
 BEGIN TRY
-    SET CONTEXT_INFO @processIssueFirms ;
+    SET CONTEXT_INFO @fromConversion ;
 
 
 --  2)  SELECT initial control counts
@@ -103,8 +103,8 @@ BEGIN TRY
 
 
 --  3)  Check for changes in IssueFirms data, skip to next section if no changes
-    SELECT @legacyChecksum    = CHECKSUM_AGG(CHECKSUM(*)) FROM Conversion.tvf_IssueFirms( 'Legacy' ) ;
-    SELECT @convertedChecksum = CHECKSUM_AGG(CHECKSUM(*)) FROM Conversion.tvf_IssueFirms( 'Converted' ) ;
+    SELECT @legacyChecksum    = CHECKSUM_AGG(CHECKSUM( IssueID, FirmCategoriesID, FirmID, FirmCategoryID, Category )) FROM Conversion.tvf_IssueFirms( 'Legacy' ) ;
+    SELECT @convertedChecksum = CHECKSUM_AGG(CHECKSUM( IssueID, FirmCategoriesID, FirmID, FirmCategoryID, Category )) FROM Conversion.tvf_IssueFirms( 'Converted' ) ;
 
     IF  ( @legacyChecksum = @convertedChecksum )
         GOTO endOfProc ;

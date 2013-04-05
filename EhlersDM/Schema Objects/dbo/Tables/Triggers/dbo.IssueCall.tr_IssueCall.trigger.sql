@@ -67,7 +67,7 @@ BEGIN
                SET  FirstCallDate   =  src.FirstCallDate
                   , CallPrice       =  src.CallPrice
                   , CallableMatDate =  src.CallableMatDate
-      WHEN  NOT MATCHED BY TARGET THEN
+      WHEN  NOT MATCHED BY TARGET AND src.isDelete = 0 THEN
             INSERT ( IssueID, FirstCallDate
                         , CallPrice, CallableMatDate )
             VALUES ( IssueID, FirstCallDate

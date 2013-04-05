@@ -23,7 +23,7 @@ CREATE TABLE dbo.IssueFee (
   , CONSTRAINT FK_IssueFee_Issue
         FOREIGN KEY ( IssueID ) REFERENCES dbo.Issue ( IssueID )
   , CONSTRAINT FK_IssueFee_IssueFirm
-        FOREIGN KEY ( IssueFirmsID ) REFERENCES dbo.IssueFirms ( IssueFirmsID )
+        FOREIGN KEY ( IssueFirmsID ) REFERENCES dbo.IssueFirms ( IssueFirmsID ) ON DELETE CASCADE
   , CONSTRAINT FK_IssueFee_PaymentMethod
         FOREIGN KEY ( PaymentMethodID ) REFERENCES dbo.PaymentMethod ( PaymentMethodID ) ) ;
 GO

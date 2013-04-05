@@ -572,10 +572,11 @@
     <Build Include="Database Security\Users\EhlersReportUser.user.sql" />
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_DCAfterSale.function.sql" />
     <Build Include="Database Security\Users\EhlersSQLUsers.user.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.IssueFirmsContacts.tr_IssueFirmsContacts.trigger.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
-      <DefaultValue>edata</DefaultValue>
+      <DefaultValue>edata_dev</DefaultValue>
       <Value>$(SqlCmdVar__20)</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="PreDeployChanges">

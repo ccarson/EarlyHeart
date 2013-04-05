@@ -198,7 +198,7 @@ BEGIN
      MERGE  dbo.Contact          AS tgt
      USING  #processContactsData AS src
         ON  tgt.ContactID = src.ContactID
-      WHEN  MATCHED THEN
+      WHEN  MATCHED AND src.LegacyContactID <> 0 THEN
             UPDATE SET  NamePrefix   = src.NamePrefix
                       , FirstName    = src.FirstName
                       , LastName     = src.LastName
