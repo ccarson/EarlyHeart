@@ -40,28 +40,28 @@ BEGIN TRY
           , @processElapsedTime     AS INT              = 0 ;
 
 
-    DECLARE @codeBlockDesc01        AS VARCHAR (128)    = 'SET CONTEXT_INFO, to inhibit triggers that would ordinarily fire'
-          , @codeBlockDesc02        AS VARCHAR (128)    = 'SELECT initial control counts'
-          , @codeBlockDesc03        AS VARCHAR (128)    = 'INSERT changed recordIDs into temp storage'
-          , @codeBlockDesc04        AS VARCHAR (128)    = 'Stop processing if there are no data changes'
-          , @codeBlockDesc05        AS VARCHAR (128)    = 'INSERT new data into temp storage'
-          , @codeBlockDesc06        AS VARCHAR (128)    = 'INSERT updated data into temp storage'
-          , @codeBlockDesc07        AS VARCHAR (128)    = 'UPDATE changed data to remove invalid ObligorClientID'
-          , @codeBlockDesc08        AS VARCHAR (128)    = 'MERGE temp storage into dbo.Issues'
-          , @codeBlockDesc09        AS VARCHAR (128)    = 'SELECT final control counts'
-          , @codeBlockDesc10        AS VARCHAR (128)    = 'Control Total Validation'
-          , @codeBlockDesc11        AS VARCHAR (128)    = 'Reset CONTEXT_INFO to remove restrictions on triggers'
-          , @codeBlockDesc12        AS VARCHAR (128)    = 'Print control totals' ;
+    DECLARE @codeBlockDesc01        AS SYSNAME    = 'SET CONTEXT_INFO, to inhibit triggers that would ordinarily fire'
+          , @codeBlockDesc02        AS SYSNAME    = 'SELECT initial control counts'
+          , @codeBlockDesc03        AS SYSNAME    = 'INSERT changed recordIDs into temp storage'
+          , @codeBlockDesc04        AS SYSNAME    = 'Stop processing if there are no data changes'
+          , @codeBlockDesc05        AS SYSNAME    = 'INSERT new data into temp storage'
+          , @codeBlockDesc06        AS SYSNAME    = 'INSERT updated data into temp storage'
+          , @codeBlockDesc07        AS SYSNAME    = 'UPDATE changed data to remove invalid ObligorClientID'
+          , @codeBlockDesc08        AS SYSNAME    = 'MERGE temp storage into dbo.Issues'
+          , @codeBlockDesc09        AS SYSNAME    = 'SELECT final control counts'
+          , @codeBlockDesc10        AS SYSNAME    = 'Control Total Validation'
+          , @codeBlockDesc11        AS SYSNAME    = 'Reset CONTEXT_INFO to remove restrictions on triggers'
+          , @codeBlockDesc12        AS SYSNAME    = 'Print control totals' ;
 
 
     DECLARE @codeBlockNum           AS INT
-          , @codeBlockDesc          AS VARCHAR (128)
+          , @codeBlockDesc          AS SYSNAME
           , @errorTypeID            AS INT
           , @errorSeverity          AS INT
           , @errorState             AS INT
           , @errorNumber            AS INT
           , @errorLine              AS INT
-          , @errorProcedure         AS VARCHAR (128)
+          , @errorProcedure         AS SYSNAME
           , @errorMessage           AS VARCHAR (MAX) = NULL
           , @errorData              AS VARCHAR (MAX) = NULL ;
 

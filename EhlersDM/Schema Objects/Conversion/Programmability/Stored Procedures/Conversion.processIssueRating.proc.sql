@@ -60,7 +60,7 @@ BEGIN TRY
           , @errorState         AS INT
           , @errorNumber        AS INT
           , @errorLine          AS INT
-          , @errorProcedure     AS VARCHAR (128)
+          , @errorProcedure     AS SYSNAME
           , @errorMessage       AS VARCHAR (MAX)    = NULL
           , @errorData          AS VARCHAR (MAX)    = NULL ;
 

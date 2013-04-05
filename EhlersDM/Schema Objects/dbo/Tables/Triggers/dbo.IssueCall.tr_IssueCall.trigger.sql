@@ -26,11 +26,11 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processCalls AS VARBINARY(128) = CAST( 'processCalls' AS VARBINARY(128) ) ;
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ; ;
 
 
 --  1)  Stop processing when trigger is invoked by Conversion.processContacts procedure
-    IF  CONTEXT_INFO() = @processCalls  RETURN ;
+    IF  CONTEXT_INFO() = @fromConversion
 
 
 --  2)  Load temp table with data from inserted and deleted...

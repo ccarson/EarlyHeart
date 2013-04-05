@@ -29,7 +29,7 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processClientAnalysts      AS VARBINARY(128)   = CAST( 'processClientAnalysts' AS VARBINARY(128) )
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ;
           , @systemTime                 AS DATETIME         = GETDATE()
           , @systemUser                 AS VARCHAR(20)      = dbo.udf_GetSystemUser() ;
     
@@ -43,7 +43,7 @@ BEGIN
     
 --  1)  Stop processing when trigger is invoked by Conversion.processFirms procedure
 BEGIN TRY
-    IF  CONTEXT_INFO() = @processClientAnalysts
+    IF  CONTEXT_INFO() = @fromConversion
         RETURN ;
 
 

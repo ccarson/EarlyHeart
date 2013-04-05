@@ -28,10 +28,10 @@ BEGIN
 --  Constants
     DECLARE @body_format        AS VARCHAR (20)     = 'HTML'
           , @errorTime          AS VARCHAR (30)     = CONVERT( VARCHAR(30), SYSDATETIME(), 121 )
-          , @databaseName       AS NVARCHAR(128)    = DB_NAME()
+          , @databaseName       AS SYSNAME    = DB_NAME()
           , @profile_name       AS SYSNAME          = 'Ehlers SQL Server Data Manager'
           , @recipients         AS VARCHAR (100)    = 'ccarson@ehlers-inc.com'
-          , @serverName         AS NVARCHAR(128)    = @@SERVERNAME
+          , @serverName         AS SYSNAME    = @@SERVERNAME
           , @userName           AS SYSNAME          = dbo.udf_GetSystemUser() ;
 
 --  Formatted by CATCH block on SQL Server errors

@@ -1,10 +1,10 @@
 CREATE PROCEDURE dbo.processEhlersErrorNew ( @errorTypeID      AS INT
                                            , @codeBlockNum     AS INT
-                                           , @codeBlockDesc    AS VARCHAR (128)
+                                           , @codeBlockDesc    AS SYSNAME
                                            , @errorNumber      AS INT
                                            , @errorSeverity    AS INT
                                            , @errorState       AS INT
-                                           , @errorProcedure   AS VARCHAR (128)
+                                           , @errorProcedure   AS SYSNAME
                                            , @errorLine        AS INT
                                            , @errorMessage     AS VARCHAR (4000) 
                                            , @errorData        AS VARCHAR (MAX) )

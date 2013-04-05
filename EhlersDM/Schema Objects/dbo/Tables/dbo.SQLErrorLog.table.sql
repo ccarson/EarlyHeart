@@ -1,7 +1,7 @@
 ﻿CREATE TABLE dbo.SQLErrorLog (
     SQLErrorLogID   INT             NOT NULL   CONSTRAINT PK_SQLErrorLog PRIMARY KEY CLUSTERED IDENTITY
   , CodeBlockNum    INT             NOT NULL
-  , CodeBlockDesc   VARCHAR (128)   NOT NULL
+  , CodeBlockDesc   SYSNAME   NOT NULL
   , ErrorNumber     INT             NOT NULL
   , ErrorSeverity   INT             NULL
   , ErrorState      INT             NULL

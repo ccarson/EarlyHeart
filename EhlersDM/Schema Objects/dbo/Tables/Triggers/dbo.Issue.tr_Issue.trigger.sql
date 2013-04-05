@@ -29,7 +29,7 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processIssues      AS VARBINARY(128) = CAST( 'processIssues' AS VARBINARY(128) )
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ;
           , @legacyChecksum     AS INT = 0
           , @convertedChecksum  AS INT = 0 ;
 
@@ -63,7 +63,7 @@ BEGIN TRY
 
 
 --  3)  Stop processing when trigger is invoked by Conversion.processIssues procedure
-    IF  CONTEXT_INFO() = @processIssues
+    IF  CONTEXT_INFO() = @fromConversion
         RETURN ;
 
 --  4)  Stop processing unless Issue data has actually changed ( Some data on dbo.Issue does not write back to edata.dbo.Issues )

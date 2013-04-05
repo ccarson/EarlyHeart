@@ -34,23 +34,23 @@ BEGIN TRY
 
     SET NOCOUNT ON ;
 
-    DECLARE @processFirmCategories AS VARBINARY(128) = CAST( 'processFirmCategories' AS VARBINARY(128) )
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ;
 
 
-    DECLARE @codeBlockDesc01        AS VARCHAR (128)    = 'Stop processing when trigger is invoked by Conversion.processFirmCategories'
-          , @codeBlockDesc02        AS VARCHAR (128)    = 'INSERT FirmID and ModifiedUser into temp storage'
-          , @codeBlockDesc03        AS VARCHAR (128)    = 'UPDATE temp storage with legacy version of FirmCategory data'
-          , @codeBlockDesc04        AS VARCHAR (128)    = 'UPDATE edata.Firms.FirmCategory with new data' ;
+    DECLARE @codeBlockDesc01        AS SYSNAME    = 'Stop processing when trigger is invoked by Conversion.processFirmCategories'
+          , @codeBlockDesc02        AS SYSNAME    = 'INSERT FirmID and ModifiedUser into temp storage'
+          , @codeBlockDesc03        AS SYSNAME    = 'UPDATE temp storage with legacy version of FirmCategory data'
+          , @codeBlockDesc04        AS SYSNAME    = 'UPDATE edata.Firms.FirmCategory with new data' ;
 
 
     DECLARE @codeBlockNum           AS INT
-          , @codeBlockDesc          AS VARCHAR (128)
+          , @codeBlockDesc          AS SYSNAME
           , @errorTypeID            AS INT
           , @errorSeverity          AS INT
           , @errorState             AS INT
           , @errorNumber            AS INT
           , @errorLine              AS INT
-          , @errorProcedure         AS VARCHAR (128)
+          , @errorProcedure         AS SYSNAME
           , @errorMessage           AS VARCHAR (MAX) = NULL
           , @errorData              AS VARCHAR (MAX) = NULL ;
 
@@ -64,7 +64,7 @@ BEGIN TRY
 /**/SELECT  @codeBlockNum   = 1
 /**/      , @codeBlockDesc  = @codeBlockDesc01 ; -- Stop processing when trigger is invoked by Conversion.processFirmCategories
 
-    IF  CONTEXT_INFO() = @processFirmCategories
+    IF  CONTEXT_INFO() = @fromConversion
         RETURN ;
 
 

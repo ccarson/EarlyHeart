@@ -34,7 +34,7 @@ BEGIN TRY
         RETURN ;
 
 
-    DECLARE @conversionProcess  AS VARBINARY(128)   = CAST( 'conversionProcess' AS VARBINARY(128) ) ;
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ; ;
 
 
     DECLARE @codeBlockDesc01    AS SYSNAME          = 'Create dbo.AddressAudit records reflecting UPDATE'
@@ -80,7 +80,7 @@ INNER JOIN  deleted  AS d ON i.AddressID = d.AddressID ;
 /**/SELECT  @codeBlockNum   = 2
 /**/      , @codeBlockDesc  = @codeBlockDesc02 ; -- Stop processing when trigger is invoked during conversion process
 
-    IF  CONTEXT_INFO() = @conversionProcess RETURN ;
+    IF  CONTEXT_INFO() = @fromConversion
 
 
 /**/SELECT  @codeBlockNum   = 3

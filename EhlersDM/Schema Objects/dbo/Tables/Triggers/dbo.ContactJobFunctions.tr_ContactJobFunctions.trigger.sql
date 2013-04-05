@@ -29,7 +29,7 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processJobFunctions AS VARBINARY(128) = CAST( 'processJobFunctions' AS VARBINARY(128) ) ;
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ; ;
 
     DECLARE @changes AS TABLE ( ContactID INT ) ;
 
@@ -44,7 +44,7 @@ BEGIN
 
 --  1)  Stop processing when trigger is invoked by Conversion.processContacts procedure
 BEGIN TRY
-    IF  CONTEXT_INFO() = @processJobFunctions
+    IF  CONTEXT_INFO() = @fromConversion
         RETURN ;
 
 

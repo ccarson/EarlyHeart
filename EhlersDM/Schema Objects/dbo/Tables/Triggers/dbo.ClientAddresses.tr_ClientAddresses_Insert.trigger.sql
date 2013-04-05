@@ -28,7 +28,7 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processAddresses AS VARBINARY(128) = CAST( 'processAddresses' AS VARBINARY(128) ) ;
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ; ;
 
 
 --  1)  Create ClientAddressesAudit records reflecting INSERTs
@@ -43,7 +43,7 @@ BEGIN
 
 
 --  2)  Stop processing when trigger is invoked by Conversion.processAddresses procedure
-    IF  CONTEXT_INFO() = @processAddresses
+    IF  CONTEXT_INFO() = @fromConversion
         RETURN ;
 
 

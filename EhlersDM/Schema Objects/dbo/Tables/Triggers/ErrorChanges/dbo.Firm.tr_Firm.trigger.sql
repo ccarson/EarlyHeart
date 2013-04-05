@@ -31,24 +31,24 @@ BEGIN TRY
 
     SET NOCOUNT ON ;
 
-    DECLARE @processFirms           AS VARBINARY(128) = CAST( 'processFirms' AS VARBINARY(128) )
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ;
           , @legacyChecksum         AS INT = 0
           , @convertedChecksum      AS INT = 0 ;
 
 
-    DECLARE @codeBlockDesc01        AS VARCHAR (128)    = 'Stop processing when trigger is invoked by Conversion.processFirms'
-          , @codeBlockDesc02        AS VARCHAR (128)    = 'Stop processing unless Firm data has actually changed'
-          , @codeBlockDesc03        AS VARCHAR (128)    = 'MERGE new Firm data onto edata.dbo.Firms' ;
+    DECLARE @codeBlockDesc01        AS SYSNAME    = 'Stop processing when trigger is invoked by Conversion.processFirms'
+          , @codeBlockDesc02        AS SYSNAME    = 'Stop processing unless Firm data has actually changed'
+          , @codeBlockDesc03        AS SYSNAME    = 'MERGE new Firm data onto edata.dbo.Firms' ;
 
 
     DECLARE @codeBlockNum           AS INT
-          , @codeBlockDesc          AS VARCHAR (128)
+          , @codeBlockDesc          AS SYSNAME
           , @errorTypeID            AS INT
           , @errorSeverity          AS INT
           , @errorState             AS INT
           , @errorNumber            AS INT
           , @errorLine              AS INT
-          , @errorProcedure         AS VARCHAR (128)
+          , @errorProcedure         AS SYSNAME
           , @errorMessage           AS VARCHAR (MAX) = NULL
           , @errorData              AS VARCHAR (MAX) = NULL ;
 
@@ -57,7 +57,7 @@ BEGIN TRY
 /**/SELECT  @codeBlockNum   = 1
 /**/      , @codeBlockDesc  = @codeBlockDesc01 ;  --  Stop processing when trigger is invoked by Conversion.processFirms
 
-    IF  CONTEXT_INFO() = @processFirms
+    IF  CONTEXT_INFO() = @fromConversion
         RETURN ;
 
 

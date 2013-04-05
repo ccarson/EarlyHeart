@@ -26,7 +26,7 @@ BEGIN TRY
         NOT EXISTS ( SELECT 1 FROM deleted )
         RETURN ;
 
-    DECLARE @fromConversion     AS VARBINARY(128)   = CAST( 'fromConversion' AS VARBINARY(128) ) ;
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ; ;
 
     DECLARE @codeBlockDesc01    AS SYSNAME          = ' do not process when trigger is invoked by conversion package'
           , @codeBlockDesc02    AS SYSNAME          = ' build temp storage with data from trigger tables'

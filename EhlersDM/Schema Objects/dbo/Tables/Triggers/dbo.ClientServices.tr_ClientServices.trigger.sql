@@ -26,12 +26,12 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processClientServices  AS VARBINARY(128) = CAST( 'processClientServices' AS VARBINARY(128) ) ;
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ; ;
 
 BEGIN TRY
 
 --  1)  Stop processing when trigger is invoked by Conversion.processContacts procedure
-    IF  CONTEXT_INFO() = @processClientServices RETURN ;
+    IF  CONTEXT_INFO() = @fromConversion
 
 
 --  2)  MERGE new client service data onto edata.ClientContacts

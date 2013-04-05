@@ -28,11 +28,11 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processArbitrageService AS VARBINARY(128) = CAST( 'processArbitrageService' AS VARBINARY(128) ) ;
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ; ;
 
 
 --  1)  Stop processing when trigger is invoked by Conversion.processArbitrageService procedure
-    IF  CONTEXT_INFO() = @processArbitrageService
+    IF  CONTEXT_INFO() = @fromConversion
         RETURN ;
 
 

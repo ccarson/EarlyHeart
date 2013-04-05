@@ -32,23 +32,23 @@ BEGIN TRY
 
     SET NOCOUNT ON ;
 
-    DECLARE @processFirms AS VARBINARY(128) = CAST( 'processFirms' AS VARBINARY(128) ) ;
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ;
     
 
-    DECLARE @codeBlockDesc01        AS VARCHAR (128)    = 'Stop processing unless FirmName has changed'
-          , @codeBlockDesc02        AS VARCHAR (128)    = 'INSERT dbo.FirmNameHistory to reflect firm name change'
-          , @codeBlockDesc03        AS VARCHAR (128)    = 'Stop processing when trigger is invoked by Conversion.processFirms' 
-          , @codeBlockDesc04        AS VARCHAR (128)    = 'INSERT firm name changes onto edata.FirmHistory' ;
+    DECLARE @codeBlockDesc01        AS SYSNAME    = 'Stop processing unless FirmName has changed'
+          , @codeBlockDesc02        AS SYSNAME    = 'INSERT dbo.FirmNameHistory to reflect firm name change'
+          , @codeBlockDesc03        AS SYSNAME    = 'Stop processing when trigger is invoked by Conversion.processFirms' 
+          , @codeBlockDesc04        AS SYSNAME    = 'INSERT firm name changes onto edata.FirmHistory' ;
 
 
     DECLARE @codeBlockNum           AS INT
-          , @codeBlockDesc          AS VARCHAR (128)
+          , @codeBlockDesc          AS SYSNAME
           , @errorTypeID            AS INT
           , @errorSeverity          AS INT
           , @errorState             AS INT
           , @errorNumber            AS INT
           , @errorLine              AS INT
-          , @errorProcedure         AS VARCHAR (128)
+          , @errorProcedure         AS SYSNAME
           , @errorMessage           AS VARCHAR (MAX) = NULL
           , @errorData              AS VARCHAR (MAX) = NULL ;    
 
@@ -71,7 +71,7 @@ INNER JOIN  inserted AS i ON i.FirmID = d.FirmID AND i.FirmName <> d.FirmName ;
 
 /**/SELECT  @codeBlockNum  = 3
 /**/      , @codeBlockDesc = @codeBlockDesc03 ; -- Stop processing when trigger is invoked by Conversion.processFirms
-    IF  CONTEXT_INFO() = @processFirms
+    IF  CONTEXT_INFO() = @fromConversion
         RETURN ;
 
 

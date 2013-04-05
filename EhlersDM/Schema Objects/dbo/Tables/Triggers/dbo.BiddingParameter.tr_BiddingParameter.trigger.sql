@@ -25,14 +25,14 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processBiddingParameters AS VARBINARY(128) = CAST( 'processBiddingParameters' AS VARBINARY(128) ) ;
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ; ;
     DECLARE @SystemUser AS VARCHAR(20) = dbo.udf_GetSystemUser() ;
 
     DECLARE @changedIssues AS TABLE ( IssueID INT ) ;
 
 
 --  1)  Stop processing when trigger is invoked by Conversion.processIssues procedure
-    IF  CONTEXT_INFO() = @processBiddingParameters
+    IF  CONTEXT_INFO() = @fromConversion
         RETURN ;
 
 --  3)  Stop processing unless BiddingParameter data has actually changed

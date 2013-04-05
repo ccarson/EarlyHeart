@@ -29,12 +29,12 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processContacts    AS VARBINARY(128) = CAST( 'processContacts' AS VARBINARY(128) ) ;
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ; ;
     DECLARE @currentContactID   AS INT = 0 ;
 
 --  1)  Stop processing when trigger is invoked by Conversion.processContacts procedure
 BEGIN TRY
-    IF  CONTEXT_INFO() = @processContacts RETURN ;
+    IF  CONTEXT_INFO() = @fromConversion
 
 
 --  2)  SELECT current ContactID from edata.ClientContacts for INSERT

@@ -25,7 +25,7 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processAddresses AS VARBINARY(128) = CAST( 'processAddresses' AS VARBINARY(128) ) ;
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ; VARBINARY(128) ) ;
 
 
 --  1)  Create ContactAddressesAudit records reflecting INSERTs

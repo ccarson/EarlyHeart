@@ -29,14 +29,14 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processFirms AS VARBINARY(128) = CAST( 'processFirms' AS VARBINARY(128) )
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ;
           , @legacyChecksum AS INT = 0
           , @convertedChecksum AS INT = 0 ;
 
 
 --  1)  Stop processing when trigger is invoked by Conversion.processFirms procedure
 BEGIN TRY
-    IF  CONTEXT_INFO() = @processFirms
+    IF  CONTEXT_INFO() = @fromConversion
         RETURN ;
 
 

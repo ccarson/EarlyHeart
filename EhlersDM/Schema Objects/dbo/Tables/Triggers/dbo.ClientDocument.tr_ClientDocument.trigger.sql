@@ -29,7 +29,7 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processClientDisclosure AS VARBINARY(128) = CAST( 'processClientDisclosure' AS VARBINARY(128) ) ;
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ; ;
     
     DECLARE @legacyChecksum     AS INT = 0
           , @convertedChecksum  AS INT = 0 ; 
@@ -37,7 +37,7 @@ BEGIN
 
 --  1)  Stop processing when trigger is invoked by Conversion.processFirms procedure
 BEGIN TRY
-    IF  CONTEXT_INFO() = @processClientDisclosure
+    IF  CONTEXT_INFO() = @fromConversion
         RETURN ;
 
 --  2)  Stop processing unless legacy Disclosure is changed ( Most ClientDocument records do not write back to edata.Clients )

@@ -28,13 +28,13 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processClientFirms  AS VARBINARY(128) = CAST( 'processClientFirms' AS VARBINARY(128) ) ;
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ; ;
 
     DECLARE @ClientChanges AS TABLE ( ClientID INT ) 
 
 --  1)  Stop processing when trigger is invoked by Conversion.processClientFirms procedure
 BEGIN TRY
-    IF  CONTEXT_INFO() = @processClientFirms RETURN ;
+    IF  CONTEXT_INFO() = @fromConversion
     
 --  2)  INSERT ClientID from trigger tables into @ClientChanges
     INSERT  @ClientChanges 

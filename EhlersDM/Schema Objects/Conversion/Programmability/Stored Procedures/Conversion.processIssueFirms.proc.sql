@@ -34,34 +34,34 @@ BEGIN
     SET NOCOUNT ON ;
 
 
-    DECLARE @fromConversion         AS VARBINARY (128)  = CAST( 'fromConversion' AS VARBINARY(128) )
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ;
           , @processStartTime       AS VARCHAR (30)     = CONVERT( VARCHAR(30), GETDATE(), 121 )
           , @processEndTime         AS VARCHAR (30)     = NULL
           , @processElapsedTime     AS INT              = 0 ;
 
 
-    DECLARE @codeBlockDesc01        AS VARCHAR (128)    = 'Validate input parameters'
-          , @codeBlockDesc02        AS VARCHAR (128)    = 'SET CONTEXT_INFO, inhibiting triggers when invoked'
-          , @codeBlockDesc03        AS VARCHAR (128)    = 'SELECT initial control counts'
-          , @codeBlockDesc04        AS VARCHAR (128)    = 'INSERT changed data into temp storage'
-          , @codeBlockDesc05        AS VARCHAR (128)    = 'Stop processing if there are no data changes'
-          , @codeBlockDesc06        AS VARCHAR (128)    = 'INSERT new data into temp storage'
-          , @codeBlockDesc07        AS VARCHAR (128)    = 'INSERT updated data into temp storage'
-          , @codeBlockDesc08        AS VARCHAR (128)    = 'MERGE temp storage into dbo.Firm'
-          , @codeBlockDesc09        AS VARCHAR (128)    = 'SELECT final control counts'
-          , @codeBlockDesc10        AS VARCHAR (128)    = 'Control Total Validation'
-          , @codeBlockDesc11        AS VARCHAR (128)    = 'Reset CONTEXT_INFO, allowing triggers to fire when invoked'
-          , @codeBlockDesc12        AS VARCHAR (128)    = 'Print control totals' ;
+    DECLARE @codeBlockDesc01        AS SYSNAME    = 'Validate input parameters'
+          , @codeBlockDesc02        AS SYSNAME    = 'SET CONTEXT_INFO, inhibiting triggers when invoked'
+          , @codeBlockDesc03        AS SYSNAME    = 'SELECT initial control counts'
+          , @codeBlockDesc04        AS SYSNAME    = 'INSERT changed data into temp storage'
+          , @codeBlockDesc05        AS SYSNAME    = 'Stop processing if there are no data changes'
+          , @codeBlockDesc06        AS SYSNAME    = 'INSERT new data into temp storage'
+          , @codeBlockDesc07        AS SYSNAME    = 'INSERT updated data into temp storage'
+          , @codeBlockDesc08        AS SYSNAME    = 'MERGE temp storage into dbo.Firm'
+          , @codeBlockDesc09        AS SYSNAME    = 'SELECT final control counts'
+          , @codeBlockDesc10        AS SYSNAME    = 'Control Total Validation'
+          , @codeBlockDesc11        AS SYSNAME    = 'Reset CONTEXT_INFO, allowing triggers to fire when invoked'
+          , @codeBlockDesc12        AS SYSNAME    = 'Print control totals' ;
 
 
     DECLARE @codeBlockNum           AS INT
-          , @codeBlockDesc          AS VARCHAR (128)
+          , @codeBlockDesc          AS SYSNAME
           , @errorTypeID            AS INT
           , @errorSeverity          AS INT
           , @errorState             AS INT
           , @errorNumber            AS INT
           , @errorLine              AS INT
-          , @errorProcedure         AS VARCHAR (128)
+          , @errorProcedure         AS SYSNAME
           , @errorMessage           AS VARCHAR (MAX) = NULL
           , @errorData              AS VARCHAR (MAX) = NULL ;
 

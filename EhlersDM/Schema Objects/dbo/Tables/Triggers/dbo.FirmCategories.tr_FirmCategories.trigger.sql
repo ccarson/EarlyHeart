@@ -25,7 +25,7 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processFirmCategories AS VARBINARY(128) = CAST( 'processFirmCategories' AS VARBINARY(128) )
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ;
           , @changeCode            AS VARCHAR(20)    = 'cvFirmCat' ;
 
     DECLARE @changedData           AS TABLE ( FirmID        INT
@@ -35,7 +35,7 @@ BEGIN
 
 BEGIN TRY
 --  1)  Stop processing when trigger is invoked by Conversion.processFirms procedure
-    IF  CONTEXT_INFO() = @processFirmCategories
+    IF  CONTEXT_INFO() = @fromConversion
         RETURN ;
 
 --  2)  INSERT FirmID and ModifiedUser into @changedData

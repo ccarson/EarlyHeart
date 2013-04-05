@@ -28,12 +28,12 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processElections       AS VARBINARY(128) = CAST( 'processElections' AS VARBINARY(128) ) ;
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ; ;
 
     DECLARE @changedElections       AS TABLE ( ElectionID INT ) ;
 
 --  1)  Stop processing when trigger is invoked by Conversion.processFirms procedure
-    IF  CONTEXT_INFO() = @processElections
+    IF  CONTEXT_INFO() = @fromConversion
         RETURN ;
 
 

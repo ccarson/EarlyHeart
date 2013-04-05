@@ -43,7 +43,7 @@ BEGIN TRY
 
     SET NOCOUNT ON ;
 
-    DECLARE @conversionProcess              AS VARBINARY (128)  = CAST( 'conversionProcess' AS VARBINARY(128) )
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ;
           , @processStartTime               AS VARCHAR (30)     = CONVERT( VARCHAR(30), GETDATE(), 121 )
           , @processEndTime                 AS VARCHAR (30)     = NULL
           , @processElapsedTime             AS INT              = 0 ;
@@ -74,7 +74,7 @@ BEGIN TRY
           , @errorState                     AS INT
           , @errorNumber                    AS INT
           , @errorLine                      AS INT
-          , @errorProcedure                 AS VARCHAR (128)
+          , @errorProcedure                 AS SYSNAME
           , @errorMessage                   AS VARCHAR (MAX)    = NULL
           , @errorData                      AS VARCHAR (MAX)    = NULL ; 
           

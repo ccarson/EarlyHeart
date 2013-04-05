@@ -29,7 +29,7 @@ BEGIN
 
     SET NOCOUNT ON ;
 
-    DECLARE @processFirms AS VARBINARY(128) = CAST( 'processFirms' AS VARBINARY(128) ) ;
+    DECLARE @fromConversion AS VARBINARY (128) = CAST( 'fromConversion' AS VARBINARY (128) ) ; ;
 
     BEGIN TRY
 --  1)  Process only if FirmName has changed
@@ -47,7 +47,7 @@ INNER JOIN  inserted AS i ON i.FirmID = d.FirmID AND i.FirmName <> d.FirmName ;
 
 
 --  3)  Stop processing when trigger is invoked by Conversion.processFirms procedure
-    IF  CONTEXT_INFO() = @processFirms
+    IF  CONTEXT_INFO() = @fromConversion
         RETURN ;
 
 
