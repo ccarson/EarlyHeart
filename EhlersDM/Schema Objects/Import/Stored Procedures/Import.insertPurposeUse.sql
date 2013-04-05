@@ -1,7 +1,8 @@
-﻿CREATE PROCEDURE Import.insertPurposeUse ( @IssueID     AS VARCHAR (30)
-                                         , @PurposeName AS VARCHAR (150)
-                                         , @UseName     AS VARCHAR (100)
-                                         , @Amount      AS VARCHAR (30) ) 
+﻿CREATE PROCEDURE Import.insertPurposeUse ( @IssueID         AS VARCHAR (30)
+                                         , @PurposeName     AS VARCHAR (150)
+                                         , @UseName         AS VARCHAR (100)
+                                         , @DisplayOrder    AS VARCHAR (30)
+                                         , @Amount          AS VARCHAR (30) )
 AS
 /*
 ************************************************************************************************************************************
@@ -29,17 +30,19 @@ SET NOCOUNT ON ;
       FROM  dbo.Purpose
      WHERE  IssueID = @IssueID and PurposeName = @PurposeName ;
 
-     
+
 --  1)  Insert PurposeUse
     INSERT  dbo.PurposeUse (
                 PurposeID
               , UseName
               , Amount
+              , DisplayOrder
               , ModifiedDate
               , ModifiedUser )
         SELECT  @PurposeID
               , @UseName
               , CAST( @Amount AS DECIMAL(15,2) )
+              , CAST( @DisplayOrder AS INT )
               , GETDATE()
               , dbo.udf_GetSystemUser() ;
 

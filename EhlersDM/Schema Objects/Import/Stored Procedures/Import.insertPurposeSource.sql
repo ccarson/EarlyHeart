@@ -1,6 +1,7 @@
 ﻿CREATE PROCEDURE Import.insertPurposeSource ( @IssueID      AS VARCHAR (30)
                                             , @PurposeName  AS VARCHAR (150)
                                             , @SourceName   AS VARCHAR (100)
+                                            , @DisplayOrder AS VARCHAR (30)
                                             , @Amount       AS VARCHAR (30) ) 
 AS
 /*
@@ -35,11 +36,13 @@ SET NOCOUNT ON ;
                 PurposeID
               , SourceName
               , Amount
+              , DisplayOrder
               , ModifiedDate
               , ModifiedUser )
         SELECT  @PurposeID
               , @SourceName 
               , CAST( @Amount AS DECIMAL(15,2) )
+              , CAST( @DisplayOrder AS INT )
               , GETDATE()
               , dbo.udf_GetSystemUser() ;
 
