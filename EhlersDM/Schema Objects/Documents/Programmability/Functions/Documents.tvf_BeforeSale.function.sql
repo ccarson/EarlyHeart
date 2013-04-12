@@ -28,6 +28,8 @@ RETURN
                   , SaleTime                = i.SaleTime
                   , IssueShortNameOS        = i.IssueShortNameOS
                   , SettlementDate          = i.SettlementDate
+                  , BankQualified           = i.BankQualified
+                  , FinanceType             = p.FinanceTypeID
                   , SchoolDistrictNumber    = c.SchoolDistrictNumber
                   , ClientName              = c.ClientName
                   , ClientPrefix            = cp.Value
@@ -57,6 +59,7 @@ RETURN
         INNER JOIN  dbo.ClientAddresses     AS ca ON ca.ClientID = c.ClientID
         INNER JOIN  dbo.Address             AS a  ON a.AddressID = ca.AddressID
          LEFT JOIN  dbo.IssueRating         AS ir ON ir.IssueID = i.IssueID
+        INNER JOIN  dbo.Purpose             AS p  ON p.IssueID = i.IssueID
              WHERE  i.IssueID = @IssueID ) ,
 
           bondAttorneyFirm AS (
@@ -195,6 +198,8 @@ RETURN
           , ID_SaleTime                 = ISNULL( CAST(id.SaleTime AS datetime), '' )
           , ID_IssueShortNameOS         = ISNULL( id.IssueShortNameOS, '' )
           , ID_SettlementDate           = ISNULL( id.SettlementDate, '' )
+          , ID_BankQualified            = id.BankQualified
+          , ID_FinanceType              = ISNULL( id.FinanceType, '' )
           , ID_SchoolDistrictNumber     = ISNULL( id.SchoolDistrictNumber, '' )
           , ID_ClientName               = ISNULL( id.ClientName, '' )
           , ID_ClientPrefix             = ISNULL( id.ClientPrefix, '' )
@@ -275,5 +280,3 @@ RETURN
  LEFT JOIN  primaryFAContact        AS pfc ON pfc.IssueID = i.IssueID
  LEFT JOIN  primaryDCContact        AS pdc ON pdc.IssueID = i.IssueID
      WHERE  i.IssueID = @IssueID ;
-
-

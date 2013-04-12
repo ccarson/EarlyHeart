@@ -24,6 +24,7 @@ RETURN
                   , IssueAmount             = i.IssueAmount
                   , IssueName               = i.IssueName
                   , SaleDate                = i.SaleDate
+                  , DatedDateMonth          = MONTH(i.DatedDate)
                   , IssueShortNameOS        = i.IssueShortNameOS
                   , MoodyCreditEnhanced     = ir.MoodyCreditEnhanced
                   , SPCreditEnhanced        = ir.SPCreditEnhanced
@@ -31,22 +32,28 @@ RETURN
                   , IsAAC                   = i.IsAAC
                   , IsTAC                   = i.IsTAC
                   , SecurityType            = i.SecurityTypeID
-                  , IfInsPurchaserPaid      = f.PaymentMethodID
+                  , IfInsPurchaserPaid      = CASE f.PaymentMethodID WHEN 4 THEN 1 ELSE 0 END
                   , IssueType               = i.IssueTypeID
                   , ARRAType                = ab.ARRATypeID
                   , BondYear$               = pb.BondYear
               FROM  dbo.Issue               AS i
         INNER JOIN  dbo.IssueRating         AS ir ON ir.IssueID = i.IssueID
-        INNER JOIN  dbo.IssueFee            AS f  ON f.IssueID  = i.IssueID 
+         LEFT JOIN  dbo.IssueFee            AS f  ON f.IssueID  = i.IssueID AND f.FeeTypeID = 28 AND f.PaymentMethodID = 4
          LEFT JOIN  dbo.ARRABond            AS ab ON ab.IssueID = i.IssueID 
         INNER JOIN  dbo.IssuePostBond       AS pb ON pb.IssueID = i.IssueID       
-             WHERE  i.IssueID = @IssueID  AND f.FeeTypeID = 28 AND f.PaymentMethodID = 4) ,
+             WHERE  i.IssueID = @IssueID ) ,
              
             refundingData AS (
             SELECT  IssueID = @IssueID, isRefunding = CASE COUNT(*) WHEN 0 THEN 0 ELSE 1 END
               FROM  dbo.Issue AS i
              WHERE  i.IssueID = @IssueID AND
                     EXISTS ( SELECT 1 FROM dbo.Purpose p WHERE p.IssueID = i.IssueID AND p.FinanceTypeID IN (1,4,5,6,7,8,9,10,11,12,13,14)) ) ,
+                    
+            currentRefundingData AS (
+            SELECT  IssueID = @IssueID, isCurrentRefunding = CASE COUNT(*) WHEN 0 THEN 0 ELSE 1 END
+              FROM  dbo.Issue AS i
+             WHERE  i.IssueID = @IssueID AND
+                    EXISTS ( SELECT 1 FROM dbo.Purpose p WHERE p.IssueID = i.IssueID AND p.FinanceTypeID IN (4,5,6,12)) ) ,
                     
             moodyRating AS (
             SELECT  TOP 1 IssueID           = i.IssueID
@@ -121,13 +128,14 @@ RETURN
         INNER JOIN  dbo.IssueFirmsContacts  AS ifc ON ifc.IssueFirmsID = isf.IssueFirmsID
         INNER JOIN  dbo.ContactJobFunctions AS cjf ON cjf.ContactJobFunctionsID = ifc.ContactJobFunctionsID
         INNER JOIN  dbo.Contact             AS con ON con.ContactID = cjf.ContactID
-             WHERE  isf.IssueID = 38129 AND fcs.FirmCategoryID = 3 AND cjf.JobFunctionID = 30 AND ifc.Ordinal = 1 ) ,
+             WHERE  isf.IssueID = @IssueID AND fcs.FirmCategoryID = 3 AND cjf.JobFunctionID = 30 AND ifc.Ordinal = 1 ) ,
 
             primaryFA AS (
             SELECT  IssueID          = i.IssueID
                   , FirstName        = e.FirstName
                   , LastName         = e.LastName
                   , Phone            = e.Phone
+                  , Email            = e.Email
               FROM  dbo.EhlersEmployee          AS e
         INNER JOIN  dbo.EhlersEmployeeJobGroups AS g ON g.EhlersEmployeeID = e.EhlersEmployeeID
         INNER JOIN  dbo.IssueEhlersEmployees    AS i ON i.EhlersEmployeeJobGroupsID = g.EhlersEmployeeJobGroupsID
@@ -149,6 +157,7 @@ RETURN
                   , FirstName        = c.FirstName
                   , LastName         = c.LastName
                   , Email            = c.Email
+                  , Title            = c.Title
               FROM  dbo.IssueClientsContacts    AS i
         INNER JOIN  dbo.ClientContacts          AS cc ON cc.ClientContactsID = i.ClientContactsID
         INNER JOIN  dbo.Contact                 AS c  ON c.ContactID = cc.ContactID
@@ -305,10 +314,14 @@ RETURN
           , ID_IssueAmount              = id.IssueAmount
           , ID_IssueName                = ISNULL( id.IssueName, '' )
           , ID_SaleDate                 = ISNULL( id.SaleDate, '' )
+          , ID_DatedDateMonth           = ISNULL( id.DatedDateMonth, '' )
           , ID_IssueShortNameOS         = ISNULL( id.IssueShortNameOS, '' )
           , ID_MoodyCreditEnhanced      = ISNULL( id.MoodyCreditEnhanced, '')
           , ID_SPCreditEnhanced         = ISNULL( id.SPCreditEnhanced, '')
           , ID_IsNotRatedCreditEnhanced = ISNULL( id.IsNotRatedCreditEnhanced, 0)
+          , ID_IsAAC                    = ISNULL( id.IsAAC, 0 )
+          , ID_IsTAC                    = ISNULL( id.IsTAC, 0 )
+          , ID_SecurityType             = ISNULL( id.SecurityType, 0 )
           , ID_IfInsPurchaserPaid       = ISNULL( id.IfInsPurchaserPaid, '')
           , ID_IssueType                = ISNULL( id.IssueType, '')
           , ID_ARRAType                 = ISNULL( id.ARRAType, '')
@@ -317,6 +330,7 @@ RETURN
           , SPR_SPRating                = ISNULL( spr.Rating, '')
           , FR_FitchRating              = ISNULL( fr.Rating, '')
           , IR_IfRefunding              = ir.isRefunding
+          , CRD_IfCurrentRefunding      = crd.isCurrentRefunding
           , CD_SchoolDistrictNumber     = ISNULL( cd.SchoolDistrictNumber, '' )
           , CD_ClientName               = ISNULL( cd.ClientName, '' )
           , CD_ClientPrefix             = ISNULL( cd.ClientPrefix, '' )
@@ -341,6 +355,7 @@ RETURN
           , FA1_FirstName               = ISNULL( fa1.FirstName, '' )
           , FA1_LastName                = ISNULL( fa1.LastName, '' )
           , FA1_Phone                   = ISNULL( fa1.Phone, '' )
+          , FA1_Email                   = ISNULL( fa1.Email, '' )
           , DSC_FirstName               = ISNULL( dsc.FirstName, '' )
           , DSC_LastName                = ISNULL( dsc.LastName, '' )
           , DSC_Email                   = ISNULL( dsc.Email, '' )
@@ -348,6 +363,7 @@ RETURN
           , PDC_FirstName               = ISNULL( pdc.FirstName, '' )
           , PDC_LastName                = ISNULL( pdc.LastName, '' )
           , PDC_Email                   = ISNULL( pdc.Email, '' )
+          , PDC_Title                   = ISNULL( pdc.Title, '' )
           , UWD_FirmName                = ISNULL( uwd.FirmName, '' )
           , UWD_Address1                = ISNULL( uwd.Address1, '' )
           , UWD_Address2                = ISNULL( uwd.Address2, '' )
@@ -403,6 +419,7 @@ RETURN
       FROM  dbo.Issue AS i
  LEFT JOIN  issueData               AS id  ON id.IssueID  = i.IssueID
  LEFT JOIN  refundingData           AS ir  ON ir.IssueID  = i.IssueID
+ LEFT JOIN  currentRefundingData    AS crd ON crd.IssueID = i.IssueID
  LEFT JOIN  moodyRating             AS mr  ON mr.IssueID  = i.IssueID
  LEFT JOIN  spRating                AS spr ON spr.IssueID = i.IssueID
  LEFT JOIN  fitchRating             AS fr  ON fr.IssueID  = i.IssueID
