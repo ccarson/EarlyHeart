@@ -156,8 +156,6 @@
     <Folder Include="Schema Objects\edata" />
     <Folder Include="Schema Objects\edata\Synonyms" />
     <Folder Include="Schema Objects\Import\Tables" />
-    <Folder Include="Database Security\Schemas" />
-    <Folder Include="Storage" />
   </ItemGroup>
   <ItemGroup>
     <BuildContributorArgument Include="OutDir=$(OutDir)" />
