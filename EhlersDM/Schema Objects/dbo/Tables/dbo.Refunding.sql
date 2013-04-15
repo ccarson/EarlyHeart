@@ -2,6 +2,7 @@
     RefundingID         INT             NOT NULL    CONSTRAINT PK_Refunding PRIMARY KEY CLUSTERED   IDENTITY
   , RefundingPurposeID  INT             NULL
   , RefundedPurposeID   INT             NOT NULL
+  , RefundingCashID     INT             NULL
   , RefundTypeID        INT             NULL
   , TotalSavingsAmount  DECIMAL (15,2)  NOT NULL    CONSTRAINT DF_Refunding_TotalSavingsAmount  DEFAULT ((0))
   , NPVSavingsAmount    DECIMAL (15,2)  NOT NULL    CONSTRAINT DF_Refunding_NPVSavingsAmount    DEFAULT ((0))
@@ -18,7 +19,4 @@
         FOREIGN KEY ( RefundingPurposeID ) REFERENCES dbo.Purpose ( PurposeID )
   , CONSTRAINT FK_Refunding_RefundType
         FOREIGN KEY ( RefundTypeID ) REFERENCES dbo.RefundType ( RefundTypeID )
-);
-
-
-
+) ;

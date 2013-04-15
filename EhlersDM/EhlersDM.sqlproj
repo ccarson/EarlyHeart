@@ -155,6 +155,9 @@
     <Folder Include="Schema Objects\Import\Views" />
     <Folder Include="Schema Objects\edata" />
     <Folder Include="Schema Objects\edata\Synonyms" />
+    <Folder Include="Schema Objects\Import\Tables" />
+    <Folder Include="Database Security\Schemas" />
+    <Folder Include="Storage" />
   </ItemGroup>
   <ItemGroup>
     <BuildContributorArgument Include="OutDir=$(OutDir)" />
@@ -573,6 +576,7 @@
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_DCAfterSale.function.sql" />
     <Build Include="Database Security\Users\EhlersSQLUsers.user.sql" />
     <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.IssueFirmsContacts.tr_IssueFirmsContacts.trigger.sql" />
+    <Build Include="Schema Objects\dbo\Tables\dbo.RefundingCash.table.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
