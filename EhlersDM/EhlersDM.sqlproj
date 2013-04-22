@@ -133,7 +133,6 @@
     <Folder Include="Schema Objects\Documents\Tables" />
     <Folder Include="Schema Objects\Documents\Tables\Triggers" />
     <Folder Include="Schema Objects\Documents\Views" />
-    <Folder Include="Schema Objects\Documents\Views\Triggers" />
     <Folder Include="Schema Objects\Conversion\Views\Triggers" />
     <Folder Include="Database Security" />
     <Folder Include="Schema Objects\Meta" />
@@ -575,6 +574,10 @@
     <Build Include="Database Security\Users\EhlersSQLUsers.user.sql" />
     <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.IssueFirmsContacts.tr_IssueFirmsContacts.trigger.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.RefundingCash.table.sql" />
+    <Build Include="Schema Objects\Documents\Views\Documents.vw_IssueMaturityAmounts.view.sql" />
+    <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_IssuePayments2UP.function.sql" />
+    <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_IssuePayments3UP.function.sql" />
+    <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_OSCoverGeneral.function.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">

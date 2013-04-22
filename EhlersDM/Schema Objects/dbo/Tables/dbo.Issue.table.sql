@@ -33,7 +33,7 @@
   , PurchasePrice                   DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_PurchasePrice                DEFAULT ((0.00))
   , ArbitrageYield                  DECIMAL (11, 8) NOT NULL    CONSTRAINT DF_Issue_ArbitrageYield               DEFAULT ((0.00))
   , QualifiedForDebtServiceEqual    BIT             NOT NULL    CONSTRAINT DF_Issue_QualifiedForDebtServiceEqual DEFAULT ((0))
-  , GoodFaithPercent                DECIMAL (5, 2)  NOT NULL    CONSTRAINT DF_Issue_GoodFaithPercent             DEFAULT ((0.00))
+  , GoodFaithPercent                INT             NOT NULL    CONSTRAINT DF_Issue_GoodFaithPercent             DEFAULT ((0))
   , QCDate                          DATETIME        NULL
   , ShortDescription                VARCHAR (200)   NOT NULL    CONSTRAINT DF_Issue_ShortDescription             DEFAULT ('')
   , LongDescription                 VARCHAR (MAX)   NOT NULL    CONSTRAINT DF_Issue_LongDescription              DEFAULT ('')
@@ -46,13 +46,14 @@
   , TwoPercentLimitBasedOn          VARCHAR (100)   NOT NULL    CONSTRAINT DF_Issue_TwoPercentLimitBasedOn       DEFAULT ('')
   , CreditEnhanceFee                DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_CreditEnhanceFee             DEFAULT ((0))
   , PostIssuanceFee                 DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_PostIssuanceFee              DEFAULT ((0))
-  , TotalEstimatedEhlersFee         DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_TotalEstimatedEhlersFee      DEFAULT ((0))
-  , TotalFinalEhlersFee             DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_TotalFinalEhlersFee          DEFAULT ((0))
+  , LineItemTotalEstEhlersFee       DECIMAL (18)    NOT NULL    CONSTRAINT DF_Issue_LineItemEstimatedEhlersFee   DEFAULT ((0)) 
   , TotalFeePaymentMethodID         INT             NULL
   , TotalFeeVerifyDate              DATE            NULL
   , TotalFeeVerifyUser              VARCHAR (20)    NOT NULL    CONSTRAINT DF_Issue_TotalFeeVerifyUser           DEFAULT ('')
+  , TotalEstimatedEhlersFee         DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_TotalEstimatedEhlersFee      DEFAULT ((0))
   , GoodFaithDestination            VARCHAR (50)    NOT NULL    CONSTRAINT DF_Issue_GoodFaithDestination         DEFAULT ('To Ehlers')
   , Notes                           VARCHAR (MAX)   NULL
+  , DebtStructureNotes              VARCHAR (MAX)   NULL
   , ObligorClientID                 INT             NULL
   , CertificateTypeID               INT             NULL
   , FirstDeadline                   DATE            NULL
