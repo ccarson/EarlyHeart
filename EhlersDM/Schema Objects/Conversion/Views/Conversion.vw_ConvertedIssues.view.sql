@@ -10,13 +10,19 @@
     revisor         date                description
     ---------       -----------         ----------------------------
     ccarson         2013-01-24          created
-    ccarson         2013-01-30          changed IssueStatus to ISNULL so view returns '' rather than NULL for Issues with NULL Status 
+    ccarson         2013-01-30          changed IssueStatus to ISNULL so view returns '' rather than NULL for Issues with NULL Status
 
     Notes:
 
 ************************************************************************************************************************************
 */
 AS
+      WITH  taxStatusValue AS (
+            SELECT  OldListValue
+                  , DisplayValue
+              FROM  dbo.StaticList
+             WHERE  ListCategoryID = 279 )
+
     SELECT  IssueID                 =  i.IssueID
           , DatedDate               =  i.DatedDate
           , Amount                  =  i.IssueAmount
@@ -27,7 +33,7 @@ AS
           , cusip6                  =  i.Cusip6
           , IssueType               =  ist.LegacyValue
           , SaleType                =  mos.LegacyValue
-          , TaxStatus               =  i.TaxStatus
+          , TaxStatus               =  tsv.OldListValue
           , AltMinimumTax           =  i.AltMinimumTax
           , BondForm                =  bft.LegacyValue
           , BankQualified           =  CASE i.BankQualified WHEN 1 THEN 'Y' ELSE 'N' END
@@ -41,8 +47,6 @@ AS
           , CouponType              =  itt.LegacyValue
           , CallFrequency           =  clf.LegacyValue
           , DisclosureType          =  dst.LegacyValue
-    --    , FinanceType             =  FinanceType
-    --    , UseProceeds             =  UseProceeds
           , PurchasePrice           =  i.PurchasePrice
           , Notes                   =  i.Notes
           , NotesRefundedBy         =  i.RefundedByNote
@@ -65,4 +69,5 @@ AS
  LEFT JOIN  dbo.InterestCalcMethod  AS icm on icm.InterestCalcMethodID  = i.InterestCalcMethodID
  LEFT JOIN  dbo.InterestType        AS itt on itt.InterestTypeID        = i.InterestTypeID
  LEFT JOIN  dbo.CallFrequency       AS clf on clf.CallFrequencyID       = i.CallFrequencyID
- LEFT JOIN  dbo.DisclosureType      AS dst on dst.DisclosureTypeID      = i.DisclosureTypeID ;
+ LEFT JOIN  dbo.DisclosureType      AS dst on dst.DisclosureTypeID      = i.DisclosureTypeID
+ LEFT JOIN  taxStatusValue          AS tsv ON tsv.DisplayValue          = i.TaxStatus ;

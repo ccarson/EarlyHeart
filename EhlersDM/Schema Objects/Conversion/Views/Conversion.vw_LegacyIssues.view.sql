@@ -20,7 +20,13 @@ AS
       WITH  bondFormType AS (
             SELECT  BondFormTypeID, LegacyValue = x.Item
               FROM  dbo.BondFormType
-       CROSS APPLY  dbo.tvf_CSVSplit( LegacyValue, ',') AS x )
+       CROSS APPLY  dbo.tvf_CSVSplit( LegacyValue, ',') AS x ) , 
+
+            taxStatusValue AS ( 
+            SELECT  OldListValue
+                  , DisplayValue 
+              FROM  dbo.StaticList
+             WHERE  ListCategoryID = 279 )        
 
     SELECT  IssueID                 =  i.IssueID
           , DatedDate               =  i.DatedDate
@@ -32,8 +38,8 @@ AS
           , cusip6                  =  CAST( i.cusip6 AS VARCHAR(6) )
           , IssueType               =  ist.IssueTypeID
           , SaleType                =  mos.MethodOfSaleID
-          , TaxStatus               =  ISNULL( i.TaxStatus,'' )
-          , AltMinimumTax           =  CASE i.TaxStatus WHEN 'A' THEN 1 ELSE 0 END
+          , TaxStatus               =  ISNULL( tsv.DisplayValue, '' )
+          , AltMinimumTax           =  CASE tsv.OldListValue WHEN 'A' THEN 1 ELSE 0 END
           , BondForm                =  bft.BondFormTypeID
           , BankQualified           =  CASE i.BankQualified WHEN 'Y' THEN 1 ELSE 0 END
           , SecurityType            =  sct.SecurityTypeID
@@ -70,4 +76,5 @@ INNER JOIN  edata.Clients           AS c   ON c.ClientID      = i.ClientID
  LEFT JOIN  dbo.InterestType        AS itt ON itt.LegacyValue = i.CouponType
  LEFT JOIN  dbo.CallFrequency       AS clf ON clf.LegacyValue = i.CallFrequency
  LEFT JOIN  dbo.DisclosureType      AS dst ON dst.LegacyValue = i.DisclosureType
- LEFT JOIN  bondFormType            AS bft ON bft.LegacyValue = i.BondForm ;
+ LEFT JOIN  bondFormType            AS bft ON bft.LegacyValue = i.BondForm 
+ LEFT JOIN  taxStatusValue          AS tsv ON tsv.OldListValue = i.TaxStatus ;
