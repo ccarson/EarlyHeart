@@ -1,4 +1,4 @@
-﻿CREATE VIEW Documents.vw_IssueMaturityAmounts
+﻿ALTER VIEW Documents.vw_IssueMaturityAmounts
 WITH SCHEMABINDING AS
 /*
 ************************************************************************************************************************************
@@ -28,4 +28,4 @@ INNER JOIN  dbo.PurposeMaturity AS prm ON prm.PurposeID = pur.PurposeID
 GO
 
 CREATE UNIQUE CLUSTERED INDEX PK_IssueMaturityAmounts
-    ON Documents.vw_IssueMaturityAmounts ( IssueID ASC, PaymentDate ASC, Amount ASC ) ;
+    ON Documents.vw_IssueMaturityAmounts ( IssueID ASC, PaymentDate ASC ) ;
