@@ -1,4 +1,4 @@
-﻿ALTER VIEW Documents.vw_IssueMaturityAmounts
+﻿CREATE VIEW Documents.vw_IssueMaturityAmounts
 WITH SCHEMABINDING AS
 /*
 ************************************************************************************************************************************
