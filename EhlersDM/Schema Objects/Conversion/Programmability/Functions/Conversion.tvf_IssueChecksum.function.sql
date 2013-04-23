@@ -1,4 +1,4 @@
-﻿CREATE FUNCTION [Conversion].[tvf_IssueChecksum] ( @Source AS VARCHAR(20) )
+﻿CREATE FUNCTION Conversion.tvf_IssueChecksum ( @Source AS VARCHAR(20) )
 RETURNS TABLE AS
 /*
 ************************************************************************************************************************************
@@ -10,7 +10,8 @@ RETURNS TABLE AS
 
     revisor         date                description
     ---------       -----------         ----------------------------
-    ccarson         2013-01-24          created
+    ccarson         ###DATE###          created -- Issues conversion
+    
 
     Function Arguments:
     @Source     VARCHAR(20)    'Legacy'|'Converted'
@@ -32,7 +33,6 @@ RETURN
               , IssueType           =  ISNULL( IssueType, 0 )
               , SaleType            =  ISNULL( SaleType, 0 )
               , TaxStatus           =  TaxStatus
-              , AltMinimumTax       =  AltMinimumTax
               , BondForm            =  ISNULL( BondForm, 0 )
               , BankQualified       =  BankQualified
               , SecurityType        =  ISNULL( SecurityType, 0 )
@@ -45,8 +45,6 @@ RETURN
               , CouponType          =  ISNULL( CouponType, 0 )
               , CallFrequency       =  ISNULL( CallFrequency, 0 )
               , DisclosureType      =  ISNULL( DisclosureType, 0 )
-    --        , FinanceType         =  FinanceType
-    --        , UseProceeds         =  UseProceeds
               , PurchasePrice       =  CAST ( PurchasePrice AS DECIMAL( 15,2 ) )
               , Notes               =  Notes
               , NotesRefundedBy     =  NotesRefundedBy
@@ -71,7 +69,6 @@ RETURN
               , IssueType           =  ISNULL( IssueTypeID, 0 )
               , SaleType            =  ISNULL( MethodOfSaleID, 0 )
               , TaxStatus           =  TaxStatus
-              , AltMinimumTax       =  AltMinimumTax
               , BondForm            =  ISNULL( BondFormTypeID, 0 )
               , BankQualified       =  BankQualified
               , SecurityType        =  ISNULL( SecurityTypeID, 0 )
@@ -84,8 +81,6 @@ RETURN
               , CouponType          =  ISNULL( InterestTypeID, 0 )
               , CallFrequency       =  ISNULL( CallFrequencyID, 0 )
               , DisclosureType      =  ISNULL( DisclosureTypeID, 0 )
-    --        , FinanceType         =  FinanceType
-    --        , UseProceeds         =  UseProceeds
               , PurchasePrice       =  CAST ( PurchasePrice AS DECIMAL( 15,2 ) )
               , Notes               =  Notes
               , NotesRefundedBy     =  RefundedByNote
@@ -115,7 +110,6 @@ SELECT  IssueID       = IssueID
                                                     +  CAST( IssueType       AS VARCHAR(20) )
                                                     +  CAST( SaleType        AS VARCHAR(20) )
                                                     +  TaxStatus
-                                                    +  CAST( AltMinimumTax   AS VARCHAR(20) )
                                                     +  CAST( BondForm        AS VARCHAR(20) )
                                                     +  CAST( BankQualified   AS VARCHAR(20) )
                                                     +  CAST( SecurityType    AS VARCHAR(20) )
@@ -128,8 +122,6 @@ SELECT  IssueID       = IssueID
                                                     +  CAST( CouponType      AS VARCHAR(20) )
                                                     +  CAST( CallFrequency   AS VARCHAR(20) )
                                                     +  CAST( DisclosureType  AS VARCHAR(20) )
---                                                  +  FinanceType
---                                                  +  UseProceeds
                                                     +  CAST( PurchasePrice   AS VARCHAR(20) )
                                                     +  Notes
                                                     +  NotesRefundedBy

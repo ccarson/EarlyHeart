@@ -103,7 +103,6 @@ BEGIN TRY
                                           , IssueType           INT
                                           , SaleType            INT
                                           , TaxStatus           VARCHAR(20)
-                                          , AltMinimumTax       BIT
                                           , BondForm            INT
                                           , BankQualified       BIT
                                           , SecurityType        INT
@@ -170,7 +169,7 @@ BEGIN TRY
 
     INSERT  @changedIssueData
     SELECT  IssueID, DatedDate, Amount, ClientID, IssueName, ShortName, IssueStatus, cusip6, IssueType, SaleType
-                , TaxStatus, AltMinimumTax, BondForm, BankQualified, SecurityType, SaleDate, SaleTime
+                , TaxStatus, BondForm, BankQualified, SecurityType, SaleDate, SaleTime
                 , SettlementDate, FirstCouponDate, IntPmtFreq, IntCalcMeth, CouponType, CallFrequency
                 , DisclosureType, PurchasePrice, Notes, NotesRefundedBy, NotesRefunds, ArbitrageYield
                 , QualityControlDate, Purpose, ChangeDate, ChangeBy, ObligorClientID, EIPInvest
@@ -185,7 +184,7 @@ BEGIN TRY
 
     INSERT  @changedIssueData
     SELECT  IssueID, DatedDate, Amount, ClientID, IssueName, ShortName, IssueStatus, cusip6, IssueType, SaleType
-                , TaxStatus, AltMinimumTax, BondForm, BankQualified, SecurityType, SaleDate, SaleTime
+                , TaxStatus, BondForm, BankQualified, SecurityType, SaleDate, SaleTime
                 , SettlementDate, FirstCouponDate, IntPmtFreq, IntCalcMeth, CouponType, CallFrequency
                 , DisclosureType, PurchasePrice, Notes, NotesRefundedBy, NotesRefunds, ArbitrageYield
                 , QualityControlDate, Purpose, ChangeDate, ChangeBy, ObligorClientID, EIPInvest
@@ -224,7 +223,6 @@ BEGIN TRY
                       , IssueTypeID            = src.IssueType
                       , MethodOfSaleID         = src.SaleType
                       , TaxStatus              = src.TaxStatus
-                      , AltMinimumTax          = src.AltMinimumTax
                       , BondFormTypeID         = src.BondForm
                       , BankQualified          = src.BankQualified
                       , SecurityTypeID         = src.SecurityType
@@ -252,18 +250,18 @@ BEGIN TRY
       WHEN  NOT MATCHED BY TARGET THEN
             INSERT ( IssueID, DatedDate, IssueAmount, ClientID
                         , IssueName, IssueShortNameID, IssueStatusID, Cusip6
-                        , IssueTypeID, MethodOfSaleID, TaxStatus, AltMinimumTax
-                        , BondFormTypeID, BankQualified, SecurityTypeID, SaleDate
-                        , SaleTime, SettlementDate, FirstInterestDate, InterestPaymentFreqID
+                        , IssueTypeID, MethodOfSaleID, TaxStatus, BondFormTypeID
+                        , BankQualified, SecurityTypeID, SaleDate, SaleTime
+                        , SettlementDate, FirstInterestDate, InterestPaymentFreqID
                         , InterestCalcMethodID, InterestTypeID, CallFrequencyID, DisclosureTypeID
                         , PurchasePrice, Notes, RefundedByNote, RefundsNote
                         , ArbitrageYield, QCDate, LongDescription, ObligorClientID
                         , IsEIPInvest, ModifiedDate, ModifiedUser )
             VALUES ( src.IssueID, src.DatedDate, src.Amount, src.ClientID
                         , src.IssueName, src.ShortName, src.IssueStatus, src.cusip6
-                        , src.IssueType, src.SaleType, src.TaxStatus, src.AltMinimumTax
-                        , src.BondForm, src.BankQualified, src.SecurityType, src.SaleDate
-                        , src.SaleTime, src.SettlementDate, src.FirstCouponDate, src.IntPmtFreq
+                        , src.IssueType, src.SaleType, src.TaxStatus, src.BondForm
+                        , src.BankQualified, src.SecurityType, src.SaleDate, src.SaleTime
+                        , src.SettlementDate, src.FirstCouponDate, src.IntPmtFreq
                         , src.IntCalcMeth, src.CouponType, src.CallFrequency, src.DisclosureType
                         , src.PurchasePrice, src.Notes, src.NotesRefundedBy, src.NotesRefunds
                         , src.ArbitrageYield, src.QualityControlDate, src.Purpose, src.ObligorClientID

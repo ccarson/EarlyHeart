@@ -13,7 +13,6 @@
   , BondFormTypeID                  INT             NULL
   , InitialOfferingDocumentID       INT             NULL
   , TaxStatus                       VARCHAR (20)    NOT NULL    CONSTRAINT DF_Issue_TaxStatus                    DEFAULT ('')
-  , AltMinimumTax                   BIT             NULL        CONSTRAINT DF_Issue_AltMinimumTax                DEFAULT ((0))
   , PrivateActBond                  BIT             NOT NULL    CONSTRAINT DF_Issue_PrivateActBond               DEFAULT ((0))
   , Bond501C3                       BIT             NOT NULL    CONSTRAINT DF_Issue_Bond501C3                    DEFAULT ((0))
   , Cusip6                          VARCHAR (6)     NULL        CONSTRAINT DF_Issue_Cusip6                       DEFAULT ('')

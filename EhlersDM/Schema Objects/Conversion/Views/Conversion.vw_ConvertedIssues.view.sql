@@ -33,7 +33,6 @@ AS
           , IssueType               =  ist.LegacyValue
           , SaleType                =  mos.LegacyValue
           , TaxStatus               =  tsv.OldListValue
-          , AltMinimumTax           =  iss.AltMinimumTax
           , BondForm                =  bft.LegacyValue
           , BankQualified           =  CASE iss.BankQualified WHEN 1 THEN 'Y' ELSE 'N' END
           , SecurityType            =  sct.LegacyValue
@@ -58,15 +57,15 @@ AS
           , ObligorClientID         =  iss.ObligorClientID
           , EIPInvest               =  iss.isEIPInvest
       FROM  dbo.Issue               AS iss
- LEFT JOIN  dbo.IssueShortName      AS shn ON shn.IssueShortNameID      = i.IssueShortNameID
- LEFT JOIN  dbo.IssueStatus         AS sta ON sta.IssueStatusID         = i.IssueStatusID
- LEFT JOIN  dbo.IssueType           AS ist ON ist.IssueTypeID           = i.IssueTypeID
- LEFT JOIN  dbo.MethodOfSale        AS mos ON mos.MethodOfSaleID        = i.MethodOfSaleID
- LEFT JOIN  dbo.BondFormType        AS bft ON bft.BondFormTypeID        = i.BondFormTypeID
- LEFT JOIN  dbo.SecurityType        AS sct ON sct.SecurityTypeID        = i.SecurityTypeID
- LEFT JOIN  dbo.InterestPaymentFreq AS ipf ON ipf.InterestPaymentFreqID = i.InterestPaymentFreqID
- LEFT JOIN  dbo.InterestCalcMethod  AS icm ON icm.InterestCalcMethodID  = i.InterestCalcMethodID
- LEFT JOIN  dbo.InterestType        AS itt ON itt.InterestTypeID        = i.InterestTypeID
- LEFT JOIN  dbo.CallFrequency       AS clf ON clf.CallFrequencyID       = i.CallFrequencyID
- LEFT JOIN  dbo.DisclosureType      AS dst ON dst.DisclosureTypeID      = i.DisclosureTypeID
- LEFT JOIN  taxStatusValue          AS tsv ON tsv.DisplayValue          = i.TaxStatus ;
+ LEFT JOIN  dbo.IssueShortName      AS shn ON shn.IssueShortNameID      = iss.IssueShortNameID
+ LEFT JOIN  dbo.IssueStatus         AS sta ON sta.IssueStatusID         = iss.IssueStatusID
+ LEFT JOIN  dbo.IssueType           AS ist ON ist.IssueTypeID           = iss.IssueTypeID
+ LEFT JOIN  dbo.MethodOfSale        AS mos ON mos.MethodOfSaleID        = iss.MethodOfSaleID
+ LEFT JOIN  dbo.BondFormType        AS bft ON bft.BondFormTypeID        = iss.BondFormTypeID
+ LEFT JOIN  dbo.SecurityType        AS sct ON sct.SecurityTypeID        = iss.SecurityTypeID
+ LEFT JOIN  dbo.InterestPaymentFreq AS ipf ON ipf.InterestPaymentFreqID = iss.InterestPaymentFreqID
+ LEFT JOIN  dbo.InterestCalcMethod  AS icm ON icm.InterestCalcMethodID  = iss.InterestCalcMethodID
+ LEFT JOIN  dbo.InterestType        AS itt ON itt.InterestTypeID        = iss.InterestTypeID
+ LEFT JOIN  dbo.CallFrequency       AS clf ON clf.CallFrequencyID       = iss.CallFrequencyID
+ LEFT JOIN  dbo.DisclosureType      AS dst ON dst.DisclosureTypeID      = iss.DisclosureTypeID
+ LEFT JOIN  taxStatusValue          AS tsv ON tsv.DisplayValue          = iss.TaxStatus ;

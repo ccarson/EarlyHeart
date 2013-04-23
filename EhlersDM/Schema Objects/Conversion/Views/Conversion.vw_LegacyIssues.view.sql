@@ -9,8 +9,7 @@
 
     revisor         date                description
     ---------       -----------         ----------------------------
-    ccarson         2013-01-24          created
-    ccarson         ###DATE###          Issues Conversion Bug 39, modified BondFormTypeID selection criteria
+    ccarson         ###DATE###          created -- Issues Conversion
 
     Notes:
 
@@ -39,7 +38,6 @@ AS
           , IssueType               =  ist.IssueTypeID
           , SaleType                =  mos.MethodOfSaleID
           , TaxStatus               =  ISNULL( tsv.DisplayValue, '' )
-          , AltMinimumTax           =  CASE tsv.OldListValue WHEN 'A' THEN 1 ELSE 0 END
           , BondForm                =  bft.BondFormTypeID
           , BankQualified           =  CASE iss.BankQualified WHEN 'Y' THEN 1 ELSE 0 END
           , SecurityType            =  sct.SecurityTypeID

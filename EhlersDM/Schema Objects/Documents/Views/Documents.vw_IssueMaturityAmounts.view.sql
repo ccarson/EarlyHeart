@@ -17,13 +17,13 @@ WITH SCHEMABINDING AS
 ************************************************************************************************************************************
 */
     SELECT  ixN           = COUNT_BIG(*)
-          , IssueID       = i.IssueID
-          , PaymentDate   = pm.PaymentDate
-          , Amount        = SUM( pm.PaymentAmount )
+          , IssueID       = ism.IssueID
+          , PaymentDate   = prm.PaymentDate
+          , Amount        = SUM( prm.PaymentAmount )
       FROM  dbo.IssueMaturity   AS ism
-INNER JOIN  dbo.Purpose         AS pur ON iss.IssueID   = pur.IssueID
+INNER JOIN  dbo.Purpose         AS pur ON ism.IssueID   = pur.IssueID
 INNER JOIN  dbo.PurposeMaturity AS prm ON prm.PurposeID = pur.PurposeID
-  GROUP BY  i.IssueID, pm.PaymentDate ;
+  GROUP BY  ism.IssueID, prm.PaymentDate ;
 
 GO
 
