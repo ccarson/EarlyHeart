@@ -24,7 +24,6 @@ WITH SCHEMABINDING AS
 INNER JOIN  dbo.Purpose         AS pur ON ism.IssueID   = pur.IssueID
 INNER JOIN  dbo.PurposeMaturity AS prm ON prm.PurposeID = pur.PurposeID
   GROUP BY  ism.IssueID, prm.PaymentDate ;
-
 GO
 
 CREATE UNIQUE CLUSTERED INDEX PK_IssueMaturityAmounts
