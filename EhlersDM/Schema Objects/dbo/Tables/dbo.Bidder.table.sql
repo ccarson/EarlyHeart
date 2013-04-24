@@ -3,7 +3,7 @@
   , IssueID       INT             NOT NULL
   , FirmID        INT             NOT NULL
   , BidSourceID   INT             NULL
-  , PurchasePrice DECIMAL (15, 2) NOT NULL  CONSTRAINT DF_Bidder_BidPurchasePrice DEFAULT ((0.00))
+  , BidPrice DECIMAL (15, 2) NOT NULL  CONSTRAINT DF_Bidder_BidPurchasePrice DEFAULT ((0.00))
   , TICPercent    DECIMAL (12, 8) NOT NULL  CONSTRAINT DF_Bidder_TICPercent       DEFAULT ((0))
   , NICPercent    DECIMAL (12, 8) NOT NULL  CONSTRAINT DF_Bidder_BidNIC           DEFAULT ((0))
   , NICAmount     DECIMAL (15, 2) NOT NULL  CONSTRAINT DF_Bidder_BidNICAmount     DEFAULT ((0.00))

@@ -632,6 +632,9 @@
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
   </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="EhlersDM.refactorlog" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Publish' ">
     <PreBuildEvent>powershell  -File "$(ProjectDir)Project Scripts\SetRevisionDate.ps1"</PreBuildEvent>
   </PropertyGroup>

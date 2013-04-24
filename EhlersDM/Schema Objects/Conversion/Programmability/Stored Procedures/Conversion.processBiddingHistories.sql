@@ -47,7 +47,7 @@ BEGIN
       FROM  Conversion.vw_LegacyBidders ;
 
     SELECT  @vw_BidderChecksum =
-            CHECKSUM_AGG( CHECKSUM( IssueID, FirmID, PurchasePrice, TICPercent
+            CHECKSUM_AGG( CHECKSUM( IssueID, FirmID, BidPrice, TICPercent
                                   , NICPercent, NICAmount, BABTICPercent
                                   , HasWinningBid, IsRecoveryAct ) )
       FROM  dbo.Bidder ;
@@ -105,7 +105,7 @@ INNER JOIN  #legacyBiddersData   AS b
 
     INSERT  dbo.Bidder (
             BidderID, IssueID, FirmID
-          , BidSourceID, PurchasePrice, TICPercent
+          , BidSourceID, BidPrice, TICPercent
           , NICPercent, NICAmount
           , BABTICPercent, BABNICPercent
           , HasWinningBid, IsRecoveryAct
