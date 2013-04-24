@@ -24,8 +24,8 @@ RETURN
 
       WITH  agencies AS (
             SELECT  [1] =   CASE IsMoodyRated   WHEN 1 THEN  CAST( 'Moody''s Investor Service' AS VARCHAR ( 100 ) ) ELSE NULL END 
-                 ,  [2] =   CASE IsSPRated      WHEN 1 THEN  CAST( 'xxx s and p xxx'           AS VARCHAR ( 100 ) ) ELSE NULL END 
-                 ,  [3] =   CASE IsFitchRated   WHEN 1 THEN  CAST( 'xxx fitch xxx'             AS VARCHAR ( 100 ) ) ELSE NULL END 
+                 ,  [2] =   CASE IsSPRated      WHEN 1 THEN  CAST( 'Standard & Poor''s'           AS VARCHAR ( 100 ) ) ELSE NULL END 
+                 ,  [3] =   CASE IsFitchRated   WHEN 1 THEN  CAST( 'Fitch Ratings'             AS VARCHAR ( 100 ) ) ELSE NULL END 
               FROM  dbo.IssueRating
              WHERE  IssueID = @IssueID ) ,
 

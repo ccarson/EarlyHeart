@@ -579,7 +579,7 @@
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_IssuePayments3UP.function.sql" />
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_OSCoverGeneral.function.sql" />
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_RatingsApplications.function.sql" />
-    <Build Include="Project Scripts\IssuesConversion\PostDeployChanges\InsertKansasStateRegistrationFirmCategory.script.sql" />
+    <None Include="Project Scripts\IssuesConversion\PostDeployChanges\InsertKansasStateRegistrationFirmCategory.script.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">

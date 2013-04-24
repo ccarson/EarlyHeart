@@ -123,12 +123,14 @@ RETURN
                   , Address3         = adr.Address3
                   , City             = adr.City
                   , State            = adr.State
+                  , StateFull        = s.FullName
                   , Zip              = adr.Zip
               FROM  dbo.IssueFirms          AS isf
         INNER JOIN  dbo.FirmCategories      AS fcs ON fcs.FirmCategoriesID = isf.FirmCategoriesID
         INNER JOIN  dbo.Firm                AS frm ON frm.FirmID = fcs.FirmID
         INNER JOIN  dbo.FirmAddresses       AS fma ON fma.FirmID = frm.FirmID
         INNER JOIN  dbo.Address             AS adr ON adr.AddressID = fma.AddressID
+        INNER JOIN  dbo.States              AS s  ON s.Abbreviation = adr.State
              WHERE  isf.IssueID = @IssueID AND fcs.FirmCategoryID = 14 ) ,
 
              escrowAgentData AS (
@@ -140,12 +142,14 @@ RETURN
                   , Address3         = adr.Address3
                   , City             = adr.City
                   , State            = adr.State
+                  , StateFull        = s.FullName
                   , Zip              = adr.Zip
               FROM  dbo.IssueFirms          AS isf
         INNER JOIN  dbo.FirmCategories      AS fcs ON fcs.FirmCategoriesID = isf.FirmCategoriesID
         INNER JOIN  dbo.Firm                AS frm ON frm.FirmID = fcs.FirmID
         INNER JOIN  dbo.FirmAddresses       AS fma ON fma.FirmID = frm.FirmID
         INNER JOIN  dbo.Address             AS adr ON adr.AddressID = fma.AddressID
+        INNER JOIN  dbo.States              AS s  ON s.Abbreviation = adr.State
              WHERE  isf.IssueID = @IssueID AND fcs.FirmCategoryID = 8 ) ,
 
             county1 AS (
@@ -343,6 +347,7 @@ RETURN
           , PA_Address3                 = ISNULL( pad.Address3, '' )
           , PA_City                     = ISNULL( pad.City, '' )
           , PA_State                    = ISNULL( pad.State, '' )
+          , PA_StateFull                = ISNULL( pad.StateFull, '' )
           , PA_Zip                      = ISNULL( pad.Zip, '' )
           , EA_FirmName                 = ISNULL( ead.FirmName, '' )
           , EA_Address1                 = ISNULL( ead.Address1, '' )
@@ -350,6 +355,7 @@ RETURN
           , EA_Address3                 = ISNULL( ead.Address3, '' )
           , EA_City                     = ISNULL( ead.City, '' )
           , EA_State                    = ISNULL( ead.State, '' )
+          , EA_StateFull                = ISNULL( ead.StateFull, '' )
           , EA_Zip                      = ISNULL( ead.Zip, '' )
           , C1_ClientName               = ISNULL( c1.ClientName, '' )
           , C1_Address1                 = ISNULL( c1.Address1, '' )
