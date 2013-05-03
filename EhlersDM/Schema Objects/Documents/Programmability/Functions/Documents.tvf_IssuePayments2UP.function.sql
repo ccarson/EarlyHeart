@@ -40,7 +40,8 @@ RETURN
              WHERE  N = 2 ) 
              
     SELECT  TOP 100 PERCENT
-            PaymentDate1    = a.PaymentDate
+            N               = a.N
+          , PaymentDate1    = a.PaymentDate
           , Amount1         = a.Amount
           , PaymentDate2    = b.PaymentDate
           , Amount2         = b.Amount
