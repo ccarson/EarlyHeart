@@ -3,9 +3,9 @@ RETURNS TABLE AS
 /*
 ************************************************************************************************************************************
 
-   Function:    Documents.tvf_BeforeSale
+   Function:    Documents.tvf_OSCoverGeneral
      Author:    Marty Schultz
-    Purpose:    return OS Cover documents data for a given Issue
+    Purpose:    return OS Cover data for a given Issue
 
     revisor         date                description
     ---------       -----------         ----------------------------
@@ -29,7 +29,9 @@ RETURN
                   , MeetingTime             = im.MeetingTime
                   , OSPrintDate             = DATENAME(MONTH, i.OSPrintDate)+ ' ' + RIGHT(DATENAME(DAY, i.OSPrintDate), 2) + ', ' + DATENAME(YEAR, i.OSPrintDate)
                   , DatedDate               = i.DatedDate
+                  , SettlementDate          = i.SettlementDate
                   , FirstInterestDate       = i.FirstInterestDate
+                  , FirstInterestDatePlus6  = DATEADD(MONTH, 6, i.FirstInterestDate)
                   , InterestPaymentFreq     = pf.Value
                   , IssueShortName          = i.IssueShortNameOS
                   , IsMoodyRated            = ir.IsMoodyRated
@@ -49,6 +51,7 @@ RETURN
                   , AllowMaturityAdjustment = bp.AllowMaturityAdjustment
                   , AllowParAdjustment      = bp.AllowParAdjustment
                   , MaximumAdjustmentAmount = bp.MaximumAdjustmentAmount
+                  , MinimumProposalPct      = bp.MinimumBidPercent
                   , MinimumProposal         = (bp.MinimumBidPercent / 100) * i.IssueAmount
                   , MaximumProposal         = (bp.MaximumBidPercent / 100) * i.IssueAmount
                   , CallDate                = ic.CallDate
@@ -74,6 +77,7 @@ RETURN
                   , ClientPrefix            = cp.Value
                   , JurisdictionType        = jt.Value
                   , JurisdictionTypeID      = c.JurisdictionTypeID
+                  , GoverningBoard          = gb.Value
                   , Address1                = a.Address1
                   , Address2                = a.Address2
                   , Address3                = a.Address3
@@ -85,10 +89,63 @@ RETURN
         INNER JOIN  dbo.Client              AS c  ON c.ClientID = i.ClientID
         INNER JOIN  dbo.ClientPrefix        AS cp ON cp.ClientPrefixID = c.ClientPrefixID
         INNER JOIN  dbo.JurisdictionType    AS jt ON jt.JurisdictionTypeID = c.JurisdictionTypeID
+        INNER JOIN  dbo.GoverningBoard      AS gb ON gb.GoverningBoardID = c.GoverningBoardID
         INNER JOIN  dbo.ClientAddresses     AS ca ON ca.ClientID = c.ClientID
         INNER JOIN  dbo.Address             AS a  ON a.AddressID = ca.AddressID
         INNER JOIN  dbo.States              AS s  ON s.Abbreviation = a.State
              WHERE  i.IssueID = @IssueID ) ,
+
+            headElectedOfficial AS (
+            SELECT  IssueID                 = i.IssueID
+                  , FirstName               = con.FirstName
+                  , LastName                = con.LastName
+                  , Title                   = con.Title
+              FROM  dbo.Issue               AS i
+        INNER JOIN  dbo.Client              AS c   ON c.ClientID = i.ClientID
+        INNER JOIN  dbo.ClientContacts      AS cc  ON cc.ClientID = c.ClientID
+        INNER JOIN  dbo.Contact             AS con ON con.ContactID = cc.ContactID
+        INNER JOIN  dbo.ContactJobFunctions AS cjf ON cjf.ContactID = con.ContactID
+        INNER JOIN  dbo.JobFunction         AS jf  ON jf.JobFunctionID = cjf.JobFunctionID
+             WHERE  i.IssueID = @IssueID AND cjf.JobFunctionID = 16) ,
+
+             Clerk AS (
+            SELECT  IssueID                 = i.IssueID
+                  , FirstName               = con.FirstName
+                  , LastName                = con.LastName
+                  , Title                   = con.Title
+              FROM  dbo.Issue               AS i
+        INNER JOIN  dbo.Client              AS c   ON c.ClientID = i.ClientID
+        INNER JOIN  dbo.ClientContacts      AS cc  ON cc.ClientID = c.ClientID
+        INNER JOIN  dbo.Contact             AS con ON con.ContactID = cc.ContactID
+        INNER JOIN  dbo.ContactJobFunctions AS cjf ON cjf.ContactID = con.ContactID
+        INNER JOIN  dbo.JobFunction         AS jf  ON jf.JobFunctionID = cjf.JobFunctionID
+             WHERE  i.IssueID = @IssueID AND cjf.JobFunctionID = 1) ,
+
+             financePerson AS (
+            SELECT  IssueID                 = i.IssueID
+                  , FirstName               = con.FirstName
+                  , LastName                = con.LastName
+                  , Title                   = con.Title
+              FROM  dbo.Issue               AS i
+        INNER JOIN  dbo.Client              AS c   ON c.ClientID = i.ClientID
+        INNER JOIN  dbo.ClientContacts      AS cc  ON cc.ClientID = c.ClientID
+        INNER JOIN  dbo.Contact             AS con ON con.ContactID = cc.ContactID
+        INNER JOIN  dbo.ContactJobFunctions AS cjf ON cjf.ContactID = con.ContactID
+        INNER JOIN  dbo.JobFunction         AS jf  ON jf.JobFunctionID = cjf.JobFunctionID
+             WHERE  i.IssueID = @IssueID AND cjf.JobFunctionID = 3) ,
+
+             headAdministrator AS (
+            SELECT  IssueID                 = i.IssueID
+                  , FirstName               = con.FirstName
+                  , LastName                = con.LastName
+                  , Title                   = con.Title
+              FROM  dbo.Issue               AS i
+        INNER JOIN  dbo.Client              AS c   ON c.ClientID = i.ClientID
+        INNER JOIN  dbo.ClientContacts      AS cc  ON cc.ClientID = c.ClientID
+        INNER JOIN  dbo.Contact             AS con ON con.ContactID = cc.ContactID
+        INNER JOIN  dbo.ContactJobFunctions AS cjf ON cjf.ContactID = con.ContactID
+        INNER JOIN  dbo.JobFunction         AS jf  ON jf.JobFunctionID = cjf.JobFunctionID
+             WHERE  i.IssueID = @IssueID AND cjf.JobFunctionID = 2) ,
 
             bondAttorneyData AS (
             SELECT  IssueID          = isf.IssueID
@@ -291,7 +348,9 @@ RETURN
           , MeetingTime                 = ISNULL( CAST(id.MeetingTime AS datetime), '' )
           , OSPrintDate                 = ISNULL( id.OSPrintDate, '')
           , DatedDate                   = ISNULL( id.DatedDate, '')
+          , SettlementDate              = ISNULL( id.SettlementDate, '')
           , FirstInterestDate           = ISNULL( id.FirstInterestDate, '')
+          , FirstInterestDatePlus6      = ISNULL( id.FirstInterestDatePlus6, '')
           , InterestPaymentFreq         = ISNULL( id.InterestPaymentFreq, '')
           , IssueShortName              = ISNULL( id.IssueShortName, '')
           , IsMoodyRated                = ISNULL( id.IsMoodyRated, '')
@@ -311,6 +370,7 @@ RETURN
           , AllowMaturityAdjustment     = ISNULL( id.AllowMaturityAdjustment, '')
           , AllowParAdjustment          = ISNULL( id.AllowParAdjustment, '')
           , MaximumAdjustmentAmount     = ISNULL( id.MaximumAdjustmentAmount, 0)
+          , MinimumProposalPct          = id.MinimumProposalPct
           , MinimumProposal             = id.MinimumProposal
           , MaximumProposal             = id.MaximumProposal
           , CallDate                    = ISNULL( id.CallDate, '')
@@ -323,6 +383,7 @@ RETURN
           , ClientPrefix                = ISNULL( cd.ClientPrefix, '' )
           , JurisdictionType            = ISNULL( cd.JurisdictionType, '' )
           , JurisdictionTypeID          = ISNULL( cd.JurisdictionTypeID, '' )
+          , GoverningBoard              = ISNULL( cd.GoverningBoard, '' )
           , Client_Address1             = ISNULL( cd.Address1, '' )
           , Client_Address2             = ISNULL( cd.Address2, '' )
           , Client_Address3             = ISNULL( cd.Address3, '' )
@@ -330,6 +391,18 @@ RETURN
           , Client_StateAbv             = ISNULL( cd.StateAbv, '' )
           , Client_StateFull            = ISNULL( cd.StateFull, '' )
           , Client_Zip                  = ISNULL( cd.Zip, '' )
+          , HEO_FirstName               = ISNULL( heo.FirstName, '' )
+          , HEO_LastName                = ISNULL( heo.LastName, '' )
+          , HEO_Title                   = ISNULL( heo.Title, '' )
+          , CLK_FirstName               = ISNULL( clk.FirstName, '' )
+          , CLK_LastName                = ISNULL( clk.LastName, '' )
+          , CLK_Title                   = ISNULL( clk.Title, '' )
+          , FP_FirstName                = ISNULL( fp.FirstName, '' )
+          , FP_LastName                 = ISNULL( fp.LastName, '' )
+          , FP_Title                    = ISNULL( fp.Title, '' )
+          , HA_FirstName                = ISNULL( ha.FirstName, '' )
+          , HA_LastName                 = ISNULL( ha.LastName, '' )
+          , HA_Title                    = ISNULL( ha.Title, '' )
           , BA_FirmID                   = ISNULL( bad.FirmID, '' )
           , BA_FirmName                 = ISNULL( bad.FirmName, '' )
           , BA_Address1                 = ISNULL( bad.Address1, '' )
@@ -405,6 +478,10 @@ RETURN
       FROM  dbo.Issue AS i
  LEFT JOIN  issueData               AS id  ON id.IssueID  = i.IssueID
  LEFT JOIN  clientData              AS cd  ON cd.IssueID  = i.IssueID
+ LEFT JOIN  headElectedOfficial     AS heo ON heo.IssueID = i.IssueID
+ LEFT JOIN  Clerk                   AS clk ON clk.IssueID = i.IssueID
+ LEFT JOIN  financePerson           AS fp  ON fp.IssueID  = i.IssueID
+ LEFT JOIN  headAdministrator       AS ha  ON ha.IssueID  = i.IssueID
  LEFT JOIN  bondAttorneyData        AS bad ON bad.IssueID = i.IssueID
  LEFT JOIN  payingAgentData         AS pad ON pad.IssueID = i.IssueID
  LEFT JOIN  escrowAgentData         AS ead ON pad.IssueID = i.IssueID
