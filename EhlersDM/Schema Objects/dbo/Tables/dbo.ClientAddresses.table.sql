@@ -16,10 +16,15 @@
 ) ;
 GO
 
-CREATE INDEX IX_ClientAddresses_ClientID_AddressID ON dbo.ClientAddresses ( ClientID ASC, AddressID ASC ) ;
+CREATE INDEX IX_ClientAddresses_ClientID_AddressID ON dbo.ClientAddresses (
+        AddressTypeID ASC, ClientID ASC, ClientAddressesID ASC, AddressID ASC ) ;
 GO
 
 CREATE INDEX IX_ClientAddresses_AddressID ON dbo.ClientAddresses ( AddressID ASC ) ;
 GO
 
 CREATE INDEX IX_ClientAddresses_ClientID ON dbo.ClientAddresses ( ClientID ASC ) ;
+GO
+
+CREATE INDEX IX_ClientAddresses_Covering ON dbo.ClientAddresses (
+    AddressTypeID ASC, ClientID ASC, ClientAddressesID ASC, AddressID ASC ) ;

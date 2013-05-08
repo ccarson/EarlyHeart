@@ -171,6 +171,25 @@ RETURN
         INNER JOIN  dbo.States              AS s  ON s.Abbreviation = adr.State
              WHERE  isf.IssueID = @IssueID AND fcs.FirmCategoryID = 3 AND cjf.JobFunctionID = 30 AND ifc.Ordinal = 1 ) ,
 
+            localAttorneyData AS (
+            SELECT  IssueID          = isf.IssueID
+                  , FirmID           = frm.FirmID
+                  , FirmName         = frm.FirmName
+                  , Address1         = adr.Address1
+                  , Address2         = adr.Address2
+                  , Address3         = adr.Address3
+                  , City             = adr.City
+                  , State            = adr.State
+                  , StateFull        = s.FullName
+                  , Zip              = adr.Zip
+              FROM  dbo.IssueFirms          AS isf
+        INNER JOIN  dbo.FirmCategories      AS fcs ON fcs.FirmCategoriesID = isf.FirmCategoriesID
+        INNER JOIN  dbo.Firm                AS frm ON frm.FirmID = fcs.FirmID
+        INNER JOIN  dbo.FirmAddresses       AS fma ON fma.FirmID = frm.FirmID
+        INNER JOIN  dbo.Address             AS adr ON adr.AddressID = fma.AddressID
+        INNER JOIN  dbo.States              AS s  ON s.Abbreviation = adr.State
+             WHERE  isf.IssueID = @IssueID AND fcs.FirmCategoryID = 12 ) ,
+
             payingAgentData AS (
             SELECT  IssueID          = isf.IssueID
                   , IssueFirmsID     = isf.IssueFirmsID
@@ -190,7 +209,7 @@ RETURN
         INNER JOIN  dbo.States              AS s  ON s.Abbreviation = adr.State
              WHERE  isf.IssueID = @IssueID AND fcs.FirmCategoryID = 14 ) ,
 
-             escrowAgentData AS (
+            escrowAgentData AS (
             SELECT  IssueID          = isf.IssueID
                   , IssueFirmsID     = isf.IssueFirmsID
                   , FirmName         = frm.FirmName
@@ -208,7 +227,88 @@ RETURN
         INNER JOIN  dbo.Address             AS adr ON adr.AddressID = fma.AddressID
         INNER JOIN  dbo.States              AS s  ON s.Abbreviation = adr.State
              WHERE  isf.IssueID = @IssueID AND fcs.FirmCategoryID = 8 ) ,
+             
+            primaryFA AS (
+            SELECT  IssueID             = i.IssueID
+                  , FirstName           = ee.FirstName
+                  , LastName            = ee.LastName
+                  , Phone               = ee.Phone
+                  , Email               = ee.Email
+                  , Title               = ee.JobTitle
+                  , Address1            = a.Address1
+                  , Address2            = a.Address2
+                  , Address3            = a.Address3
+                  , City                = a.City
+                  , State               = a.State
+                  , StateFull           = s.FullName
+                  , MainOfficeNumber    = eo.Phone
+              FROM  dbo.Issue                   AS i
+        INNER JOIN  dbo.IssueEhlersEmployees    AS iee ON iee.IssueID = i.IssueID
+        INNER JOIN  dbo.EhlersEmployeeJobGroups AS eej ON eej.EhlersEmployeeJobGroupsID = iee.EhlersEmployeeJobGroupsID
+        INNER JOIN  dbo.EhlersEmployee          AS ee  ON ee.EhlersEmployeeID = eej.EhlersEmployeeID
+        INNER JOIN  dbo.EhlersJobGroup          AS ejg ON ejg.EhlersJobGroupID = eej.EhlersJobGroupID
+        INNER JOIN  dbo.EhlersOffice            AS eo  ON eo.EhlersOfficeID = ee.EhlersOfficeID
+        INNER JOIN  dbo.Address                 AS a   ON a.AddressID = eo.AddressID
+        INNER JOIN  dbo.States                  AS s   ON s.Abbreviation = a.State
+             WHERE  i.IssueID = @IssueID AND eej.EhlersJobGroupID = 3 AND iee.Ordinal = 1) ,
 
+            jointClient1 AS (
+            SELECT  IssueID                 = @IssueID
+                  , ClientName              = c.ClientName
+                  , JurisdictionTypeID      = c.JurisdictionTypeID
+                  , JurisdictionType        = jt.Value
+                  , SchoolDistrictNumber    = c.SchoolDistrictNumber    
+                  , Prefix                  = cp.Value
+                  , Address1                = a.Address1
+                  , Address2                = a.Address2
+                  , Address3                = a.Address3
+                  , City                    = a.City
+                  , State                   = a.State
+                  , StateFull               = s.FullName
+                  , Zip                     = a.Zip
+              FROM  dbo.Client              AS c
+        INNER JOIN  dbo.JurisdictionType    AS jt ON jt.JurisdictionTypeID = c.JurisdictionTypeID
+        INNER JOIN  dbo.ClientPrefix        AS cp ON cp.ClientPrefixID = c.ClientPrefixID
+        INNER JOIN  dbo.ClientAddresses     AS ca ON ca.ClientID = c.ClientID
+        INNER JOIN  dbo.Address             AS a  ON a.AddressID = ca.AddressID
+        INNER JOIN  dbo.States              AS s  ON s.Abbreviation = a.State
+             WHERE  c.ClientID =
+                    (
+                        SELECT  jc.ClientID
+                          FROM  dbo.Issue               AS i
+                    INNER JOIN  dbo.IssueJointClient    AS jc ON jc.IssueID = i.IssueID
+                         WHERE  i.IssueID = @IssueID    AND jc.Ordinal = 1
+                    )) ,
+                    
+            jointClient2 AS (
+            SELECT  IssueID                 = @IssueID
+                  , ClientName              = c.ClientName
+                  , JurisdictionTypeID      = c.JurisdictionTypeID
+                  , JurisdictionType        = jt.Value
+                  , SchoolDistrictNumber    = c.SchoolDistrictNumber    
+                  , Prefix                  = cp.Value
+                  , Address1                = a.Address1
+                  , Address2                = a.Address2
+                  , Address3                = a.Address3
+                  , City                    = a.City
+                  , State                   = a.State
+                  , StateFull               = s.FullName
+                  , Zip                     = a.Zip
+              FROM  dbo.Client              AS c
+        INNER JOIN  dbo.JurisdictionType    AS jt ON jt.JurisdictionTypeID = c.JurisdictionTypeID
+        INNER JOIN  dbo.ClientPrefix        AS cp ON cp.ClientPrefixID = c.ClientPrefixID
+        INNER JOIN  dbo.ClientAddresses     AS ca ON ca.ClientID = c.ClientID
+        INNER JOIN  dbo.Address             AS a  ON a.AddressID = ca.AddressID
+        INNER JOIN  dbo.States              AS s  ON s.Abbreviation = a.State
+             WHERE  c.ClientID =
+                    (
+                        SELECT  jc.ClientID
+                          FROM  dbo.Issue               AS i
+                    INNER JOIN  dbo.IssueJointClient    AS jc ON jc.IssueID = i.IssueID
+                         WHERE  i.IssueID = @IssueID    AND jc.Ordinal = 2
+                    )) ,
+            
+             
             county1 AS (
             SELECT  IssueID          = @IssueID
                   , ClientName       = c.ClientName
@@ -378,6 +478,7 @@ RETURN
           , TypeOfRedemption            = ISNULL( id.TypeOfRedemption, 0)
           , NumberOfMaturities          = ISNULL( id.NumberOfMaturities, 0)
           , FirstMaturityDate           = ISNULL( id.FirstMaturityDate, '')
+          , MethodofSale                = ISNULL( id.MethodOfSale, '')
           , SchoolDistrictNumber        = ISNULL( cd.SchoolDistrictNumber, '' )
           , ClientName                  = ISNULL( cd.ClientName, '' )
           , ClientPrefix                = ISNULL( cd.ClientPrefix, '' )
@@ -414,6 +515,14 @@ RETURN
           , BA_Zip                      = ISNULL( bad.Zip, '' )
           , BA_FirstName                = ISNULL( bad.FirstName, '' )
           , BA_LastName                 = ISNULL( bad.LastName, '' )
+          , LA_FirmName                 = ISNULL( lad.FirmName, '' )
+          , LA_Address1                 = ISNULL( lad.Address1, '' )
+          , LA_Address2                 = ISNULL( lad.Address2, '' )
+          , LA_Address3                 = ISNULL( lad.Address3, '' )
+          , LA_City                     = ISNULL( lad.City, '' )
+          , LA_State                    = ISNULL( lad.State, '' )
+          , LA_StateFull                = ISNULL( lad.StateFull, '' )
+          , LA_Zip                      = ISNULL( lad.Zip, '' )
           , PA_FirmName                 = ISNULL( pad.FirmName, '' )
           , PA_Address1                 = ISNULL( pad.Address1, '' )
           , PA_Address2                 = ISNULL( pad.Address2, '' )
@@ -430,6 +539,42 @@ RETURN
           , EA_State                    = ISNULL( ead.State, '' )
           , EA_StateFull                = ISNULL( ead.StateFull, '' )
           , EA_Zip                      = ISNULL( ead.Zip, '' )
+          , FA1_FirstName               = ISNULL( fa1.FirstName, '' )
+          , FA1_LastName                = ISNULL( fa1.LastName, '' )
+          , FA1_Phone                   = ISNULL( fa1.Phone, '' )
+          , FA1_Email                   = ISNULL( fa1.Email, '' )
+          , FA1_Title                   = ISNULL( fa1.Title, '' )
+          , FA1_Address1                = ISNULL( fa1.Address1, '' )
+          , FA1_Address2                = ISNULL( fa1.Address2, '' )
+          , FA1_Address3                = ISNULL( fa1.Address3, '' )
+          , FA1_City                    = ISNULL( fa1.City, '' )
+          , FA1_State                   = ISNULL( fa1.State, '' )
+          , FA1_StateFull               = ISNULL( fa1.StateFull, '' )
+          , FA1_MainOfficeNumer         = ISNULL( fa1.MainOfficeNumber, '' )
+          , JC1_ClientName              = ISNULL( jc1.ClientName, '' )
+          , JC1_JurisdictionTypeID      = ISNULL( jc1.JurisdictionTypeID, '' )
+          , JC1_JurisdictionType        = ISNULL( jc1.JurisdictionType, '' )
+          , JC1_SchoolDistrictNumber    = ISNULL( jc1.SchoolDistrictNumber, '' )
+          , JC1_Prefix                  = ISNULL( jc1.Prefix, '' )
+          , JC1_Address1                = ISNULL( jc1.Address1, '' )
+          , JC1_Address2                = ISNULL( jc1.Address2, '' )
+          , JC1_Address3                = ISNULL( jc1.Address3, '' )
+          , JC1_City                    = ISNULL( jc1.City, '' )
+          , JC1_State                   = ISNULL( jc1.State, '' )
+          , JC1_StateFull               = ISNULL( jc1.StateFull, '' )
+          , JC1_Zip                     = ISNULL( jc1.Zip, '' )
+          , JC2_ClientName              = ISNULL( jc2.ClientName, '' )
+          , JC2_JurisdictionTypeID      = ISNULL( jc2.JurisdictionTypeID, '' )
+          , JC2_JurisdictionType        = ISNULL( jc2.JurisdictionType, '' )
+          , JC2_SchoolDistrictNumber    = ISNULL( jc2.SchoolDistrictNumber, '' )
+          , JC2_Prefix                  = ISNULL( jc2.Prefix, '' )
+          , JC2_Address1                = ISNULL( jc2.Address1, '' )
+          , JC2_Address2                = ISNULL( jc2.Address2, '' )
+          , JC2_Address3                = ISNULL( jc2.Address3, '' )
+          , JC2_City                    = ISNULL( jc2.City, '' )
+          , JC2_State                   = ISNULL( jc2.State, '' )
+          , JC2_StateFull               = ISNULL( jc2.StateFull, '' )
+          , JC2_Zip                     = ISNULL( jc2.Zip, '' )
           , C1_ClientName               = ISNULL( c1.ClientName, '' )
           , C1_Address1                 = ISNULL( c1.Address1, '' )
           , C1_Address2                 = ISNULL( c1.Address2, '' )
@@ -483,8 +628,12 @@ RETURN
  LEFT JOIN  financePerson           AS fp  ON fp.IssueID  = i.IssueID
  LEFT JOIN  headAdministrator       AS ha  ON ha.IssueID  = i.IssueID
  LEFT JOIN  bondAttorneyData        AS bad ON bad.IssueID = i.IssueID
+ LEFT JOIN  localAttorneyData       AS lad ON lad.IssueID = i.IssueID
  LEFT JOIN  payingAgentData         AS pad ON pad.IssueID = i.IssueID
- LEFT JOIN  escrowAgentData         AS ead ON pad.IssueID = i.IssueID
+ LEFT JOIN  escrowAgentData         AS ead ON ead.IssueID = i.IssueID
+ LEFT JOIN  jointClient1            AS jc1 ON jc1.IssueID = i.IssueID
+ LEFT JOIN  jointClient2            AS jc2 ON jc2.IssueID = i.IssueID
+ LEFT JOIN  primaryFA               AS fa1 ON fa1.IssueID = i.IssueID
  LEFT JOIN  county1                 AS c1  ON c1.IssueID  = i.IssueID
  LEFT JOIN  county2                 AS c2  ON c1.IssueID  = i.IssueID
  LEFT JOIN  county3                 AS c3  ON c1.IssueID  = i.IssueID

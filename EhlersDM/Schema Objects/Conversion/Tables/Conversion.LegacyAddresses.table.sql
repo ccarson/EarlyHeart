@@ -4,6 +4,7 @@
   , LegacyID        INT          NOT NULL
   , CONSTRAINT PK_LegacyAddresses PRIMARY KEY CLUSTERED ( AddressID ASC )
   , CONSTRAINT CK_LegacyAddressTableName CHECK ( LegacyTableName = 'Clients' OR LegacyTableName = 'Firms' OR LegacyTableName = 'ClientContacts' OR  LegacyTableName = 'FirmContacts' )
+  , CONSTRAINT FK_LegacyAddresses_Address FOREIGN KEY ( AddressID ) REFERENCES dbo.Address( AddressID )
 ) ;
 GO
 

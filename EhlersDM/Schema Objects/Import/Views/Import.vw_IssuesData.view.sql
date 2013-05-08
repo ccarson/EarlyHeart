@@ -36,5 +36,7 @@ AS
 INNER JOIN  dbo.Client          AS cli ON cli.ClientID  = iss.ClientID
 INNER JOIN  dbo.ClientAddresses AS cad ON cad.ClientID  = cli.ClientID
 INNER JOIN  dbo.Address         AS adr ON adr.AddressID = cad.AddressID AND cad.AddressTypeID = 3 
-INNER JOIN  dbo.Purpose         AS pur ON pur.IssueID   = iss.IssueID
-INNER JOIN  purposeAmounts      AS ppa ON ppa.PurposeID = pur.PurposeID ; 
+ LEFT JOIN  dbo.Purpose         AS pur ON pur.IssueID   = iss.IssueID
+ LEFT JOIN  purposeAmounts      AS ppa ON ppa.PurposeID = pur.PurposeID ; 
+
+ 
