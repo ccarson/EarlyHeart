@@ -4,5 +4,10 @@
     <StartupScript>(Blank)</StartupScript>
     <StartAction>StartNone</StartAction>
     <TargetConnectionString>Data Source=MNDT0368;Initial Catalog=Ehlers;Integrated Security=True;Pooling=False</TargetConnectionString>
+    <SqlCmdVar__20>edata_test</SqlCmdVar__20>
+    <SqlCmdVar__16>NO</SqlCmdVar__16>
+    <SqlCmdVar__18>NO</SqlCmdVar__18>
+    <SqlCmdVar__21>EHLERS-SS4</SqlCmdVar__21>
+    <SqlCmdVar__22>Ehlers_Dev</SqlCmdVar__22>
   </PropertyGroup>
 </Project>

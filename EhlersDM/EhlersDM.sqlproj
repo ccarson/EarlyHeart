@@ -580,10 +580,11 @@
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_OSCoverGeneral.function.sql" />
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_RatingsApplications.function.sql" />
     <None Include="Project Scripts\IssuesConversion\PostDeployChanges\InsertKansasStateRegistrationFirmCategory.script.sql" />
+    <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_includeWisconsinLanguage.function.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
-      <DefaultValue>edata_dev</DefaultValue>
+      <DefaultValue>edata</DefaultValue>
       <Value>$(SqlCmdVar__20)</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="PreDeployChanges">

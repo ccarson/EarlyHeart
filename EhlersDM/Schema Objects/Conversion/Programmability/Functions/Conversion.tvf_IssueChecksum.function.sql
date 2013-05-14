@@ -81,15 +81,15 @@ RETURN
               , CouponType          =  ISNULL( InterestTypeID, 0 )
               , CallFrequency       =  ISNULL( CallFrequencyID, 0 )
               , DisclosureType      =  ISNULL( DisclosureTypeID, 0 )
-              , PurchasePrice       =  CAST ( PurchasePrice AS DECIMAL( 15,2 ) )
-              , Notes               =  Notes
+              , PurchasePrice       =  CAST( PurchasePrice AS DECIMAL( 15,2 ) )
+              , Notes               =  ISNULL( Notes, '' )
               , NotesRefundedBy     =  RefundedByNote
               , NotesRefunds        =  RefundsNote
               , ArbitrageYield      =  ArbitrageYield
               , QualityControlDate  =  CONVERT( VARCHAR(10), ISNULL( QCDate, '1900-01-01'), 120 )
               , Purpose             =  LongDescription
               , ObligorClientID     =  ISNULL( ObligorClientID, 0 )
-              , EIPInvest           =  isEIPInvest
+              , EIPInvest           =  IsEIPInvest
           FROM  dbo.Issue
          WHERE  @Source = 'Converted' ) ,
 

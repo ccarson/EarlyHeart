@@ -48,6 +48,8 @@ RETURN
                   , TaxStatus               = i.TaxStatus
                   , GoodFaithAmount         = i.IssueAmount * i.GoodFaithPercent
                   , AllowTerm               = bp.AllowTerm
+                  , AllowDescendingRate     = bp.AllowDescendingRate
+                  , DescMaxPct              = bp.DescMaxPct / 100
                   , AllowMaturityAdjustment = bp.AllowMaturityAdjustment
                   , AllowParAdjustment      = bp.AllowParAdjustment
                   , MaximumAdjustmentAmount = bp.MaximumAdjustmentAmount
@@ -59,6 +61,8 @@ RETURN
                   , TypeOfRedemption        = ic.CallTypeID
                   , NumberOfMaturities      = (SELECT COUNT(*) FROM Documents.vw_IssueMaturityAmounts WHERE IssueID = @IssueID)
                   , FirstMaturityDate       = (SELECT TOP 1 PaymentDate FROM Documents.vw_IssueMaturityAmounts WHERE IssueID = @IssueID ORDER BY PaymentDate ASC)
+                  , MethodOfSale            = i.MethodOfSaleID
+                  , Is6MonthMaturity        = (SELECT * FROM Documents.tvf_includeWisconsinLanguage ( @IssueID ))
               FROM  dbo.Issue               AS i
         INNER JOIN  dbo.IssueRating         AS ir ON ir.IssueID = i.IssueID
          LEFT JOIN  dbo.IssueFee            AS f  ON f.IssueID  = i.IssueID AND f.FeeTypeID = 28 AND f.PaymentMethodID = 4
@@ -96,7 +100,8 @@ RETURN
              WHERE  i.IssueID = @IssueID ) ,
 
             headElectedOfficial AS (
-            SELECT  IssueID                 = i.IssueID
+            SELECT  TOP 1
+                    IssueID                 = i.IssueID
                   , FirstName               = con.FirstName
                   , LastName                = con.LastName
                   , Title                   = con.Title
@@ -109,7 +114,8 @@ RETURN
              WHERE  i.IssueID = @IssueID AND cjf.JobFunctionID = 16) ,
 
              Clerk AS (
-            SELECT  IssueID                 = i.IssueID
+            SELECT  TOP 1
+                    IssueID                 = i.IssueID
                   , FirstName               = con.FirstName
                   , LastName                = con.LastName
                   , Title                   = con.Title
@@ -122,7 +128,8 @@ RETURN
              WHERE  i.IssueID = @IssueID AND cjf.JobFunctionID = 1) ,
 
              financePerson AS (
-            SELECT  IssueID                 = i.IssueID
+            SELECT  TOP 1
+                    IssueID                 = i.IssueID
                   , FirstName               = con.FirstName
                   , LastName                = con.LastName
                   , Title                   = con.Title
@@ -135,7 +142,8 @@ RETURN
              WHERE  i.IssueID = @IssueID AND cjf.JobFunctionID = 3) ,
 
              headAdministrator AS (
-            SELECT  IssueID                 = i.IssueID
+            SELECT  TOP 1
+                    IssueID                 = i.IssueID
                   , FirstName               = con.FirstName
                   , LastName                = con.LastName
                   , Title                   = con.Title
@@ -308,7 +316,6 @@ RETURN
                          WHERE  i.IssueID = @IssueID    AND jc.Ordinal = 2
                     )) ,
             
-             
             county1 AS (
             SELECT  IssueID          = @IssueID
                   , ClientName       = c.ClientName
@@ -467,6 +474,8 @@ RETURN
           , TaxStatus                   = ISNULL( id.TaxStatus, '')
           , GoodFaithAmount             = id.GoodFaithAmount
           , AllowTerm                   = ISNULL( id.AllowTerm, '')
+          , AllowDescendingRate         = ISNULL( id.AllowDescendingRate, '')
+          , DescMaxPct                  = id.DescMaxPct
           , AllowMaturityAdjustment     = ISNULL( id.AllowMaturityAdjustment, '')
           , AllowParAdjustment          = ISNULL( id.AllowParAdjustment, '')
           , MaximumAdjustmentAmount     = ISNULL( id.MaximumAdjustmentAmount, 0)
@@ -479,6 +488,7 @@ RETURN
           , NumberOfMaturities          = ISNULL( id.NumberOfMaturities, 0)
           , FirstMaturityDate           = ISNULL( id.FirstMaturityDate, '')
           , MethodofSale                = ISNULL( id.MethodOfSale, '')
+          , Is6MonthMaturity            = ISNULL( id.Is6MonthMaturity, '')
           , SchoolDistrictNumber        = ISNULL( cd.SchoolDistrictNumber, '' )
           , ClientName                  = ISNULL( cd.ClientName, '' )
           , ClientPrefix                = ISNULL( cd.ClientPrefix, '' )
@@ -631,9 +641,9 @@ RETURN
  LEFT JOIN  localAttorneyData       AS lad ON lad.IssueID = i.IssueID
  LEFT JOIN  payingAgentData         AS pad ON pad.IssueID = i.IssueID
  LEFT JOIN  escrowAgentData         AS ead ON ead.IssueID = i.IssueID
+ LEFT JOIN  primaryFA               AS fa1 ON fa1.IssueID = i.IssueID
  LEFT JOIN  jointClient1            AS jc1 ON jc1.IssueID = i.IssueID
  LEFT JOIN  jointClient2            AS jc2 ON jc2.IssueID = i.IssueID
- LEFT JOIN  primaryFA               AS fa1 ON fa1.IssueID = i.IssueID
  LEFT JOIN  county1                 AS c1  ON c1.IssueID  = i.IssueID
  LEFT JOIN  county2                 AS c2  ON c1.IssueID  = i.IssueID
  LEFT JOIN  county3                 AS c3  ON c1.IssueID  = i.IssueID
