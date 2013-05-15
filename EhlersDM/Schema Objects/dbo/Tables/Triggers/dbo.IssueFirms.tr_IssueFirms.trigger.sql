@@ -106,11 +106,10 @@ BEGIN TRY
          USING  @changedIssueData   AS src ON src.IssueID = tgt.IssueID AND src.Category = tgt.Category
           WHEN  MATCHED THEN
                 UPDATE SET FirmID      = src.FirmID
-                         , FirmName    = src.FirmName
 
           WHEN  NOT MATCHED BY TARGET THEN
-                INSERT ( IssueID, Category, FirmID, FirmName )
-                VALUES ( src.IssueID, src.Category, src.FirmID, src.FirmName ) ;
+                INSERT ( IssueID, Category, FirmID )
+                VALUES ( src.IssueID, src.Category, src.FirmID ) ;
                 
     ELSE
 
@@ -119,7 +118,6 @@ BEGIN TRY
 
         UPDATE  edata.IssueProfSvcs
            SET  FirmID      = chg.FirmID
-              , FirmName    = chg.FirmName
           FROM  edata.IssueProfSvcs AS ips
     INNER JOIN  @changedIssueData   AS chg ON chg.IssueID = ips.IssueID AND chg.Category = ips.Category ; 
 

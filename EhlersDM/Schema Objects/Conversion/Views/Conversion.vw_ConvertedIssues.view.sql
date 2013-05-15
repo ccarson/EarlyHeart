@@ -33,7 +33,7 @@ AS
           , IssueType               =  ist.LegacyValue
           , SaleType                =  mos.LegacyValue
           , TaxStatus               =  tsv.OldListValue
-          , BondForm                =  bft.LegacyValue
+          , BondForm                =  ISNULL( NULLIF( bft.LegacyValue, 'BT,C' ), 'C' )
           , BankQualified           =  CASE iss.BankQualified WHEN 1 THEN 'Y' ELSE 'N' END
           , SecurityType            =  sct.LegacyValue
           , SaleDate                =  iss.SaleDate
