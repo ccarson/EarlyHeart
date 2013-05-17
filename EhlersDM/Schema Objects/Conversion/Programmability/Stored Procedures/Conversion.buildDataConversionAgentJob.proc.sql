@@ -44,9 +44,9 @@ BEGIN
 
 
 --  2)  Drop existing job
-    IF  EXISTS ( SELECT job_id FROM msdb.dbo.sysjobs_view WHERE NAME = @jobName )
+    IF  EXISTS ( SELECT job_id FROM msdb.dbo.sysjobs_view WHERE name = @jobName )
     BEGIN
-        SELECT  @jobID = job_id FROM msdb.dbo.sysjobs_view WHERE NAME = @jobName ;
+        SELECT  @jobID = job_id FROM msdb.dbo.sysjobs_view WHERE name = @jobName ;
         EXECUTE msdb.dbo.sp_delete_job @job_id = @jobID, @delete_unused_schedule = 0 ;
         SELECT  @jobID = NULL ; 
     END
@@ -54,7 +54,7 @@ BEGIN
 
 --  3)  Execute logic to create new job on server, with job steps
     BEGIN TRANSACTION
-        IF NOT EXISTS ( SELECT name FROM msdb.dbo.syscategories WHERE NAME = N'EhlersDataConversion' AND category_class = 1 )
+        IF NOT EXISTS ( SELECT name FROM msdb.dbo.syscategories WHERE name = N'EhlersDataConversion' AND category_class = 1 )
         BEGIN
             EXECUTE @rc = msdb.dbo.sp_add_category @class = N'JOB'
                                                  , @type  = N'LOCAL'

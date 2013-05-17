@@ -60,7 +60,7 @@ BEGIN
           , ChangeCode  = 'CVAddress'
       FROM  deleted AS d
 INNER JOIN  edata.Clients AS c
-        ON  c.ClientID = d.ClientID
+        ON  c.ClientId = d.ClientID
      WHERE  d.AddressTypeID = 3 ;
 
 

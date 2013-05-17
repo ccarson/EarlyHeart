@@ -77,7 +77,7 @@ INNER JOIN  ratings             AS r
         ON  ( r.Rating = i.RatingMoody AND @Agency = 'Moody' )         OR
             ( r.Rating = i.RatingSP    AND @Agency = 'StandardPoor' )  OR
             ( r.Rating = i.RatingFitch AND @Agency = 'Fitch' )   
-     WHERE  EXISTS ( SELECT 1 FROM dbo.client AS c WHERE c.ClientID = i.ClientID ) ;
+     WHERE  EXISTS ( SELECT 1 FROM dbo.Client AS c WHERE c.ClientID = i.ClientID ) ;
     
 
 --  3)  Sort and enumerate temp storage by RatedDate for each client and rating type

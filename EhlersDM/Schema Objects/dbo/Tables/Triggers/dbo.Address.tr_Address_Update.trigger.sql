@@ -67,7 +67,7 @@ INNER JOIN  deleted  AS d ON i.AddressID = d.AddressID ;
 INNER JOIN  Conversion.LegacyAddresses AS la
         ON  la.AddressID = i.AddressID AND la.LegacyTableName = 'Firms'
 INNER JOIN  edata.Firms AS f
-        ON  f.FirmID = la.LegacyID ;
+        ON  f.FirmId = la.LegacyID ;
 
 
 --  4)  Update Address Data back to edata.Clients
@@ -84,7 +84,7 @@ INNER JOIN  edata.Firms AS f
 INNER JOIN  Conversion.LegacyAddresses AS la
         ON  la.AddressID = i.AddressID AND la.LegacyTableName = 'Clients'
 INNER JOIN  edata.Clients AS c
-        ON  c.ClientID = la.LegacyID ;
+        ON  c.ClientId = la.LegacyID ;
 
 
 --  5)  Update Address Data back to edata.FirmContacts
@@ -101,7 +101,7 @@ INNER JOIN  edata.Clients AS c
 INNER JOIN  Conversion.LegacyAddresses AS la
         ON  la.AddressID = i.AddressID AND la.LegacyTableName = 'FirmContacts'
 INNER JOIN  edata.FirmContacts AS fc
-        ON  fc.ContactID = la.LegacyID ;
+        ON  fc.ContactId = la.LegacyID ;
 
 
 --  6)  Update Address Data back to edata.ClientContacts
@@ -118,5 +118,5 @@ INNER JOIN  edata.FirmContacts AS fc
 INNER JOIN  Conversion.LegacyAddresses AS la
         ON  la.AddressID = i.AddressID AND la.LegacyTableName = 'ClientContacts'
 INNER JOIN  edata.ClientContacts AS cc
-        ON  cc.ContactID = la.LegacyID ;
+        ON  cc.ContactId = la.LegacyID ;
 END

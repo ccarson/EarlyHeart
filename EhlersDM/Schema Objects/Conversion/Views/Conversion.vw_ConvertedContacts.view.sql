@@ -24,7 +24,7 @@ AS
           , LastName        = c.LastName
           , Department      = c.Department
           , Title           = c.Title
-          , Phone           = CASE LEN(c.extension)
+          , Phone           = CASE LEN(c.Extension)
                                   WHEN 0 THEN c.Phone
                                   ELSE c.Phone + ' x' + c.Extension
                               END

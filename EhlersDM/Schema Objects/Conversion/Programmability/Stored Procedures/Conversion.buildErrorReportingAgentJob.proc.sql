@@ -44,9 +44,9 @@ BEGIN
 
 
 --  2)  Drop existing job
-    IF  EXISTS ( SELECT job_id FROM msdb.dbo.sysjobs_view WHERE NAME = @jobName )
+    IF  EXISTS ( SELECT job_id FROM msdb.dbo.sysjobs_view WHERE name = @jobName )
     BEGIN
-        SELECT  @jobID = job_id FROM msdb.dbo.sysjobs_view WHERE NAME = @jobName ;
+        SELECT  @jobID = job_id FROM msdb.dbo.sysjobs_view WHERE name = @jobName ;
         EXECUTE msdb.dbo.sp_delete_job @job_id = @jobID, @delete_unused_schedule = 0 ;
         SELECT  @jobID = NULL ;         
     END

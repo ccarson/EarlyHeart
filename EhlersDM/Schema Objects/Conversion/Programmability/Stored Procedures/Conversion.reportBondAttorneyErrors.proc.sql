@@ -47,12 +47,12 @@ BEGIN TRY
                                                  
 --  1)  INSERT Bond Attorney records into temporary storage
       WITH  legacyBondAttorney AS ( 
-            SELECT  iss.IssueID
-                  , ips.FirmID 
+            SELECT  iss.IssueId
+                  , ips.FirmId
                   , iss.Attorney
               FROM  edata.Issues        AS iss
-        INNER JOIN  edata.IssueProfSvcs AS ips ON ips.IssueID = iss.IssueID
-             WHERE  ips.Category = 'bc' AND ips.FirmID <> 0 AND iss.Attorney <> 'Check with FA' ) 
+        INNER JOIN  edata.IssueProfSvcs AS ips ON ips.IssueId = iss.IssueId
+             WHERE  ips.Category = 'bc' AND ips.FirmId <> 0 AND iss.Attorney <> 'Check with FA' ) 
              
     INSERT  @bondAttorneyErrors ( IssueID, FirmID, Attorney ) 
     SELECT  IssueID, FirmID, Attorney

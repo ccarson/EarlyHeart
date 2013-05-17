@@ -53,7 +53,7 @@ BEGIN
           , ynReport
           , Fee )
     SELECT  ID
-          , IssueId
+          , IssueID
           , DtService
           , ComputationType
           , ynDataReq

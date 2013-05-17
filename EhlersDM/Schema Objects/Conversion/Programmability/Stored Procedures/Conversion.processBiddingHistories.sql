@@ -59,7 +59,7 @@ BEGIN
 
     SELECT  @vw_BidMaturityChecksum =
             CHECKSUM_AGG( CHECKSUM( b.IssueID, b.FirmID, bm.PaymentDate, bm.PaymentAmount
-                                  , bm.OrginalPaymentAmount, bm.InterestRate, bm.TermBond ) )
+                                  , bm.OriginalPaymentAmount, bm.InterestRate, bm.TermBond ) )
       FROM  dbo.BidMaturity AS bm
 INNER JOIN  dbo.Bidder AS b ON b.BidderID = bm.BidderID ;
 
@@ -126,7 +126,7 @@ INNER JOIN  #legacyBiddersData   AS b
     INSERT  dbo.BidMaturity (
             BidMaturityID, BidderID
           , PaymentDate, PaymentAmount
-          , OrginalPaymentAmount
+          , OriginalPaymentAmount
           , InterestRate, TermBond
           , ModifiedDate, ModifiedUser )
     SELECT  BidMaturityID, BidderID

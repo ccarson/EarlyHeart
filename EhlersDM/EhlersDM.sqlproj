@@ -32,12 +32,12 @@
     <RootNamespace>Ehlers</RootNamespace>
     <DefaultSchema>dbo</DefaultSchema>
     <PreviousProjectVersion>4.0</PreviousProjectVersion>
-    <ValidateCasingOnIdentifiers>False</ValidateCasingOnIdentifiers>
+    <ValidateCasingOnIdentifiers>True</ValidateCasingOnIdentifiers>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{b84486e7-3532-4849-8787-fcd097b4b52d}</ProjectGuid>
     <GenerateDatabaseFile>False</GenerateDatabaseFile>
     <GenerateCreateScript>True</GenerateCreateScript>
-    <SqlServerVerification>False</SqlServerVerification>
+    <SqlServerVerification>True</SqlServerVerification>
     <TargetLanguage>CS</TargetLanguage>
     <AllowSnapshotIsolation>False</AllowSnapshotIsolation>
     <AnsiNullDefault>True</AnsiNullDefault>
@@ -171,33 +171,87 @@
     <None Include="Project Scripts\IssuesConversion\Publish XML\UpdateEhlers_Production.publish.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_AddressChecksum.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ArbitrageServiceChecksum.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_BiddingParameterChecksum.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_BondAttorney.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ClientChecksum.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ClientCPAs.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ClientDisclosureChecksum.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ContactChecksum.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedAnalysts.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedCounties.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedDCs.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedFirmCategories.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedJobFunctions.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedMailings.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ElectionChecksum.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_FirmCategories.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_FirmChecksum.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_IssueCallChecksum.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_IssueChecksum.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_IssueFirms.Function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyAnalysts.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyCounties.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyDCs.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyFirmCategories.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyJobFunctions.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyMailings.function.sql" />
-    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LocalAttorney.function.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_AddressChecksum.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ArbitrageServiceChecksum.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_BiddingParameterChecksum.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_BondAttorney.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ClientChecksum.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ClientCPAs.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ClientDisclosureChecksum.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ContactChecksum.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedAnalysts.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedCounties.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedDCs.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedFirmCategories.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedJobFunctions.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedMailings.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ElectionChecksum.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_FirmCategories.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_FirmChecksum.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_IssueCallChecksum.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_IssueChecksum.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_IssueFirms.Function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyAnalysts.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyCounties.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyDCs.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyFirmCategories.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyJobFunctions.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyMailings.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LocalAttorney.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
     <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_transformInsurance.function.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_transformPercentage.function.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processAddresses.proc.sql" />
@@ -241,21 +295,51 @@
     <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedElections.view.sql" />
     <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedFirms.view.sql" />
     <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedIssues.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyAddress.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyArbitrageService.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyBidAnnual.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyBidders.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyBiddingParameter.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyCalls.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyClientDisclosure.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyClients.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyClientServices.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyContacts.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyElections.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyFirms.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyIssueFees.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyIssues.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyMaturities.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyAddress.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyArbitrageService.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyBidAnnual.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyBidders.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyBiddingParameter.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyCalls.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyClientDisclosure.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyClients.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyClientServices.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyContacts.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyElections.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyFirms.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyIssueFees.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyIssues.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyMaturities.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
     <Build Include="Schema Objects\dbo\Programmability\Functions\dbo.tvf_CSVSort.function.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Functions\dbo.tvf_CSVSplit.function.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Functions\dbo.tvf_TableCounts.function.sql" />
@@ -545,7 +629,9 @@
     <Build Include="Schema Objects\dbo\Tables\dbo.Report.table.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.ReportCategory.table.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.ReportHistory.table.sql" />
-    <Build Include="Schema Objects\edata\Synonyms\edata.Synonyms.sql" />
+    <Build Include="Schema Objects\edata\Synonyms\edata.Synonyms.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
     <None Include="Project Scripts\IssuesConversion\PostDeployChanges\LoadMiscellaneousFirmCategories.script.sql" />
     <Build Include="Schema Objects\edata.schema.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.Refunding.sql" />
@@ -560,7 +646,9 @@
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssueRating.proc.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.updateIssue.proc.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.deletePurpose.proc.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyIssuePostBond.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyIssuePostBond.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssuePostBond.proc.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.deleteIssue.proc.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.updatePurposeFromMunex.proc.sql" />
@@ -584,7 +672,7 @@
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
-      <DefaultValue>edata</DefaultValue>
+      <DefaultValue>edata_dev</DefaultValue>
       <Value>$(SqlCmdVar__20)</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="PreDeployChanges">

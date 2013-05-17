@@ -55,7 +55,7 @@ AS
           , ChangeDate              =  iss.ModifiedDate
           , ChangeBy                =  iss.ModifiedUser
           , ObligorClientID         =  iss.ObligorClientID
-          , EIPInvest               =  iss.isEIPInvest
+          , EIPInvest               =  iss.IsEIPInvest
       FROM  dbo.Issue               AS iss
  LEFT JOIN  dbo.IssueShortName      AS shn ON shn.IssueShortNameID      = iss.IssueShortNameID
  LEFT JOIN  dbo.IssueStatus         AS sta ON sta.IssueStatusID         = iss.IssueStatusID

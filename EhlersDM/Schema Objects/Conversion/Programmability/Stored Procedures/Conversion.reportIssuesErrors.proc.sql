@@ -58,13 +58,13 @@ BEGIN
 BEGIN TRY
     SELECT  @orphanErrorCount = COUNT(*)
       FROM  edata.Issues AS i
-     WHERE  NOT EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientID = i.ClientID ) ;
+     WHERE  NOT EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientId = i.ClientID ) ;
 
     SELECT  @obligorErrorCount = COUNT(*)
       FROM  edata.Issues AS i
-     WHERE  i.ObligorClientID IS NOT NULL
-       AND  EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientID = i.ClientID )
-       AND  NOT EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientID = i.ObligorClientID ) ;
+     WHERE  i.ObligorClientId IS NOT NULL
+       AND  EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientId = i.ClientID )
+       AND  NOT EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientId = i.ObligorClientId ) ;
 
 
 --  2)  Exit if there are no errors
