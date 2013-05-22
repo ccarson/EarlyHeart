@@ -78,16 +78,17 @@ BEGIN TRY
 
 --  5)  Update edata.dbo.Issues with relevant data from dbo.Issue
       WITH  changedIssues AS (
-            SELECT  IssueID, DatedDate, Amount, ClientID
+            SELECT  IssueID, DatedDate, Amount, i.ClientID
                         , IssueName, ShortName, IssueStatus, cusip6
                         , IssueType, SaleType, TaxStatus, BondForm
                         , BankQualified, SecurityType, SaleDate, SaleTime
                         , SettlementDate, FirstCouponDate, IntPmtFreq
                         , IntCalcMeth, CouponType, CallFrequency, DisclosureType
-                        , PurchasePrice, Notes, NotesRefundedBy, NotesRefunds
-                        , ArbitrageYield, QualityControlDate, Purpose, ChangeDate
-                        , ChangeBy, ObligorClientID, EIPInvest
-              FROM  Conversion.vw_ConvertedIssues
+                        , PurchasePrice, i.Notes, NotesRefundedBy, NotesRefunds
+                        , ArbitrageYield, QualityControlDate, Purpose, i.ChangeDate
+                        , i.ChangeBy, ObligorClientID, EIPInvest, c.ClientDescriptiveName
+              FROM  Conversion.vw_ConvertedIssues AS i 
+        INNER JOIN  Conversion.vw_ConvertedClients AS c ON c.ClientID = i.ClientID
              WHERE  IssueID IN ( SELECT IssueID FROM inserted ) )
      MERGE  edata.Issues    AS tgt
      USING  changedIssues   AS src
@@ -127,6 +128,7 @@ BEGIN TRY
                   , ChangeBy            =  src.ChangeBy
                   , ObligorClientID     =  src.ObligorClientID
                   , EIPInvest           =  src.EIPInvest
+                  , issuername          =  src.ClientDescriptiveName
       WHEN  NOT MATCHED BY TARGET THEN
             INSERT ( IssueID, DatedDate, Amount, ClientID
                         , IssueName, ShortName, IssueStatus, cusip6
@@ -136,7 +138,7 @@ BEGIN TRY
                         , IntCalcMeth, CouponType, CallFrequency, DisclosureType
                         , PurchasePrice, Notes, NotesRefundedBy, NotesRefunds
                         , ArbitrageYield, QualityControlDate, Purpose, ChangeDate
-                        , ChangeBy, ObligorClientID, EIPInvest )
+                        , ChangeBy, ObligorClientID, EIPInvest, issuername )
             VALUES ( src.IssueID, src.DatedDate, src.Amount, src.ClientID
                         , src.IssueName, src.ShortName, src.IssueStatus, src.cusip6
                         , src.IssueType, src.SaleType, src.TaxStatus, src.BondForm
@@ -145,7 +147,7 @@ BEGIN TRY
                         , src.IntCalcMeth, src.CouponType, src.CallFrequency, src.DisclosureType
                         , src.PurchasePrice, src.Notes, src.NotesRefundedBy, src.NotesRefunds
                         , src.ArbitrageYield, src.QualityControlDate, src.Purpose, src.ChangeDate
-                        , src.ChangeBy, src.ObligorClientID, src.EIPInvest ) ;
+                        , src.ChangeBy, src.ObligorClientID, src.EIPInvest, src.ClientDescriptiveName ) ;
 
 END TRY
 BEGIN CATCH
