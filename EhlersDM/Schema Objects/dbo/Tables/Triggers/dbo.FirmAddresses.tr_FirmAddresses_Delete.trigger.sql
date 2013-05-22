@@ -48,7 +48,7 @@ BEGIN
 
 
 --  3)  Update Address Data back to dbo.Firms
-    UPDATE  edata.Clients
+    UPDATE  edata.Firms
        SET  Address1   = ''
           , Address2   = ''
           , City       = ''
