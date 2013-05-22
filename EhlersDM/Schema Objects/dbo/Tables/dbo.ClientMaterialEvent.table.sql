@@ -4,6 +4,8 @@
   , MaterialEventTypeID     INT             NULL
   , EMMASubmitDate          DATE            NULL
   , Invoicing               VARCHAR (100)   NULL
+  , OtherText               VARCHAR (50)    NULL
+  
   , ModifiedDate            DATETIME        NOT NULL    CONSTRAINT DF_ClientMaterialEvent_ModifiedDate DEFAULT (getdate())
   , ModifiedUser            VARCHAR (20)    NOT NULL    CONSTRAINT DF_ClientMaterialEvent_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
   , CONSTRAINT PK_ClientMaterialEvent PRIMARY KEY CLUSTERED ( ClientMaterialEventID ASC )

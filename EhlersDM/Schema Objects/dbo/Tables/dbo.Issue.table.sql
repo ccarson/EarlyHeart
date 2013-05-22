@@ -1,5 +1,5 @@
 ﻿CREATE TABLE dbo.Issue (
-    IssueID                         INT             NOT NULL    IDENTITY
+    IssueID                         INT             NOT NULL    CONSTRAINT PK_Issue PRIMARY KEY CLUSTERED       IDENTITY
   , ClientID                        INT             NOT NULL
   , IssueName                       VARCHAR (150)   NOT NULL
   , IssueAmount                     DECIMAL (15, 2) NOT NULL
@@ -45,7 +45,7 @@
   , TwoPercentLimitBasedOn          VARCHAR (100)   NOT NULL    CONSTRAINT DF_Issue_TwoPercentLimitBasedOn       DEFAULT ('')
   , CreditEnhanceFee                DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_CreditEnhanceFee             DEFAULT ((0))
   , PostIssuanceFee                 DECIMAL (15, 2) NOT NULL    CONSTRAINT DF_Issue_PostIssuanceFee              DEFAULT ((0))
-  , LineItemTotalEstEhlersFee       DECIMAL (18)    NOT NULL    CONSTRAINT DF_Issue_LineItemEstimatedEhlersFee   DEFAULT ((0)) 
+  , LineItemTotalEstEhlersFee       DECIMAL (18)    NOT NULL    CONSTRAINT DF_Issue_LineItemEstimatedEhlersFee   DEFAULT ((0))
   , TotalFeePaymentMethodID         INT             NULL
   , TotalFeeVerifyDate              DATE            NULL
   , TotalFeeVerifyUser              VARCHAR (20)    NOT NULL    CONSTRAINT DF_Issue_TotalFeeVerifyUser           DEFAULT ('')
@@ -56,41 +56,61 @@
   , ObligorClientID                 INT             NULL
   , CertificateTypeID               INT             NULL
   , FirstDeadline                   DATE            NULL
-  , IsAAC                           BIT             NOT NULL    CONSTRAINT DF_Issue_IsAAC                       DEFAULT ((0)) 
-  , IsTAC                           BIT             NOT NULL    CONSTRAINT DF_Issue_IsTAC                       DEFAULT ((0)) 
+  , IsAAC                           BIT             NOT NULL    CONSTRAINT DF_Issue_IsAAC                       DEFAULT ((0))
+  , IsTAC                           BIT             NOT NULL    CONSTRAINT DF_Issue_IsTAC                       DEFAULT ((0))
+  , RefundingOfSTFL                 BIT             NOT NULL    CONSTRAINT DF_Issue_RefundingOfSTFL             DEFAULT ((0))
+  , RefundingOfLocalBankLoan        BIT             NOT NULL    CONSTRAINT DF_Issue_RefundingOfLocalBankLoan    DEFAULT ((0))
+  , WIGOPlannedAbatement            BIT             NOT NULL    CONSTRAINT DF_Issue_WIGOPlannedAbatement        DEFAULT ((0))
+  , InterimFinancing                BIT             NOT NULL    CONSTRAINT DF_Issue_InterimFinancing            DEFAULT ((0))
+  , BalloonMaturitySchedule         BIT             NOT NULL    CONSTRAINT DF_Issue_BalloonMaturitySchedule     DEFAULT ((0))
   , ModifiedDate                    DATETIME        NOT NULL    CONSTRAINT DF_Issue_ModifiedDate                DEFAULT (getdate())
   , ModifiedUser                    VARCHAR (20)    NOT NULL    CONSTRAINT DF_Issue_ModifiedUser                DEFAULT ([dbo].[udf_GetSystemUser]())
-  , CONSTRAINT PK_Issue PRIMARY KEY CLUSTERED ( IssueID ASC )
+
   , CONSTRAINT FK_Issue_BondFormType
-        FOREIGN KEY ( BondFormTypeID ) REFERENCES dbo.BondFormType ( BondFormTypeID )
+        FOREIGN KEY ( BondFormTypeID ) REFERENCES  dbo.BondFormType ( BondFormTypeID )
+
   , CONSTRAINT FK_Issue_CallFrequency
-        FOREIGN KEY ( CallFrequencyID ) REFERENCES dbo.CallFrequency ( CallFrequencyID )
+        FOREIGN KEY ( CallFrequencyID ) REFERENCES  dbo.CallFrequency ( CallFrequencyID )
+
   , CONSTRAINT FK_Issue_CertificateType
-        FOREIGN KEY ( CertificateTypeID ) REFERENCES dbo.CertificateType ( CertificateTypeID )
+        FOREIGN KEY ( CertificateTypeID ) REFERENCES  dbo.CertificateType ( CertificateTypeID )
+
   , CONSTRAINT FK_Issue_Client
-        FOREIGN KEY ( ClientID ) REFERENCES dbo.Client ( ClientID )
+    FOREIGN KEY ( ClientID ) REFERENCES  dbo.Client ( ClientID )
+
   , CONSTRAINT FK_Issue_DisclosureType
-        FOREIGN KEY ( DisclosureTypeID ) REFERENCES dbo.DisclosureType ( DisclosureTypeID )
+        FOREIGN KEY ( DisclosureTypeID ) REFERENCES  dbo.DisclosureType ( DisclosureTypeID )
+
   , CONSTRAINT FK_Issue_InitialOfferingDocument
-        FOREIGN KEY ( InitialOfferingDocumentID ) REFERENCES dbo.InitialOfferingDocument ( InitialOfferingDocumentID )
+        FOREIGN KEY ( InitialOfferingDocumentID ) REFERENCES  dbo.InitialOfferingDocument ( InitialOfferingDocumentID )
+
   , CONSTRAINT FK_Issue_InterestCalcMethod
-        FOREIGN KEY ( InterestCalcMethodID ) REFERENCES dbo.InterestCalcMethod ( InterestCalcMethodID )
+        FOREIGN KEY ( InterestCalcMethodID ) REFERENCES  dbo.InterestCalcMethod ( InterestCalcMethodID )
+
   , CONSTRAINT FK_Issue_InterestPaymentFreq
-        FOREIGN KEY ( InterestPaymentFreqID ) REFERENCES dbo.InterestPaymentFreq ( InterestPaymentFreqID )
+        FOREIGN KEY ( InterestPaymentFreqID ) REFERENCES  dbo.InterestPaymentFreq ( InterestPaymentFreqID )
+
   , CONSTRAINT FK_Issue_InterestType
-        FOREIGN KEY ( InterestTypeID ) REFERENCES dbo.InterestType ( InterestTypeID )
+        FOREIGN KEY ( InterestTypeID ) REFERENCES  dbo.InterestType ( InterestTypeID )
+
   , CONSTRAINT FK_Issue_IssueShortName
-        FOREIGN KEY ( IssueShortNameID ) REFERENCES dbo.IssueShortName ( IssueShortNameID )
+        FOREIGN KEY ( IssueShortNameID ) REFERENCES  dbo.IssueShortName ( IssueShortNameID )
+
   , CONSTRAINT FK_Issue_IssueStatus
-        FOREIGN KEY ( IssueStatusID ) REFERENCES dbo.IssueStatus ( IssueStatusID )
+        FOREIGN KEY ( IssueStatusID ) REFERENCES  dbo.IssueStatus ( IssueStatusID )
+
   , CONSTRAINT FK_Issue_IssueType
         FOREIGN KEY ( IssueTypeID ) REFERENCES dbo.IssueType ( IssueTypeID )
+
   , CONSTRAINT FK_Issue_MethodOfSale
         FOREIGN KEY ( MethodOfSaleID ) REFERENCES dbo.MethodOfSale ( MethodOfSaleID )
+
   , CONSTRAINT FK_Issue_ObligorClient
         FOREIGN KEY ( ObligorClientID ) REFERENCES dbo.Client ( ClientID )
+
   , CONSTRAINT FK_Issue_PaymentMethod
         FOREIGN KEY ( TotalFeePaymentMethodID ) REFERENCES dbo.PaymentMethod ( PaymentMethodID )
+
   , CONSTRAINT FK_Issue_SecurityType
         FOREIGN KEY ( SecurityTypeID ) REFERENCES dbo.SecurityType ( SecurityTypeID )
 ) ;
