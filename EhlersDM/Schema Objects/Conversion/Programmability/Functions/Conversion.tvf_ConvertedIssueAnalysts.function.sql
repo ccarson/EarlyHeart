@@ -19,7 +19,18 @@ RETURNS TABLE AS
 ************************************************************************************************************************************
 */
 RETURN
-  WITH  analysts AS (
+  WITH  employeeJobGroups AS (
+        SELECT  EhlersJobGroupID FROM dbo.EhlersJobGroup
+         WHERE  Value IN ( 'FA', 'FS', 'BSC', 'DC' ) ) ,
+
+        employees AS (
+        SELECT  eg.EhlersEmployeeJobGroupsID
+              , ee.Initials
+          FROM  dbo.EhlersEmployeeJobGroups AS eg
+    INNER JOIN  dbo.EhlersEmployee          AS ee ON ee.EhlersEmployeeID = eg.EhlersEmployeeID
+         WHERE  eg.EhlersJobGroupID IN ( SELECT EhlersJobGroupID FROM employeeJobGroups ) ) ,
+
+        analysts AS (
         SELECT  IssueID     = IssueId
               , [1]         = CAST( FA1 AS VARCHAR )
               , [2]         = CAST( FA2 AS VARCHAR )
@@ -28,16 +39,6 @@ RETURN
               , [5]         = CAST( BSC AS VARCHAR )
           FROM  edata.Issues
          WHERE  @Source = 'Legacy' ) ,
-
-        employees AS (
-        SELECT  eg.EhlersEmployeeJobGroupsID
-              , ee.Initials
-          FROM  dbo.EhlersEmployeeJobGroups AS eg
-    INNER JOIN  dbo.EhlersEmployee          AS ee ON ee.EhlersEmployeeID = eg.EhlersEmployeeID
-         WHERE  @Source = 'Legacy'
-           AND  EXISTS ( SELECT 1
-                           FROM dbo.EhlersJobGroup AS jg
-                          WHERE jg.Value IN ( 'FA', 'FS', 'BSC', 'DC' ) AND jg.EhlersJobGroupID = eg.EhlersJobGroupID ) ) ,
 
         legacy AS (
         SELECT  IssueID                     = a.IssueID
@@ -49,7 +50,7 @@ RETURN
           FROM  analysts
        UNPIVOT  ( Initials FOR Ordinal
                     IN ( [1], [2], [3], [4], [5] ) ) AS a
-    INNER JOIN  employees AS e ON e.Initials = a.Initials
+    INNER JOIN  employees AS e ON e.Initials = a.Initials 
          WHERE  @Source = 'Legacy' ) ,
 
         converted AS (
@@ -58,12 +59,10 @@ RETURN
               , Ordinal
           FROM  dbo.IssueEhlersEmployees AS iee
          WHERE  @Source = 'Converted'
-           AND  EhlersEmployeeJobGroupsID IN ( SELECT EhlersEmployeeJobGroupsID
-                                                 FROM dbo.EhlersEmployeeJobGroups AS emp
-                                           INNER JOIN dbo.EhlersJobGroup          AS ejg ON jg.EhlersJobGroupID = ejg.EhlersJobGroupID
-                                                WHERE jg.Value IN ( 'FA', 'FS', 'BSC', 'DC' ) ) , 
+           AND  EhlersEmployeeJobGroupsID IN ( SELECT EhlersEmployeeJobGroupsID FROM employees ) ) , 
+                                                 
         inputData AS (
-        SELECT  IssueID, EhlersEmployeeJobGroupsID, Ordinal FROM legacy    
+        SELECT  IssueID, EhlersEmployeeJobGroupsID, Ordinal FROM legacy
             UNION ALL
         SELECT  IssueID, EhlersEmployeeJobGroupsID, Ordinal FROM converted )
 

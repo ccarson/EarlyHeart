@@ -42,7 +42,7 @@ RETURN
     INNER JOIN  dbo.EhlersEmployeeJobGroups AS eej ON eej.EhlersEmployeeJobGroupsID = iee.EhlersEmployeeJobGroupsID
     INNER JOIN  dbo.EhlersEmployee          AS emp ON emp.EhlersEmployeeID = eej.EhlersEmployeeID
     INNER JOIN  dbo.EhlersJobGroup          AS ejg
-            ON  ejg.EhlersJobGroupID = emp.EhlersJobGroupID AND ejg.Value IN ( 'FA', 'FS', 'DC', 'BSC' )
+            ON  ejg.EhlersJobGroupID = eej.EhlersJobGroupID AND ejg.Value IN ( 'FA', 'FS', 'DC', 'BSC' )
          WHERE  @Source = 'Converted' ) ,
 
         converted AS (
