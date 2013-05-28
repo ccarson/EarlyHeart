@@ -670,6 +670,14 @@
     <None Include="Project Scripts\IssuesConversion\PostDeployChanges\InsertKansasStateRegistrationFirmCategory.script.sql" />
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_includeWisconsinLanguage.function.sql" />
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_PreSale.function.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.IssueEhlersEmployees.tr_IssueEhlersEmployees.trigger.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_LegacyIssueAnalysts.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_ConvertedIssueAnalysts.function.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssueAnalysts.proc.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">

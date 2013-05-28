@@ -48,6 +48,7 @@ AS
           , IntPmtFreq              =  ipf.InterestPaymentFreqID
           , IntCalcMeth             =  icm.InterestCalcMethodID
           , CouponType              =  itt.InterestTypeID
+          , Callable                =  CASE clf.CallFrequencyID WHEN 8 THEN 0 ELSE 1 END
           , CallFrequency           =  clf.CallFrequencyID
           , DisclosureType          =  dst.DisclosureTypeID
           , PurchasePrice           =  ISNULL( iss.PurchasePrice, 0.00 )

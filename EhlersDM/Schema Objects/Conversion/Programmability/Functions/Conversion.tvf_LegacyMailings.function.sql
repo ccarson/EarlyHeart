@@ -63,7 +63,7 @@ RETURN
           FROM  contactsData AS cd
    CROSS APPLY  dbo.tvf_CSVSplit( Mailing , ',' ) AS x
          WHERE  EXISTS ( SELECT 1 FROM dbo.MailingType WHERE LegacyValue = x.Item AND LegacyValue <> '' )
-            OR  EXISTS ( SELECT 1 FROM optOutCodes WHERE OptOutCode = x.Item ) ) , 
+            OR  EXISTS ( SELECT 1 FROM optOutCodes WHERE OptOutCode = x.Item ) ) ,
 
         converted AS (
         SELECT  LegacyContactID = lc.LegacyContactID
@@ -71,7 +71,7 @@ RETURN
               , ContactID       = cm.ContactID
               , Item            = mt.LegacyValue
           FROM  dbo.ContactMailings       AS cm
-    INNER JOIN  dbo.MailingType           AS mt ON cm.MailingTypeID = mt.MailingTypeID
+    INNER JOIN  dbo.MailingType           AS mt ON cm.MailingTypeID = mt.MailingTypeID AND mt.LegacyValue <> ''
     INNER JOIN  Conversion.LegacyContacts AS lc ON lc.ContactID     = cm.ContactID
          WHERE  @Source = 'Converted' AND OptOut = 0
             UNION
@@ -88,7 +88,7 @@ RETURN
         inputData AS (
         SELECT  LegacyContactID, LegacyTableName, ContactID, Item FROM legacy
             UNION ALL
-        SELECT  LegacyContactID, LegacyTableName, ContactID, Item FROM converted ) 
+        SELECT  LegacyContactID, LegacyTableName, ContactID, Item FROM converted )
 
 SELECT  DISTINCT
         LegacyContactID = LegacyContactID

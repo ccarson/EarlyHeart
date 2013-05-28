@@ -113,6 +113,7 @@ BEGIN TRY
                                           , IntPmtFreq          INT
                                           , IntCalcMeth         INT
                                           , CouponType          INT
+                                          , Callable            BIT
                                           , CallFrequency       INT
                                           , DisclosureType      INT
                                           , PurchasePrice       DECIMAL (15,2)
@@ -170,7 +171,7 @@ BEGIN TRY
     INSERT  @changedIssueData
     SELECT  IssueID, DatedDate, Amount, ClientID, IssueName, ShortName, IssueStatus, cusip6, IssueType, SaleType
                 , TaxStatus, BondForm, BankQualified, SecurityType, SaleDate, SaleTime
-                , SettlementDate, FirstCouponDate, IntPmtFreq, IntCalcMeth, CouponType, CallFrequency
+                , SettlementDate, FirstCouponDate, IntPmtFreq, IntCalcMeth, CouponType, Callable, CallFrequency
                 , DisclosureType, PurchasePrice, Notes, NotesRefundedBy, NotesRefunds, ArbitrageYield
                 , QualityControlDate, Purpose, ChangeDate, ChangeBy, ObligorClientID, EIPInvest
       FROM  Conversion.vw_LegacyIssues AS a
@@ -185,7 +186,7 @@ BEGIN TRY
     INSERT  @changedIssueData
     SELECT  IssueID, DatedDate, Amount, ClientID, IssueName, ShortName, IssueStatus, cusip6, IssueType, SaleType
                 , TaxStatus, BondForm, BankQualified, SecurityType, SaleDate, SaleTime
-                , SettlementDate, FirstCouponDate, IntPmtFreq, IntCalcMeth, CouponType, CallFrequency
+                , SettlementDate, FirstCouponDate, IntPmtFreq, IntCalcMeth, CouponType, Callable, CallFrequency
                 , DisclosureType, PurchasePrice, Notes, NotesRefundedBy, NotesRefunds, ArbitrageYield
                 , QualityControlDate, Purpose, ChangeDate, ChangeBy, ObligorClientID, EIPInvest
       FROM  Conversion.vw_LegacyIssues AS a
@@ -233,6 +234,7 @@ BEGIN TRY
                       , InterestPaymentFreqID  = src.IntPmtFreq
                       , InterestCalcMethodID   = src.IntCalcMeth
                       , InterestTypeID         = src.CouponType
+                      , Callable               = src.Callable
                       , CallFrequencyID        = src.CallFrequency
                       , DisclosureTypeID       = src.DisclosureType
                       , PurchasePrice          = src.PurchasePrice
@@ -253,7 +255,7 @@ BEGIN TRY
                         , IssueTypeID, MethodOfSaleID, TaxStatus, BondFormTypeID
                         , BankQualified, SecurityTypeID, SaleDate, SaleTime
                         , SettlementDate, FirstInterestDate, InterestPaymentFreqID
-                        , InterestCalcMethodID, InterestTypeID, CallFrequencyID, DisclosureTypeID
+                        , InterestCalcMethodID, InterestTypeID, Callable, CallFrequencyID, DisclosureTypeID
                         , PurchasePrice, Notes, RefundedByNote, RefundsNote
                         , ArbitrageYield, QCDate, LongDescription, ObligorClientID
                         , IsEIPInvest, ModifiedDate, ModifiedUser )
@@ -262,7 +264,7 @@ BEGIN TRY
                         , src.IssueType, src.SaleType, src.TaxStatus, src.BondForm
                         , src.BankQualified, src.SecurityType, src.SaleDate, src.SaleTime
                         , src.SettlementDate, src.FirstCouponDate, src.IntPmtFreq
-                        , src.IntCalcMeth, src.CouponType, src.CallFrequency, src.DisclosureType
+                        , src.IntCalcMeth, src.CouponType, src.Callable, src.CallFrequency, src.DisclosureType
                         , src.PurchasePrice, src.Notes, src.NotesRefundedBy, src.NotesRefunds
                         , src.ArbitrageYield, src.QualityControlDate, src.Purpose, src.ObligorClientID
                         , src.EIPInvest, src.ChangeDate, src.ChangeBy )

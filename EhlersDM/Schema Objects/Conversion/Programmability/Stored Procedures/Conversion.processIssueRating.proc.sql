@@ -140,7 +140,7 @@ INNER JOIN  moodyCE         AS moo ON moo.IssueID = isr.IssueID
 INNER JOIN  @inserts        AS ins ON ins.IssueID = isr.IssueID ;
     SELECT  @moodyCERatings = @@ROWCOUNT ;
 
-
+    
 /**/SELECT  @codeBlockNum   = 5
 /**/      , @codeBlockDesc  = @codeBlockDesc05 ; -- UPDATE dbo.IssueRating based on Standard & Poor's ratings
 
@@ -191,7 +191,7 @@ INNER JOIN  @inserts        AS ins ON ins.IssueID = isr.IssueID ;
 INNER JOIN  fitch           AS fit ON fit.IssueID = isr.IssueID
 INNER JOIN  @inserts        AS ins ON ins.IssueID = isr.IssueID ;
     SELECT  @fitchRatings = @@ROWCOUNT ;
-
+    
 
 /**/SELECT  @codeBlockNum   = 8
 /**/      , @codeBlockDesc  = @codeBlockDesc08 ; -- UPDATE dbo.IssueRating based on S&P CE ratings
