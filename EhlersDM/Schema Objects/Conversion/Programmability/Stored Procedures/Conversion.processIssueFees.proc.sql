@@ -1,0 +1,433 @@
+﻿--CREATE PROCEDURE Conversion.processIssueFees
+--AS
+--/*
+--************************************************************************************************************************************
+--
+--  Procedure:    Conversion.processIssueFees
+--     Author:    Chris Carson
+--    Purpose:    converts edata.IssueFees
+--
+--
+--    revisor         date                description
+--    ---------       -----------         ----------------------------
+--    ccarson         2013-01-24          created
+--    ccarson         ###DATE###          revised error reporting
+--
+--    Logic Summary:
+--
+--
+--    Notes:
+--
+--
+--************************************************************************************************************************************
+--*/
+--BEGIN
+--BEGIN TRY
+--    SET NOCOUNT     ON ;
+--    SET XACT_ABORT  ON ;
+--
+--    DECLARE @localTransaction   AS BIT ;
+--
+--    IF  @@TRANCOUNT = 0
+--    BEGIN
+--        SET @localTransaction = 1
+--        BEGIN TRANSACTION localTransaction
+--    END
+--
+--    DECLARE @controlTotalsError AS VARCHAR (200)    = N'Control Total Failure:  %s = %d, %s = %d' ;
+--
+--    DECLARE @processStartTime   AS VARCHAR (30)     = CONVERT( VARCHAR(30), GETDATE(), 121 )
+--          , @processEndTime     AS VARCHAR (30)     = NULL
+--          , @processElapsedTime AS INT              = 0 ;
+--
+--    DECLARE @codeBlockNum       AS INT
+--          , @codeBlockDesc      AS SYSNAME
+--          , @codeBlockDesc01    AS SYSNAME = 'SELECT initial control counts'
+--          , @codeBlockDesc02    AS SYSNAME = 'INSERT new records into temp storage'
+--          , @codeBlockDesc03    AS SYSNAME = 'INSERT updated records into temp storage'
+--          , @codeBlockDesc04    AS SYSNAME = 'INSERT dropped records into temp storage'
+--          , @codeBlockDesc05    AS SYSNAME = 'Stop processing if there are no data changes'
+--          , @codeBlockDesc06    AS SYSNAME = 'MERGE temp storage into dbo.Bidder'
+--          , @codeBlockDesc07    AS SYSNAME = 'SELECT final control counts'
+--          , @codeBlockDesc08    AS SYSNAME = 'Validate control totals'
+--          , @codeBlockDesc09    AS SYSNAME = 'Print control totals' ;
+--
+--
+--
+--    DECLARE @changesCount       AS INT  = 0
+--          , @convertedActual    AS INT  = 0
+--          , @convertedCount     AS INT  = 0
+--          , @droppedCount       AS INT  = 0
+--          , @legacyCount        AS INT  = 0
+--          , @newCount           AS INT  = 0
+--          , @recordDELETEs      AS INT  = 0
+--          , @recordINSERTs      AS INT  = 0
+--          , @recordMERGEs       AS INT  = 0
+--          , @recordUPDATEs      AS INT  = 0
+--          , @updatedCount       AS INT  = 0
+--          , @total              AS INT  = 0 ;
+--
+--    DECLARE @changedData        AS TABLE ( IssueID           INT   NOT NULL
+--                                         , FirmID            INT   NOT NULL
+--                                         , PurchasePrice     DECIMAL (15,2)
+--                                         , TICPercent        DECIMAL (12,8)
+--                                         , NICPercent        DECIMAL (12,8)
+--                                         , NICAmount         DECIMAL (15,2)
+--                                         , BABTICPercent     DECIMAL (12,8)
+--                                         , HasWinningBid     BIT
+--                                         , IsRecoveryAct     BIT ) ;
+--
+--    DECLARE @mergeResults       AS TABLE ( Action  NVARCHAR (10) ) ;
+--
+--
+--
+--/**/SELECT  @codeBlockNum   = 01, @codeBlockDesc = @codeBlockDesc01 ; -- SELECT initial control counts
+--    SELECT  @legacyCount        = COUNT(*) FROM Conversion.vw_LegacyIssueFees ;
+----  SELECT  @convertedCount     = COUNT(*) FROM dbo.Bidder ;
+----  SELECT  @convertedActual    = @convertedCount ;
+--
+--
+--
+--/**/SELECT  @codeBlockNum   = 02, @codeBlockDesc = @codeBlockDesc02 ; -- INSERT dbo.IssueFees ( non-other )
+--    INSERT  dbo.IssueFees (
+--            IssueID, FeeTypeID, FinalFee, IsProrated, VerifiedUser
+--          , Note, FeeText, Ordinal
+--          , ModifiedDate, ModifiedUser )
+--    SELECT  iss.IssueID, lif.FeeTypeID, lif.Fee, 0, ''
+--          , '', lif.FeeText, 1
+--          , ISNULL( iss.ChangeDate, GETDATE() )
+--          , ISNULL( NULLIF( LEFT( iss.ChangeBy, 7 ), 'process' ), 'processIssueFees' )
+--      FROM  edata.Issues AS iss
+--INNER JOIN  Conversion.vw_LegacyIssueFees AS lif ON lif.IssueID = iss.IssueId 
+--     WHERE  lif.FeeTypeID NOT IN ( 0, 44, 45, 46, 47, 48, 49 ) ; 
+--    SELECT  @nonOtherFees = @@ROWCOUNT ; 
+--    
+--    /*
+--BEGIN TRANSACTION
+--INSERT dbo.IssueFee (
+--	IssueID
+--  , FeeTypeID
+--  , FinalFee
+--  , IsProrated
+--  , Note
+--  , FeeText
+--  , Ordinal
+--  , ModifiedDate
+--  , ModifiedUser 
+--  , VerifiedUser)
+--SELECT IssueID
+--	 , FeeTypeID
+--	 , Fee
+--	 , 0
+--	 , ''
+--	 , FeeText
+--	 , 1
+--	 , GETDATE()
+--	 , 'processIssueFees'
+--	 , ''
+--FROM Conversion.vw_LegacyIssueFees vf WHERE FeeTypeID NOT IN ( 0, 44, 45, 46, 47, 48, 49 )
+--AND NOT EXISTS ( SELECT 1 FROM IssueFee isf WHERE isf.IssueID = vf.issueid AND isf.FeeTypeID = vf.feetypeid AND isf.Ordinal = 1 )
+--AND vf.IssueID IN ( SELECT IssueID FROM dbo.Issue i )
+--COMMIT
+--
+--BEGIN TRANSACTION
+--; WITH records AS ( 
+--SELECT IssueID
+--	 , FeeTypeID = 1
+--	 , Fee
+--	 , IsProrated = 0
+--	 , Note = ''
+--	 , FeeText
+--	 , Ordinal = 1 + ROW_NUMBER() OVER (PARTITION BY issueID, feetypeID ORDER BY feetype)
+--	 , ModifiedDate = GETDATE()
+--	 , ModifiedUser =  'processIssueFees'
+--	 , VerifiedUser = ''
+--FROM Conversion.vw_LegacyIssueFees vf 
+--WHERE FeeTypeID = 0 AND left(FeeType, 5) = 'Other'
+--AND vf.IssueID IN ( SELECT IssueID FROM dbo.Issue i ) )
+--
+--INSERT dbo.IssueFee (
+--	IssueID
+--  , FeeTypeID
+--  , FinalFee
+--  , IsProrated
+--  , Note
+--  , FeeText
+--  , Ordinal
+--  , ModifiedDate
+--  , ModifiedUser 
+--  , VerifiedUser)
+--SELECT * FROM records AS r
+--WHERE NOT EXISTS ( SELECT 1 FROM IssueFee isf WHERE isf.IssueID = r.issueid AND isf.FeeTypeID = r.feetypeid AND isf.Ordinal = r.ordinal )
+--COMMIT
+--
+--
+--      WITH  issues AS 
+--            ( SELECT IssueID, ClientID, ChangeDate, ChangeBy FROM Conversion.vw_LegacyIssues AS vli ) , 
+--
+--            clientCounties AS (
+--            SELECT  IssueID         = ins.IssueID
+--                  , CountyClientID  = cov.OverlapClientID
+--                  , Ordinal         = cov.Ordinal
+--                  , ModifiedDate    = ins.ChangeDate
+--                  , ModifiedUser    = ins.ChangeBy
+--              FROM  dbo.ClientOverlap AS cov
+--        INNER JOIN  dbo.OverlapType   AS ovt ON ovt.OverlapTypeID = cov.OverlapTypeID AND ovt.Value = 'Counties'
+--        INNER JOIN  issues           AS ins ON ins.ClientID = cov.ClientID )
+--
+--
+--    INSERT  dbo.IssueFeeCounty (
+--            IssueID, CountyClientID, Ordinal, ModifiedDate, ModifiedUser )
+--    SELECT  IssueID, CountyClientID, Ordinal, ModifiedDate, ModifiedUser
+--      FROM  clientCounties
+--     ORDER  BY Ordinal ;
+--     
+--     
+--WITH CountyFees AS ( 
+--    
+--    SELECT TOP 100 PERCENT IssueID, Ordinal = FeeTypeID - 43, Fee FROM Conversion.vw_LegacyIssueFees AS vlif 
+--    WHERE feetypeID BETWEEN 44 AND 48 
+--    ORDER BY vlif.IssueID, Ordinal ) 
+--
+--MERGE dbo.IssueFeeCounty AS tgt
+--USING CountyFees AS src ON src.issueID = tgt.IssueID AND src.Ordinal = tgt.Ordinal 
+--WHEN MATCHED THEN UPDATE SET EntireFee = 0, FinalFee = src.Fee, modifiedDate = GETDATE(), modifiedUser = 'issuesConversion' ;
+--
+--    
+--    */
+--    
+--    
+--    
+--    INSERT  @changedData
+--    SELECT  IssueID, FirmID, PurchasePrice, TICPercent, NICPercent, NICAmount, BABTICPercent, HasWinningBid, IsRecoveryAct
+--      FROM  Conversion.vw_LegacyBidders AS lgb
+--     WHERE  NOT EXISTS ( SELECT 1 FROM dbo.Bidder AS bid
+--                          WHERE bid.IssueID = lgb.IssueID AND bid.FirmID = lgb.FirmID ) ;
+--    SELECT  @newCount = @@ROWCOUNT ;
+--
+--
+--
+--/**/SELECT  @codeBlockNum   = 03, @codeBlockDesc = @codeBlockDesc03 ; -- INSERT updated records into temp storage
+--    INSERT  @changedData
+--    SELECT  IssueID, FirmID, PurchasePrice, TICPercent, NICPercent, NICAmount, BABTICPercent, HasWinningBid, IsRecoveryAct
+--      FROM  Conversion.vw_LegacyBidders AS lgb
+--     WHERE  EXISTS ( SELECT 1 FROM dbo.Bidder AS bid
+--                      WHERE bid.IssueID = lgb.IssueID AND bid.FirmID = lgb.FirmID )
+--        EXCEPT
+--    SELECT  IssueID, FirmID, BidPrice, TICPercent, NICPercent, NICAmount, BABTICPercent, HasWinningBid, IsRecoveryAct
+--      FROM  dbo.Bidder AS bid
+--    SELECT  @updatedCount = @@ROWCOUNT ;
+--
+--
+--
+--/**/SELECT  @codeBlockNum   = 04, @codeBlockDesc = @codeBlockDesc04 ; -- INSERT dropped records into temp storage
+--    INSERT  @changedData ( IssueID, FirmID )
+--    SELECT  IssueID, FirmID FROM dbo.Bidder
+--        EXCEPT
+--    SELECT  IssueID, FirmID FROM  Conversion.vw_LegacyBidders
+--    SELECT  @droppedCount = @@ROWCOUNT ;
+--
+--
+--
+--/**/SELECT  @codeBlockNum   = 05, @codeBlockDesc = @codeBlockDesc05 ; -- Stop processing if there are no data changes
+--    SELECT  @changesCount = @newCount + @updatedCount + @droppedCount ;
+--
+--    IF  @changesCount = 0
+--    BEGIN
+--        RAISERROR( 'No data changes for legacy Bidders', 0, 0 ) ;
+--        RAISERROR( '', 0, 0 ) ;
+--        RAISERROR( '', 0, 0 ) ;
+--        GOTO endOfProc ;
+--    END
+--
+--
+--
+--/**/SELECT  @codeBlockNum   = 06, @codeBlockDesc = @codeBlockDesc06 ; -- MERGE temp storage into dbo.Bidder
+--     MERGE  dbo.Bidder      AS tgt
+--     USING  @changedData    AS src ON tgt.IssueID = src.IssueID AND tgt.FirmID = src.FirmID
+--      WHEN  MATCHED AND src.PurchasePrice IS NULL THEN
+--            DELETE
+--      WHEN  MATCHED THEN
+--            UPDATE  SET BidPrice        = src.PurchasePrice
+--                      , TICPercent      = src.TICPercent
+--                      , NICPercent      = src.NICPercent
+--                      , NICAmount       = src.NICAmount
+--                      , BABTICPercent   = src.BABTICPercent
+--                      , HasWinningBid   = src.HasWinningBid
+--                      , IsRecoveryAct   = src.IsRecoveryAct
+--                      , ModifiedUser    = 'processBidders'
+--                      , ModifiedDate    = GETDATE()
+--      WHEN  NOT MATCHED BY TARGET THEN
+--            INSERT  ( IssueID, FirmID, BidSourceID, BidPrice, TICPercent, NICPercent
+--                        , NICAmount, BABTICPercent, HasWinningBid, IsRecoveryAct
+--                        , ModifiedDate, ModifiedUser )
+--            VALUES  ( src.IssueID, src.FirmID, 6, src.PurchasePrice, src.TICPercent, src.NICPercent
+--                        , src.NICAmount, src.BABTICPercent, src.HasWinningBid, src.IsRecoveryAct
+--                        , GETDATE(), 'processBidders' )
+--    OUTPUT  $action INTO @mergeResults ;
+--    SELECT  @recordMERGEs = @@ROWCOUNT ;
+--
+--
+--
+--/**/SELECT  @codeBlockNum   = 07, @codeBlockDesc = @codeBlockDesc07 ; -- SELECT final control counts
+--    SELECT  @recordINSERTs   = COUNT(*) FROM @mergeResults WHERE  Action = 'INSERT' ;
+--    SELECT  @recordUPDATEs   = COUNT(*) FROM @mergeResults WHERE  Action = 'UPDATE' ;
+--    SELECT  @recordDELETEs   = COUNT(*) FROM @mergeResults WHERE  Action = 'DELETE' ;
+--    SELECT  @convertedActual = COUNT(*) FROM Conversion.vw_ConvertedFirms ;
+--
+--
+--
+--/**/SELECT  @codeBlockNum   = 08, @codeBlockDesc = @codeBlockDesc08 ; -- Validate control totals
+--    IF  @convertedActual <> @legacyCount
+--        RAISERROR( @controlTotalsError, 16, 1, 'Converted Bidders', @convertedActual, 'Legacy Bidders', @legacyCount ) ;
+--
+--    SELECT @total =  @convertedCount + @recordINSERTs - @recordDELETEs
+--    IF  @convertedActual <> @total
+--        RAISERROR( @controlTotalsError, 16, 1, 'Converted Bidders', @convertedActual, 'Existing Bidders + Net Changes', @total ) ;
+--
+--    IF  @recordMERGEs <> @changesCount
+--        RAISERROR( @controlTotalsError, 16, 1, 'Database Changes', @recordMERGEs,  'Expected Changes', @changesCount ) ;
+--
+--    IF  @recordINSERTs <> @newCount
+--        RAISERROR( @controlTotalsError, 16, 1, 'Inserted Calls', @recordINSERTs,  'Expected Inserts', @newCount ) ;
+--
+--    IF  @recordUPDATEs <> @updatedCount
+--        RAISERROR( @controlTotalsError, 16, 1, 'Updated Calls', @recordUPDATEs,  'Expected Updates', @updatedCount ) ;
+--
+--    IF  @recordDELETEs <> @droppedCount
+--        RAISERROR( @controlTotalsError, 16, 1, 'Deleted Calls', @recordDELETEs,  'Expected Deleted', @droppedCount ) ;
+--
+--
+--
+--
+--endOfProc:
+--/**/SELECT  @codeBlockNum   = 09, @codeBlockDesc = @codeBlockDesc09 ; -- Print control totals
+--    SELECT  @processEndTime     = CONVERT( VARCHAR(30), GETDATE(), 121 )
+--          , @processElapsedTime = DATEDIFF( ms, CAST( @processStartTime AS DATETIME ), CAST( @processEndTime AS DATETIME ) ) ;
+--
+--    RAISERROR( 'Conversion.processBidders CONTROL TOTALS ', 0, 0 ) ;
+--    RAISERROR( 'Bidders on legacy system                = % 8d', 0, 0, @legacyCount ) ;
+--    RAISERROR( '', 0, 0 ) ;
+--    RAISERROR( 'Existing Bidders on converted system    = % 8d', 0, 0, @convertedCount ) ;
+--    RAISERROR( '     + new records                      = % 8d', 0, 0, @newCount ) ;
+--    RAISERROR( '     + dropped records                  = % 8d', 0, 0, @droppedCount ) ;
+--    RAISERROR( '                                           ======= ', 0, 0 ) ;
+--    RAISERROR( 'Total Bidders on converted system       = % 8d', 0, 0, @convertedActual ) ;
+--    RAISERROR( 'Changed records already counted         = % 8d', 0, 0, @updatedCount ) ;
+--    RAISERROR( '', 0, 0 ) ;
+--    RAISERROR( '', 0, 0 ) ;
+--    RAISERROR( 'Database Change Details', 0, 0 ) ;
+--    RAISERROR( '', 0, 0 ) ;
+--    RAISERROR( '     Total INSERTs dbo.Bidder           = % 8d', 0, 0, @recordINSERTs ) ;
+--    RAISERROR( '     Total UPDATEs dbo.Bidder           = % 8d', 0, 0, @recordUPDATEs ) ;
+--    RAISERROR( '     Total DELETEs dbo.Bidder           = % 8d', 0, 0, @recordDELETEs ) ;
+--    RAISERROR( '', 0, 0 ) ;
+--    RAISERROR( '     TOTAL changes on dbo.Bidder       = % 8d', 0, 0, @recordMERGEs ) ;
+--    RAISERROR( '', 0, 0 ) ;
+--    RAISERROR( 'processBidders START : %s', 0, 0, @processStartTime ) ;
+--    RAISERROR( 'processBidders   END : %s', 0, 0, @processEndTime ) ;
+--    RAISERROR( '        Elapsed Time : %d ms', 0, 0, @processElapsedTime ) ;
+--
+--    IF  @localTransaction = 1 AND XACT_STATE() = 1
+--        COMMIT TRANSACTION localTransaction ;
+--
+--    RETURN 0 ;
+--
+--END TRY
+--BEGIN CATCH
+--
+--    DECLARE @errorTypeID            AS INT              = 1
+--          , @errorSeverity          AS INT              = ERROR_SEVERITY()
+--          , @errorState             AS INT              = ERROR_STATE()
+--          , @errorNumber            AS INT              = ERROR_NUMBER()
+--          , @errorLine              AS INT              = ERROR_LINE()
+--          , @errorProcedure         AS SYSNAME          = ERROR_PROCEDURE()
+--          , @errorMessage           AS VARCHAR (MAX)
+--          , @formattedErrorMessage  AS VARCHAR (MAX)    = NULL
+--          , @errorData              AS VARCHAR (MAX)    = NULL ;
+--
+--    IF  @@TRANCOUNT > 0 ROLLBACK TRANSACTION ;
+--
+--    IF  @errorMessage IS NULL
+--    BEGIN
+--        SELECT  @errorMessage = ERROR_MESSAGE() ;
+--
+--        SELECT  @errorData = ISNULL( @errorData, '' )
+--                           + '<b>Control Totals</b></br></br>'
+--                           + '<table border="1">'
+--                           + '<tr><th>Description</th><th>Count</th></tr>'
+--                           + '<tr><td>@legacyCount</td><td>'     + STR( @legacyCount, 8 )     + '</td></tr>'
+--                           + '<tr><td>@convertedCount</td><td>'  + STR( @convertedCount, 8 )  + '</td></tr>'
+--                           + '<tr><td>@newCount</td><td>'        + STR( @newCount, 8 )        + '</td></tr>'
+--                           + '<tr><td>@droppedCount</td><td>'    + STR( @droppedCount, 8 )    + '</td></tr>'
+--                           + '<tr><td>@convertedActual</td><td>' + STR( @convertedActual, 8 ) + '</td></tr>'
+--                           + '<tr><td>@updatedCount</td><td>'    + STR( @updatedCount, 8 )    + '</td></tr>'
+--                           + '<tr><td>@recordINSERTs</td><td>'   + STR( @recordINSERTs, 8 )   + '</td></tr>'
+--                           + '<tr><td>@recordUPDATEs</td><td>'   + STR( @recordUPDATEs, 8 )   + '</td></tr>'
+--                           + '<tr><td>@recordDELETEs</td><td>'   + STR( @recordDELETEs, 8 )   + '</td></tr>'
+--                           + '<tr><td>@recordMERGEs</td><td>'    + STR( @recordMERGEs, 8 )    + '</td></tr>'
+--                           + '<tr><td></td><td></td></tr>'
+--                           + '<tr><td>@changesCount</td><td>'    + STR( @changesCount, 8 )    + '</td></tr>'
+--                           + '</table></br></br>'
+--         WHERE  @errorMessage LIKE '%Control Total Failure%' ;
+--
+--
+--        SELECT  @errorData = ISNULL( @errorData, '' )
+--                           + '<b>temp storage contents procedure</b></br></br>'
+--                           + '<table border="1">'
+--                           + '<tr><th>IssueID</th><th>FirmID</th><th>PurchasePrice</th><th>TICPercent</th>'
+--                           + '<th>NICPercent</th><th>NICAmount</th><th>BABTICPercent</th>'
+--                           + '<th>HasWinningBid</th><th>IsRecoveryAct</th></tr>'
+--                           + CAST ( ( SELECT  td= IssueID      , ''
+--                                            , td= FirmID       , ''
+--                                            , td= PurchasePrice, ''
+--                                            , td= TICPercent   , ''
+--                                            , td= NICPercent   , ''
+--                                            , td= NICAmount    , ''
+--                                            , td= BABTICPercent, ''
+--                                            , td= HasWinningBid, ''
+--                                            , td= IsRecoveryAct, ''
+--                                        FROM  @changedData
+--                                         FOR  XML PATH('tr'), ELEMENTS XSINIL, TYPE ) AS VARCHAR(MAX) )
+--                           + '</table>'
+--         WHERE  EXISTS ( SELECT 1 FROM @changedData ) ;
+--
+--
+--        EXECUTE dbo.processEhlersError  @errorTypeID
+--                                      , @codeBlockNum
+--                                      , @codeBlockDesc
+--                                      , @errorNumber
+--                                      , @errorSeverity
+--                                      , @errorState
+--                                      , @errorProcedure
+--                                      , @errorLine
+--                                      , @errorMessage
+--                                      , @errorData ;
+--
+--        SELECT  @formattedErrorMessage = N'Error occurred in Code Block %d, %s ' + CHAR(13)
+--                                       + N'Error %d, Level %d, State %d, Procedure %s, Line %d, Message: %s ' ;
+--
+--        RAISERROR( @formattedErrorMessage, @errorSeverity, @codeBlockNum
+--                 , @codeBlockNum
+--                 , @codeBlockDesc
+--                 , @errorNumber
+--                 , @errorSeverity
+--                 , @errorState
+--                 , @errorProcedure
+--                 , @errorLine
+--                 , @errorMessage ) ;
+--    END
+--        ELSE
+--    BEGIN
+--        SELECT  @errorMessage   = ERROR_MESSAGE()
+--              , @errorSeverity  = ERROR_SEVERITY()
+--              , @errorState     = ERROR_STATE()
+--
+--        RAISERROR( @errorMessage, @errorSeverity, @errorState ) ;
+--    END
+--
+--    RETURN 16 ;
+--
+--END CATCH
+--END
+--
