@@ -31,7 +31,13 @@ AS
           , IssueStatus             =  ISNULL( sta.LegacyValue, '' )
           , cusip6                  =  iss.Cusip6
           , IssueType               =  ist.LegacyValue
-          , SaleType                =  mos.LegacyValue
+          , SaleType                =  CASE 
+                                            WHEN mos.LegacyValue <> ''                      THEN mos.LegacyValue
+                                            WHEN iss.InitialOfferingDocumentID = 2          THEN 'N'
+                                            WHEN iss.InitialOfferingDocumentID IN ( 5,6 )   THEN 'NN'
+                                            WHEN iss.InitialOfferingDocumentID = 4          THEN 'NP'   
+                                            ELSE NULL
+                                        END 
           , TaxStatus               =  tsv.OldListValue
           , BondForm                =  ISNULL( NULLIF( bft.LegacyValue, 'BT,C' ), 'C' )
           , BankQualified           =  CASE iss.BankQualified WHEN 1 THEN 'Y' ELSE 'N' END

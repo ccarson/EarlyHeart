@@ -37,6 +37,13 @@ AS
           , cusip6                  =  CAST( iss.cusip6 AS VARCHAR(6) )
           , IssueType               =  ist.IssueTypeID
           , SaleType                =  mos.MethodOfSaleID
+          , InitialOfferingDocument =  CASE 
+                                            WHEN IssueType = 'B'            THEN 1
+                                            WHEN SaleType = 'NP'            THEN 4
+                                            WHEN SaleType IN ( 'C', 'N' )   THEN 2
+                                            WHEN SaleType = 'NN'            THEN 7
+                                            ELSE 3 
+                                       END
           , TaxStatus               =  ISNULL( tsv.DisplayValue, '' )
           , BondForm                =  bft.BondFormTypeID
           , BankQualified           =  CASE iss.BankQualified WHEN 'Y' THEN 1 ELSE 0 END

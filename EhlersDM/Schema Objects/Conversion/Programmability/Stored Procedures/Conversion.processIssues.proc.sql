@@ -92,41 +92,42 @@ BEGIN TRY
     DECLARE @issueMergeResults  AS  TABLE ( Action    NVARCHAR (10)
                                           , IssueID   INT ) ;
 
-    DECLARE @changedIssueData   AS  TABLE ( IssueID             INT     NOT NULL PRIMARY KEY CLUSTERED
-                                          , DatedDate           DATE
-                                          , Amount              DECIMAL (15,2)
-                                          , ClientID            INT
-                                          , IssueName           VARCHAR (150)
-                                          , ShortName           INT
-                                          , IssueStatus         INT
-                                          , cusip6              VARCHAR (6)
-                                          , IssueType           INT
-                                          , SaleType            INT
-                                          , TaxStatus           VARCHAR(20)
-                                          , BondForm            INT
-                                          , BankQualified       BIT
-                                          , SecurityType        INT
-                                          , SaleDate            DATE
-                                          , SaleTime            TIME (7)
-                                          , SettlementDate      DATE
-                                          , FirstCouponDate     DATE
-                                          , IntPmtFreq          INT
-                                          , IntCalcMeth         INT
-                                          , CouponType          INT
-                                          , Callable            BIT
-                                          , CallFrequency       INT
-                                          , DisclosureType      INT
-                                          , PurchasePrice       DECIMAL (15,2)
-                                          , Notes               VARCHAR (MAX)
-                                          , NotesRefundedBy     VARCHAR (MAX)
-                                          , NotesRefunds        VARCHAR (MAX)
-                                          , ArbitrageYield      DECIMAL (11,8)
-                                          , QualityControlDate  DATETIME
-                                          , Purpose             VARCHAR (MAX)
-                                          , ChangeDate          DATETIME
-                                          , ChangeBy            VARCHAR(20)
-                                          , ObligorClientID     INT
-                                          , EIPInvest           BIT ) ;
+    DECLARE @changedIssueData   AS  TABLE ( IssueID                     INT     NOT NULL PRIMARY KEY CLUSTERED
+                                          , DatedDate                   DATE
+                                          , Amount                      DECIMAL (15,2)
+                                          , ClientID                    INT
+                                          , IssueName                   VARCHAR (150)
+                                          , ShortName                   INT
+                                          , IssueStatus                 INT
+                                          , cusip6                      VARCHAR (6)
+                                          , IssueType                   INT
+                                          , SaleType                    INT
+                                          , InitialOfferingDocument     INT
+                                          , TaxStatus                   VARCHAR(20)
+                                          , BondForm                    INT
+                                          , BankQualified               BIT
+                                          , SecurityType                INT
+                                          , SaleDate                    DATE
+                                          , SaleTime                    TIME (7)
+                                          , SettlementDate              DATE
+                                          , FirstCouponDate             DATE
+                                          , IntPmtFreq                  INT
+                                          , IntCalcMeth                 INT
+                                          , CouponType                  INT
+                                          , Callable                    BIT
+                                          , CallFrequency               INT
+                                          , DisclosureType              INT
+                                          , PurchasePrice               DECIMAL (15,2)
+                                          , Notes                       VARCHAR (MAX)
+                                          , NotesRefundedBy             VARCHAR (MAX)
+                                          , NotesRefunds                VARCHAR (MAX)
+                                          , ArbitrageYield              DECIMAL (11,8)
+                                          , QualityControlDate          DATETIME
+                                          , Purpose                     VARCHAR (MAX)
+                                          , ChangeDate                  DATETIME
+                                          , ChangeBy                    VARCHAR(20)
+                                          , ObligorClientID             INT
+                                          , EIPInvest                   BIT ) ;
 
 
 
@@ -170,7 +171,7 @@ BEGIN TRY
 
     INSERT  @changedIssueData
     SELECT  IssueID, DatedDate, Amount, ClientID, IssueName, ShortName, IssueStatus, cusip6, IssueType, SaleType
-                , TaxStatus, BondForm, BankQualified, SecurityType, SaleDate, SaleTime
+                , InitialOfferingDocument, TaxStatus, BondForm, BankQualified, SecurityType, SaleDate, SaleTime
                 , SettlementDate, FirstCouponDate, IntPmtFreq, IntCalcMeth, CouponType, Callable, CallFrequency
                 , DisclosureType, PurchasePrice, Notes, NotesRefundedBy, NotesRefunds, ArbitrageYield
                 , QualityControlDate, Purpose, ChangeDate, ChangeBy, ObligorClientID, EIPInvest
@@ -185,7 +186,7 @@ BEGIN TRY
 
     INSERT  @changedIssueData
     SELECT  IssueID, DatedDate, Amount, ClientID, IssueName, ShortName, IssueStatus, cusip6, IssueType, SaleType
-                , TaxStatus, BondForm, BankQualified, SecurityType, SaleDate, SaleTime
+                , InitialOfferingDocument, TaxStatus, BondForm, BankQualified, SecurityType, SaleDate, SaleTime
                 , SettlementDate, FirstCouponDate, IntPmtFreq, IntCalcMeth, CouponType, Callable, CallFrequency
                 , DisclosureType, PurchasePrice, Notes, NotesRefundedBy, NotesRefunds, ArbitrageYield
                 , QualityControlDate, Purpose, ChangeDate, ChangeBy, ObligorClientID, EIPInvest
@@ -214,45 +215,46 @@ BEGIN TRY
      MERGE  dbo.Issue           AS tgt
      USING  @changedIssueData   AS src ON tgt.IssueID = src.IssueID
       WHEN  MATCHED THEN
-            UPDATE SET  DatedDate              = src.DatedDate
-                      , IssueAmount            = src.Amount
-                      , ClientID               = src.ClientID
-                      , IssueName              = src.IssueName
-                      , IssueShortNameID       = src.ShortName
-                      , IssueStatusID          = src.IssueStatus
-                      , Cusip6                 = src.cusip6
-                      , IssueTypeID            = src.IssueType
-                      , MethodOfSaleID         = src.SaleType
-                      , TaxStatus              = src.TaxStatus
-                      , BondFormTypeID         = src.BondForm
-                      , BankQualified          = src.BankQualified
-                      , SecurityTypeID         = src.SecurityType
-                      , SaleDate               = src.SaleDate
-                      , SaleTime               = src.SaleTime
-                      , SettlementDate         = src.SettlementDate
-                      , FirstInterestDate      = src.FirstCouponDate
-                      , InterestPaymentFreqID  = src.IntPmtFreq
-                      , InterestCalcMethodID   = src.IntCalcMeth
-                      , InterestTypeID         = src.CouponType
-                      , Callable               = src.Callable
-                      , CallFrequencyID        = src.CallFrequency
-                      , DisclosureTypeID       = src.DisclosureType
-                      , PurchasePrice          = src.PurchasePrice
-                      , Notes                  = src.Notes
-                      , RefundedByNote         = src.NotesRefundedBy
-                      , RefundsNote            = src.NotesRefunds
-                      , ArbitrageYield         = src.ArbitrageYield
-                      , QCDate                 = src.QualityControlDate
-                      , LongDescription        = src.Purpose
-                      , ObligorClientID        = src.ObligorClientID
-                      , IsEIPInvest            = src.EIPInvest
-                      , ModifiedDate           = src.ChangeDate
-                      , ModifiedUser           = src.ChangeBy
+            UPDATE SET  DatedDate                   = src.DatedDate
+                      , IssueAmount                 = src.Amount
+                      , ClientID                    = src.ClientID
+                      , IssueName                   = src.IssueName
+                      , IssueShortNameID            = src.ShortName
+                      , IssueStatusID               = src.IssueStatus
+                      , Cusip6                      = src.cusip6
+                      , IssueTypeID                 = src.IssueType
+                      , MethodOfSaleID              = src.SaleType
+                      , InitialOfferingDocumentID   = src.InitialOfferingDocument
+                      , TaxStatus                   = src.TaxStatus
+                      , BondFormTypeID              = src.BondForm
+                      , BankQualified               = src.BankQualified
+                      , SecurityTypeID              = src.SecurityType
+                      , SaleDate                    = src.SaleDate
+                      , SaleTime                    = src.SaleTime
+                      , SettlementDate              = src.SettlementDate
+                      , FirstInterestDate           = src.FirstCouponDate
+                      , InterestPaymentFreqID       = src.IntPmtFreq
+                      , InterestCalcMethodID        = src.IntCalcMeth
+                      , InterestTypeID              = src.CouponType
+                      , Callable                    = src.Callable
+                      , CallFrequencyID             = src.CallFrequency
+                      , DisclosureTypeID            = src.DisclosureType
+                      , PurchasePrice               = src.PurchasePrice
+                      , Notes                       = src.Notes
+                      , RefundedByNote              = src.NotesRefundedBy
+                      , RefundsNote                 = src.NotesRefunds
+                      , ArbitrageYield              = src.ArbitrageYield
+                      , QCDate                      = src.QualityControlDate
+                      , LongDescription             = src.Purpose
+                      , ObligorClientID             = src.ObligorClientID
+                      , IsEIPInvest                 = src.EIPInvest
+                      , ModifiedDate                = src.ChangeDate
+                      , ModifiedUser                = src.ChangeBy
 
       WHEN  NOT MATCHED BY TARGET THEN
             INSERT ( IssueID, DatedDate, IssueAmount, ClientID
                         , IssueName, IssueShortNameID, IssueStatusID, Cusip6
-                        , IssueTypeID, MethodOfSaleID, TaxStatus, BondFormTypeID
+                        , IssueTypeID, MethodOfSaleID, InitialOfferingDocumentID, TaxStatus, BondFormTypeID
                         , BankQualified, SecurityTypeID, SaleDate, SaleTime
                         , SettlementDate, FirstInterestDate, InterestPaymentFreqID
                         , InterestCalcMethodID, InterestTypeID, Callable, CallFrequencyID, DisclosureTypeID
@@ -261,7 +263,7 @@ BEGIN TRY
                         , IsEIPInvest, ModifiedDate, ModifiedUser )
             VALUES ( src.IssueID, src.DatedDate, src.Amount, src.ClientID
                         , src.IssueName, src.ShortName, src.IssueStatus, src.cusip6
-                        , src.IssueType, src.SaleType, src.TaxStatus, src.BondForm
+                        , src.IssueType, src.SaleType, src.InitialOfferingDocument, src.TaxStatus, src.BondForm
                         , src.BankQualified, src.SecurityType, src.SaleDate, src.SaleTime
                         , src.SettlementDate, src.FirstCouponDate, src.IntPmtFreq
                         , src.IntCalcMeth, src.CouponType, src.Callable, src.CallFrequency, src.DisclosureType
