@@ -12,7 +12,9 @@ AS
     revisor         date                description
     ---------       -----------         ----------------------------
     ccarson         2013-01-24          created
+    mkiemen         2013-05-28          add a return as the first line of script, disabling the trigger from doing anything
 
+    
     Logic Summary:
     1)  Stop processing when trigger is invoked by Conversion.processContacts procedure
     2)  Pull unique list of triggered ContactIDs into temp storage
@@ -24,6 +26,7 @@ AS
 ************************************************************************************************************************************
 */
 BEGIN
+    RETURN ;
     IF  @@ROWCOUNT = 0 RETURN ;
 
     SET NOCOUNT ON ;

@@ -687,6 +687,9 @@
     <Build Include="Schema Objects\dbo\Tables\Triggers\tr_IssueMeeting.trigger.sql">
       <ApplicationScope>False</ApplicationScope>
     </Build>
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssueFees.proc.sql" />
+    <Build Include="Schema Objects\dbo\Views\dbo.vw_EducationTeamContactList.view.sql" />
+    <Build Include="Schema Objects\dbo\Views\dbo.vw_MarketCommentaryContactList.view.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
