@@ -678,6 +678,7 @@
       <ApplicationScope>False</ApplicationScope>
     </Build>
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssueAnalysts.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssueARRA.proc.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
