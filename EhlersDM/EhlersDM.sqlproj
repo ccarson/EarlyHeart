@@ -679,6 +679,14 @@
     </Build>
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssueAnalysts.proc.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssueARRA.proc.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyMeetings.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedMeetings.view.sql" />
+    <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processIssueMeetings.proc.sql" />
+    <Build Include="Schema Objects\dbo\Tables\Triggers\tr_IssueMeeting.trigger.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
