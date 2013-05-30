@@ -12,9 +12,9 @@ AS
     revisor         date                description
     ---------       -----------         ----------------------------
     ccarson         2013-01-24          created
-    mkiemen         2013-05-28          add a return as the first line of script, disabling the trigger from doing anything
+    mkiemen         2013-05-28          add a return as the first line of script, preventing trigger from executing any code
 
-    
+
     Logic Summary:
     1)  Stop processing when trigger is invoked by Conversion.processContacts procedure
     2)  Pull unique list of triggered ContactIDs into temp storage
@@ -32,9 +32,9 @@ BEGIN
     SET NOCOUNT ON ;
 
     DECLARE @processMailings AS VARBINARY(128) = CAST( 'processMailings' AS VARBINARY(128) ) ;
-    
-    DECLARE @changes AS TABLE ( ContactID INT ) ; 
-    
+
+    DECLARE @changes AS TABLE ( ContactID INT ) ;
+
 
     CREATE TABLE #mailings  ( LegacyContactID INT
                             , LegacyTableName VARCHAR (20)
@@ -42,8 +42,8 @@ BEGIN
                             , Mailing         VARCHAR (50)
                             , ModifiedDate    DATETIME
                             , ModifiedUser    VARCHAR (20) ) ;
-                            
-    
+
+
 --  1)  Stop processing when trigger is invoked by Conversion.processContacts procedure
 BEGIN TRY
     IF  CONTEXT_INFO() = @processMailings RETURN ;
@@ -52,18 +52,18 @@ BEGIN TRY
 --  2)  Pull unique list of triggered ContactIDs into temp storage
     INSERT  @changes
     SELECT  ContactID FROM inserted
-        UNION 
-    SELECT  ContactID FROM deleted ; 
+        UNION
+    SELECT  ContactID FROM deleted ;
 
-    
+
 --  3)  update edata.FirmContacts with new Mailing data
       WITH  mailings AS (
             SELECT  c.ContactID
                   , m.LegacyContactID
                   , m.Mailing
-              FROM  @changes AS c 
-         LEFT JOIN  Conversion.tvf_LegacyMailings( 'Converted' ) AS m ON m.ContactID = c.ContactID 
-             WHERE  ISNULL( m.LegacyTableName, 'FirmContacts' ) = 'FirmContacts' ) , 
+              FROM  @changes AS c
+         LEFT JOIN  Conversion.tvf_LegacyMailings( 'Converted' ) AS m ON m.ContactID = c.ContactID
+             WHERE  ISNULL( m.LegacyTableName, 'FirmContacts' ) = 'FirmContacts' ) ,
 
             contactData AS (
             SELECT  ContactID
@@ -71,7 +71,7 @@ BEGIN TRY
                   , ModifiedUser
               FROM  dbo.Contact AS a
              WHERE  EXISTS ( SELECT 1 FROM @changes AS b WHERE b.ContactID = a.ContactID ) )
-             
+
     UPDATE  edata.FirmContacts
        SET  Mailing     = md.Mailing
           , ChangeCode  = 'CVMailing'
@@ -87,9 +87,9 @@ INNER JOIN  contactData             AS cd ON cd.ContactID       = md.ContactID ;
             SELECT  c.ContactID
                   , m.LegacyContactID
                   , m.Mailing
-              FROM  @changes AS c 
-         LEFT JOIN  Conversion.tvf_LegacyMailings( 'Converted' ) AS m ON m.ContactID = c.ContactID 
-             WHERE  ISNULL( m.LegacyTableName, 'ClientContacts' ) = 'ClientContacts' ) , 
+              FROM  @changes AS c
+         LEFT JOIN  Conversion.tvf_LegacyMailings( 'Converted' ) AS m ON m.ContactID = c.ContactID
+             WHERE  ISNULL( m.LegacyTableName, 'ClientContacts' ) = 'ClientContacts' ) ,
 
             contactData AS (
             SELECT  ContactID
@@ -97,7 +97,7 @@ INNER JOIN  contactData             AS cd ON cd.ContactID       = md.ContactID ;
                   , ModifiedUser
               FROM  dbo.Contact AS a
              WHERE  EXISTS ( SELECT 1 FROM @changes AS b WHERE b.ContactID = a.ContactID ) )
-             
+
     UPDATE  edata.ClientContacts
        SET  Mailing     = md.Mailing
           , ChangeCode  = 'CVMailing'
@@ -115,3 +115,6 @@ END CATCH
 
 
 END
+GO
+DISABLE TRIGGER dbo.tr_ContactMailings
+             ON dbo.ContactMailings ;

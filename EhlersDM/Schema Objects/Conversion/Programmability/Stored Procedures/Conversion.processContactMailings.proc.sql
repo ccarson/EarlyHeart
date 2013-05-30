@@ -11,8 +11,8 @@ AS
     revisor         date                description
     ---------       -----------         ----------------------------
     ccarson         2013-01-24          created
-    mkiemen         2013-05-28          add return as first line of script to ensure script doesnt do anything
-    
+    mkiemen         2013-05-28          add return as first line of proc to prevent proc code from executing
+
 
     Logic Summary:
     1)  Set CONTEXT_INFO to prevent converted tables from triggering changes
