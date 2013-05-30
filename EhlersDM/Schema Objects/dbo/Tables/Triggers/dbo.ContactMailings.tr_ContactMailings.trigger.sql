@@ -116,5 +116,4 @@ END CATCH
 
 END
 GO
-DISABLE TRIGGER dbo.tr_ContactMailings
-             ON dbo.ContactMailings ;
+
