@@ -16,7 +16,7 @@
 ************************************************************************************************************************************
 */
 AS
-SELECT  FirmID     = f.FirmID
+SELECT  FirmID     = f.FirmId
       , Firm       = ISNULL( f.Firm, '' )
       , ShortName  = ISNULL( f.ShortName, '' )
       , FirmStatus = CASE FirmStatus WHEN 'Active' THEN 1 ELSE 0 END 

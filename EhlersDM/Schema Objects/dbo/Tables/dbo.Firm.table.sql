@@ -1,5 +1,5 @@
 ﻿CREATE TABLE dbo.Firm (
-    FirmID        INT           NOT NULL    IDENTITY
+    FirmID        INT           NOT NULL    CONSTRAINT PK_Firm PRIMARY KEY CLUSTERED    IDENTITY
   , FirmName      VARCHAR (150) NOT NULL
   , ShortName     VARCHAR (50)  NOT NULL    CONSTRAINT DF_Firm_ShortName      DEFAULT ('')
   , Active        BIT           NOT NULL    CONSTRAINT DF_Firm_Active DEFAULT ((1))
@@ -15,10 +15,13 @@
   , ParentFirmID  INT           NULL
   , ModifiedDate  DATETIME      NOT NULL    CONSTRAINT DF_Firm_ModifiedDate DEFAULT (getdate())
   , ModifiedUser  VARCHAR (20)  NOT NULL    CONSTRAINT DF_Firm_ModifiedUser DEFAULT ([dbo].[udf_GetSystemUser]())
-  , CONSTRAINT PK_Firm PRIMARY KEY CLUSTERED ( FirmID ASC )
-  , CONSTRAINT FK_Firm_ParentFirmID
-        FOREIGN KEY ( ParentFirmID ) REFERENCES dbo.Firm ( FirmID )
+  
+  , CONSTRAINT FK_Firm_ParentFirmID FOREIGN KEY ( ParentFirmID ) REFERENCES dbo.Firm ( FirmID )
 ) ;
 GO
 
+CREATE NONCLUSTERED INDEX IX_Firm_FirmID ON dbo.Firm ( FirmID ASC ) ;
+GO
+
 CREATE NONCLUSTERED INDEX IX_Firm_FirmName ON dbo.Firm ( FirmName ASC ) ;
+GO
