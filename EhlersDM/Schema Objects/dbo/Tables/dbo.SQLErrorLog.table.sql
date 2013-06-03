@@ -10,5 +10,5 @@
   , ErrorMessage    NVARCHAR (4000) NOT NULL
   , ErrorData       VARCHAR (MAX)   NULL
   , ModifiedDate    DATETIME        NOT NULL   CONSTRAINT DF_SQLErrorLog_ModifiedDate DEFAULT GETDATE()
-  , ModifiedUser    VARCHAR (20)    NOT NULL   CONSTRAINT DF_SQLErrorLog_ModifiedUser DEFAULT dbo.udf_getSystemUser() 
+  , ModifiedUser    VARCHAR (20)    NOT NULL   CONSTRAINT DF_SQLErrorLog_ModifiedUser DEFAULT dbo.udf_GetSystemUser() 
 ) ;
