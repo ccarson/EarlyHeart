@@ -11,6 +11,8 @@ AS
     revisor         date                description
     ---------       -----------         ----------------------------
     ccarson         2013-01-24          created
+    ccarson         ###DATE###          revised error reporting
+
 
     Logic Summary:
     1)  Set job name based on databaseName ( non-production servers only )
@@ -24,342 +26,264 @@ AS
     9)  Print control totals
 
     Notes:
+    @codeBlockNum 02  -- Any proc that deletes and rebuilds a SQL Agent job MUST set the @jobID to NULL after deleting
+                         the existing job.  If the @jobID is not reset to NULL, job will throw the following:
+                         Error 14274 : "Cannot add, update, or delete a job that originated from an MSX server."
 
 ************************************************************************************************************************************
 */
 BEGIN
-    SET NOCOUNT ON ;
+BEGIN TRY
+    SET NOCOUNT     ON ;
+    SET XACT_ABORT  ON ;
+
+    DECLARE @localTransaction   AS BIT ;
+
+    IF  @@TRANCOUNT = 0
+    BEGIN
+        SET @localTransaction = 1 ;
+        BEGIN TRANSACTION localTransaction ;
+    END
+
+    DECLARE @codeBlockNum       AS INT
+          , @codeBlockDesc      AS SYSNAME
+          , @codeBlockDesc01    AS SYSNAME  = 'SELECT job name based on databaseName ( non-production servers only )'
+          , @codeBlockDesc02    AS SYSNAME  = 'Drop existing conversion job'
+          , @codeBlockDesc03    AS SYSNAME  = 'EXECUTE msdb.dbo.sp_add_category'
+          , @codeBlockDesc04    AS SYSNAME  = 'EXECUTE msdb.dbo.sp_add_job for Data Conversion'
+          , @codeBlockDesc05    AS SYSNAME  = 'INSERT job steps data into temp storage'
+          , @codeBlockDesc06    AS SYSNAME  = 'SELECT current job step data from temp storage'
+          , @codeBlockDesc07    AS SYSNAME  = 'EXECUTE msdb.dbo.sp_add_jobstep using temp storage'
+          , @codeBlockDesc08    AS SYSNAME  = 'DELETE current job step data from temp storage'
+          , @codeBlockDesc09    AS SYSNAME  = 'Add job schedule every two minutes daily between 8:00AM and 7:00PM'
+          , @codeBlockDesc10    AS SYSNAME  = 'Set starting job step'
+          , @codeBlockDesc11    AS SYSNAME  = 'Add job to server' ;
 
 
-    DECLARE @jobID              AS BINARY(16) = NULL
+
+    DECLARE @jobID              AS BINARY (16)  = NULL
           , @jobName            AS SYSNAME
+          , @stepName           AS SYSNAME
+          , @command            AS NVARCHAR (MAX)
+          , @commandParam       AS NVARCHAR (MAX)
           , @rc                 AS INT = 0 ;
 
+    DECLARE @jobSteps           AS TABLE ( StepName     SYSNAME
+                                         , CommandText  NVARCHAR (MAX) ) ;
 
---  1)  Set job name based on databaseName ( non-production servers only )
-    IF  ( @@SERVERNAME = @productionServer )
+
+
+/**/SELECT  @codeBlockNum = 01, @codeBlockDesc = @codeBlockDesc01 ; -- SELECT job name based on databaseName ( non-production servers only )
+    IF  @@SERVERNAME = @productionServer
         SELECT @jobName = 'Ehlers Data Conversion' ;
     ELSE
         SELECT @jobName = 'Ehlers Data Conversion - ' + DB_NAME() ;
 
 
---  2)  Drop existing job
-    IF  EXISTS ( SELECT job_id FROM msdb.dbo.sysjobs_view WHERE name = @jobName )
+/**/SELECT  @codeBlockNum = 02, @codeBlockDesc = @codeBlockDesc02 ; -- Drop existing conversion job
+    SELECT  @jobID = job_id FROM msdb.dbo.sysjobs_view WHERE name = @jobName ;
+
+    IF  @jobID IS NOT NULL
     BEGIN
-        SELECT  @jobID = job_id FROM msdb.dbo.sysjobs_view WHERE name = @jobName ;
         EXECUTE msdb.dbo.sp_delete_job @job_id = @jobID, @delete_unused_schedule = 0 ;
-        SELECT  @jobID = NULL ; 
+        SELECT  @jobID = NULL ;
     END
 
 
---  3)  Execute logic to create new job on server, with job steps
-    BEGIN TRANSACTION
-        IF NOT EXISTS ( SELECT name FROM msdb.dbo.syscategories WHERE name = N'EhlersDataConversion' AND category_class = 1 )
-        BEGIN
-            EXECUTE @rc = msdb.dbo.sp_add_category @class = N'JOB'
-                                                 , @type  = N'LOCAL'
-                                                 , @name  = N'EhlersDataConversion' ;
-            IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-        END
 
-        EXECUTE @rc = msdb.dbo.sp_add_job @job_name              = @jobName
-                                        , @enabled               = 1
-                                        , @notify_level_eventlog = 0
-                                        , @notify_level_email    = 0
-                                        , @notify_level_netsend  = 0
-                                        , @notify_level_page     = 0
-                                        , @delete_level          = 0
-                                        , @description           = N'Merge legacy data into new converted database schema.'
-                                        , @category_name         = N'EhlersDataConversion'
-                                        , @owner_login_name      = @jobOwner
-                                        , @job_id                = @jobID OUTPUT ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processFirms'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processFirms" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processFirmCategories'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processFirmCategories ;" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processClients'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processClients ;" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processClientDisclosure'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processClientDisclosure ;" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processClientCounties'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processClientCounties ;" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processClientAnalysts'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processClientAnalysts ;" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processClientDCs'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processClientDCs ;" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                             , @step_name            = N'Execute processClientServices'
-                                             , @cmdexec_success_code = 0
-                                             , @on_success_action    = 3
-                                             , @on_success_step_id   = 0
-                                             , @subsystem            = N'CmdExec'
-                                             , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processClientServices ;" -b'
-                                             , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processClientCPAs'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processClientCPAs ;" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processLocalAttorney'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processLocalAttorney ;" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processElections'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processElections ;" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processContacts'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processContacts ;" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processContactMailings'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processContactMailings ;" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processContactJobFunctions'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processContactJobFunctions ;" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processAddressses'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processAddresses ;" -b'
-                                            , @flags                = 32 ;
-
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processIssues'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processIssues ;" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processIssueFirms'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processIssueFirms ;" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processBondAttorney'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 1
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processBondAttorney ;" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processCalls'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "Execute Conversion.processCalls" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processArbitrageService'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processArbitrageService" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processBiddingHistories'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 3
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processBiddingHistories" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
-                                            , @step_name            = N'Execute processBiddingParameters'
-                                            , @cmdexec_success_code = 0
-                                            , @on_success_action    = 1
-                                            , @on_success_step_id   = 0
-                                            , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processBiddingParameters" -b'
-                                            , @flags                = 32 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
---  4)  Add job schedule -- job should execute every two minutes daily between 7:00AM and 9:00PM
-        IF EXISTS ( SELECT 1 FROM msdb.dbo.sysschedules WHERE name = 'Ehlers Data Conversion Schedule' )
-            EXECUTE @rc = msdb.dbo.sp_attach_schedule @job_id=@jobID, @schedule_name='Ehlers Data Conversion Schedule' ;
-        ELSE
-            EXECUTE @rc = msdb.dbo.sp_add_jobschedule @job_id                 = @jobID
-                                                    , @name                   = N'Ehlers Data Conversion Schedule'
-                                                    , @enabled                = 1
-                                                    , @freq_type              = 8
-                                                    , @freq_interval          = 62
-                                                    , @freq_subday_type       = 4
-                                                    , @freq_subday_interval   = 2
-                                                    , @freq_relative_interval = 0
-                                                    , @freq_recurrence_factor = 1
-                                                    , @active_start_date      = 20130101
-                                                    , @active_end_date        = 99991231
-                                                    , @active_start_time      = 80000
-                                                    , @active_end_time        = 210000 ;
-
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
---  5)  Set starting job step and add job to server
-        EXECUTE @rc = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1 ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-        EXECUTE @rc = msdb.dbo.sp_add_jobserver @job_id = @jobID, @server_name = N'(local)' ;
-        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
-
-
-    COMMIT TRANSACTION
-
-    GOTO endOfproc ;
-
-QuitWithRollback:
-    IF  ( @@TRANCOUNT > 0 )
+/**/SELECT  @codeBlockNum = 03, @codeBlockDesc = @codeBlockDesc03 ; -- EXECUTE msdb.dbo.sp_add_category
+    IF NOT EXISTS ( SELECT name FROM msdb.dbo.syscategories WHERE name = N'EhlersDataConversion' AND category_class = 1 )
     BEGIN
-        ROLLBACK ;
-        SELECT @rc = 16 ;
+        EXECUTE @rc = msdb.dbo.sp_add_category @class = N'JOB'
+                                             , @type  = N'LOCAL'
+                                             , @name  = N'EhlersDataConversion' ;
     END
 
-endOfproc:
 
-    RETURN @rc ;
+
+/**/SELECT  @codeBlockNum = 04, @codeBlockDesc = @codeBlockDesc04 ; -- EXECUTE msdb.dbo.sp_add_job
+    EXECUTE @rc = msdb.dbo.sp_add_job @job_name              = @jobName
+                                    , @enabled               = 1
+                                    , @notify_level_eventlog = 0
+                                    , @notify_level_email    = 0
+                                    , @notify_level_netsend  = 0
+                                    , @notify_level_page     = 0
+                                    , @delete_level          = 0
+                                    , @description           = N'Merge legacy data into new converted database schema.'
+                                    , @category_name         = N'EhlersDataConversion'
+                                    , @owner_login_name      = @jobOwner
+                                    , @job_id                = @jobID OUTPUT ;
+
+
+
+/**/SELECT  @codeBlockNum = 05, @codeBlockDesc = @codeBlockDesc05 ; -- INSERT job steps data into temp storage
+    INSERT  @jobSteps( StepName, CommandText )
+    VALUES  ( N'Execute processFirms'                                   , N'Conversion.processFirms' )
+--          , ( N'Execute processFirmCategories'                          , N'Conversion.processFirmCategories' )
+--          , ( N'Execute processClients'                                 , N'Conversion.processClients' )
+--          , ( N'Execute processClientDisclosure'                        , N'Conversion.processClientDisclosure' )
+--          , ( N'Execute processClientCounties'                          , N'Conversion.processClientCounties' )
+--          , ( N'Execute processClientAnalysts'                          , N'Conversion.processClientAnalysts' )
+--          , ( N'Execute processClientDCs'                               , N'Conversion.processClientDCs' )
+--          , ( N'Execute processClientServices'                          , N'Conversion.processClientServices' )
+--          , ( N'Execute processClientCPAs'                              , N'Conversion.processClientCPAs' )
+--          , ( N'Execute processLocalAttorney'                           , N'Conversion.processLocalAttorney' )
+--          , ( N'Execute processElections'                               , N'Conversion.processElections' )
+--          , ( N'Execute processContacts -- Firms'                       , N'Conversion.processContacts @Source = ''FirmContacts'' ' )
+--          , ( N'Execute processContacts -- Clients'                     , N'Conversion.processContacts @Source = ''ClientContacts'' ' )
+--          , ( N'Execute processContactJobFunctions -- FirmContacts'     , N'Conversion.processContactJobFunctions @Source = ''FirmContacts'' ' )
+--          , ( N'Execute processContactJobFunctions -- ClientContacts'   , N'Conversion.processContactJobFunctions @Source = ''ClientContacts'' ' )
+--          , ( N'Execute processContactMailings -- FirmContacts'         , N'Conversion.processContactMailings @Source = ''FirmContacts'' ' )
+--          , ( N'Execute processContactMailings -- ClientContacts'       , N'Conversion.processContactMailings @Source = ''ClientContacts'' ' )
+--          , ( N'Execute processAddressses -- Firms'                     , N'Conversion.processAddresses @Source = ''Firms'' ' )
+--          , ( N'Execute processAddressses -- Clients'                   , N'Conversion.processAddresses @Source = ''Clients'' ' )
+--          , ( N'Execute processAddressses -- FirmContacts'              , N'Conversion.processAddresses @Source = ''FirmContacts'' ' )
+--          , ( N'Execute processAddressses -- ClientContacts'            , N'Conversion.processAddresses @Source = ''ClientContacts'' ' )
+--          , ( N'Execute processRates'                                   , N'Conversion.processRates' )
+--          , ( N'Execute processIssues'                                  , N'Conversion.processIssues' )
+--          , ( N'Execute processIssues'                                  , N'Conversion.processIssues' )
+--          , ( N'Execute processIssueFirms'                              , N'Conversion.processIssueFirms' )
+--          , ( N'Execute processBondAttorney'                            , N'Conversion.processBondAttorney' )
+--          , ( N'Execute processCalls'                                   , N'Conversion.processCalls' )
+--          , ( N'Execute processArbitrageService'                        , N'Conversion.processArbitrageService' )
+--          , ( N'Execute processBidders'                                 , N'Conversion.processBidders' )
+--          , ( N'Execute processBiddingHistories'                        , N'Conversion.processBiddingHistories' )
+--          , ( N'Execute processBiddingParameters'                       , N'Conversion.processBiddingParameters' ) 
+--          , ( N'Execute processBiddingParameters'                       , N'Conversion.processBiddingParameters' ) 
+          ;
+
+
+
+/**/SELECT  @codeBlockNum = 06, @codeBlockDesc = @codeBlockDesc06 ; -- SELECT current job step data from temp storage
+    WHILE EXISTS ( SELECT 1 FROM @jobSteps )
+    BEGIN
+        SELECT  TOP 1
+                @stepname = StepName
+              , @command   = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE ' + CommandText + N' ;" -b'
+          FROM  @jobSteps ;
+
+
+
+/**/SELECT  @codeBlockNum = 07, @codeBlockDesc = @codeBlockDesc07 ; -- EXECUTE msdb.dbo.sp_add_jobstep using temp storage
+        EXECUTE msdb.dbo.sp_add_jobstep @job_id                 = @jobId
+                                      , @step_name              = @stepName
+                                      , @cmdexec_success_code   = 0
+                                      , @on_success_action      = 3
+                                      , @on_success_step_id     = 0
+                                      , @subsystem              = N'CmdExec'
+                                      , @command                = @command
+                                      , @flags                  = 32 ;
+
+
+
+/**/SELECT  @codeBlockNum = 08, @codeBlockDesc = @codeBlockDesc08 ; -- DELETE current job step data from temp storage
+        DELETE  @jobSteps WHERE StepName = @stepName ;
+
+    END
+
+
+
+/**/SELECT  @codeBlockNum = 09, @codeBlockDesc = @codeBlockDesc09 ; -- Add job schedule every two minutes daily between 8:00AM and 7:00PM
+    IF EXISTS ( SELECT 1 FROM msdb.dbo.sysschedules WHERE name = 'Ehlers Data Conversion Schedule' )
+        EXECUTE msdb.dbo.sp_attach_schedule @job_id=@jobID, @schedule_name='Ehlers Data Conversion Schedule' ;
+    ELSE
+        EXECUTE msdb.dbo.sp_add_jobschedule @job_id                 = @jobID
+                                          , @name                   = N'Ehlers Data Conversion Schedule'
+                                          , @enabled                = 1
+                                          , @freq_type              = 8
+                                          , @freq_interval          = 62
+                                          , @freq_subday_type       = 4
+                                          , @freq_subday_interval   = 2
+                                          , @freq_relative_interval = 0
+                                          , @freq_recurrence_factor = 1
+                                          , @active_start_date      = 20130101
+                                          , @active_end_date        = 99991231
+                                          , @active_start_time      = 80000
+                                          , @active_end_time        = 190000 ;
+
+
+
+/**/SELECT  @codeBlockNum = 10, @codeBlockDesc = @codeBlockDesc10 ; -- Set starting job step
+    EXECUTE msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1 ;
+
+
+
+/**/SELECT  @codeBlockNum = 11, @codeBlockDesc = @codeBlockDesc11 ; -- Add job to server
+    EXECUTE msdb.dbo.sp_add_jobserver @job_id = @jobId, @server_name = '(local)' ;
+
+
+    IF  @localTransaction = 1 AND XACT_STATE() = 1
+        COMMIT TRANSACTION localTransaction ;
+
+    RETURN 0 ;
+
+END TRY
+BEGIN CATCH
+
+    DECLARE @errorTypeID            AS INT              = 1
+          , @errorSeverity          AS INT              = ERROR_SEVERITY()
+          , @errorState             AS INT              = ERROR_STATE()
+          , @errorNumber            AS INT              = ERROR_NUMBER()
+          , @errorLine              AS INT              = ERROR_LINE()
+          , @errorProcedure         AS SYSNAME          = ERROR_PROCEDURE()
+          , @errorMessage           AS VARCHAR (MAX)
+          , @formattedErrorMessage  AS VARCHAR (MAX)    = NULL
+          , @errorData              AS VARCHAR (MAX)    = NULL ;
+
+
+    IF  @@TRANCOUNT > 0 ROLLBACK TRANSACTION ;
+
+    IF  @errorMessage IS NULL
+    BEGIN
+        SELECT  @errorMessage = ERROR_MESSAGE() ;
+
+        SELECT  @errorData = ISNULL( @errorData, '' )
+              + '<b>temp storage contents</b></br></br>'
+              + '<table border="1">'
+              + '<tr><th>stepName</th><th>sqlCmdText</th></tr>'
+              + CAST ( ( SELECT  td = StepName      , ''
+                               , td = CommandText   , ''
+                           FROM  @jobSteps
+                            FOR XML PATH('tr'), ELEMENTS XSINIL, TYPE ) AS VARCHAR(MAX) )
+              + '</table></br></br>'
+         WHERE  EXISTS ( SELECT 1 FROM @jobSteps ) ;
+
+        EXECUTE dbo.processEhlersError  @errorTypeID
+                                      , @codeBlockNum
+                                      , @codeBlockDesc
+                                      , @errorNumber
+                                      , @errorSeverity
+                                      , @errorState
+                                      , @errorProcedure
+                                      , @errorLine
+                                      , @errorMessage
+                                      , @errorData ;
+
+        SELECT  @formattedErrorMessage = N'Error occurred in Code Block %d, %s ' + CHAR(13)
+                                       + N'Error %d, Level %d, State %d, Procedure %s, Line %d, Message: %s ' ;
+
+        RAISERROR( @formattedErrorMessage, @errorSeverity, @codeBlockNum
+                 , @codeBlockNum
+                 , @codeBlockDesc
+                 , @errorNumber
+                 , @errorSeverity
+                 , @errorState
+                 , @errorProcedure
+                 , @errorLine
+                 , @errorMessage ) ;
+
+    END
+        ELSE
+    BEGIN
+        SELECT  @errorMessage   = ERROR_MESSAGE()
+              , @errorSeverity  = ERROR_SEVERITY()
+              , @errorState     = ERROR_STATE()
+
+        RAISERROR( @errorMessage, @errorSeverity, @errorState ) ;
+
+    END
+
+    RETURN 16 ;
+
+END CATCH
 END
-
