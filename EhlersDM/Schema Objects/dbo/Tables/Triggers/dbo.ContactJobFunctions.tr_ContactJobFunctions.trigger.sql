@@ -1,5 +1,5 @@
-﻿CREATE TRIGGER  tr_ContactJobFunctions
-            ON  dbo.ContactJobFunctions
+﻿CREATE TRIGGER  [dbo].[tr_ContactJobFunctions]
+            ON  [dbo].[ContactJobFunctions]
 AFTER INSERT, UPDATE, DELETE
 AS
 /*
@@ -81,7 +81,8 @@ INNER JOIN  jobFunctions            AS jf ON jf.LegacyContactID = fc.ContactID
 INNER JOIN  contactData             AS cd ON cd.ContactID       = jf.ContactID ;
 
 
---  4)  UPDATE edata.FirmContacts with new JobFunction field
+
+--  4)  UPDATE edata.ClientContacts with new JobFunction field
       WITH  jobFunctions AS (
             SELECT  c.ContactID
                   , j.LegacyContactID
@@ -95,16 +96,26 @@ INNER JOIN  contactData             AS cd ON cd.ContactID       = jf.ContactID ;
                   , ModifiedDate
                   , ModifiedUser
               FROM  dbo.Contact AS a
-             WHERE  EXISTS ( SELECT 1 FROM @changes AS b WHERE b.ContactID = a.ContactID ) )
+             WHERE  EXISTS ( SELECT 1 FROM @changes AS b WHERE b.ContactID = a.ContactID ) ), 
+             
+            primaryContacts AS ( 
+            SELECT  jf.ContactID 
+                  , jf.LegacyContactID
+                  , cjf.ContactJobFunctionsID
+              FROM  jobFunctions AS jf
+         LEFT JOIN  dbo.ContactJobFunctions AS cjf on cjf.ContactID = jf.ContactID AND cjf.JobFunctionID = 69 AND cjf.Active = 1 )
 
     UPDATE  edata.ClientContacts
-       SET  JobFunction = jf.JobFunction
-          , ChangeCode  = 'CVJobFunction'
-          , ChangeDate  = cd.ModifiedDate
-          , ChangeBy    = cd.ModifiedUser
-      FROM  edata.ClientContacts AS cc
-INNER JOIN  jobFunctions             AS jf ON jf.LegacyContactID = cc.ContactID
-INNER JOIN  contactData              AS cd ON cd.ContactID       = jf.ContactID ;
+       SET  JobFunction     = jf.JobFunction
+          , PrimaryContact  = CASE WHEN pc.ContactJobFunctionsID IS NULL THEN 0 ELSE 1 END 
+          , ChangeCode      = 'CVJobFunction'
+          , ChangeDate      = cd.ModifiedDate
+          , ChangeBy        = cd.ModifiedUser
+      FROM  edata.ClientContacts AS cc 
+INNER JOIN  jobFunctions         AS jf ON jf.LegacyContactID = cc.ContactID
+INNER JOIN  contactData          AS cd ON cd.ContactID       = jf.ContactID 
+INNER JOIN  primaryContacts      AS pc ON pc.LegacyContactID = cc.ContactID ;
+
 
 
 END TRY
