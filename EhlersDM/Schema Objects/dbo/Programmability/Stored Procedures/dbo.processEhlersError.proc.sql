@@ -1,6 +1,16 @@
-﻿CREATE PROCEDURE dbo.processEhlersError( @processName   AS VARCHAR(100)  = NULL
-                                       , @errorMessage  AS NVARCHAR(MAX) = NULL
-                                       , @errorQuery    AS NVARCHAR(MAX) = NULL )
+﻿CREATE PROCEDURE dbo.processEhlersError ( @processName          AS VARCHAR(100)  = NULL
+                                        , @errorMessage         AS NVARCHAR(MAX) = NULL
+                                        , @errorQuery           AS NVARCHAR(MAX) = NULL
+                                        , @pErrorTypeID         AS INT           = NULL
+                                        , @pCodeBlockNum        AS INT           = NULL
+                                        , @pCodeBlockDesc       AS SYSNAME       = NULL
+                                        , @pErrorNumber         AS INT           = NULL
+                                        , @pErrorSeverity       AS INT           = NULL
+                                        , @pErrorState          AS INT           = NULL
+                                        , @pErrorProcedure      AS SYSNAME       = NULL
+                                        , @pErrorLine           AS INT           = NULL
+                                        , @pErrorMessage        AS VARCHAR (MAX) = NULL
+                                        , @pErrorData           AS VARCHAR (MAX) = NULL )
 
 AS
 /*
@@ -24,6 +34,8 @@ AS
 */
 BEGIN
     SET NOCOUNT ON ;
+
+--  check for incoming parameters that match revised error handling and pass control there
 
 --  Constants
     DECLARE @body_format        AS VARCHAR (20)     = 'HTML'
@@ -50,6 +62,22 @@ BEGIN
 
 
     BEGIN TRY
+    IF  @pErrorTypeID IS NOT NULL
+    BEGIN
+        EXECUTE dbo.processEhlersErrorExtended  @pErrorTypeID       = @pErrorTypeID
+                                              , @pCodeBlockNum      = @pCodeBlockNum
+                                              , @pCodeBlockDesc     = @pCodeBlockDesc
+                                              , @pErrorNumber       = @pErrorNumber
+                                              , @pErrorSeverity     = @pErrorSeverity
+                                              , @pErrorState        = @pErrorState
+                                              , @pErrorProcedure    = @pErrorProcedure
+                                              , @pErrorLine         = @pErrorLine
+                                              , @pErrorMessage      = @pErrorMessage
+                                              , @pErrorData         = @pErrorData ;
+
+        RETURN ;
+    END
+    
 --  1)  Load SQL Server error values ( will be NULL if the error is an application error )
     SELECT  @errorLine       = CAST( ERROR_LINE()     AS VARCHAR(20) )
           , @errorNumber     = CAST( ERROR_NUMBER()   AS VARCHAR(20) )
@@ -97,8 +125,8 @@ BEGIN
     ELSE
 --  5)  Log SQL Server database errors
         INSERT  dbo.SQLErrorLog (
-                ErrorTime, UserName, ErrorNumber, ErrorSeverity, ErrorState, ErrorProcedure, ErrorLine, ErrorMessage )
-        SELECT  SYSDATETIME(), @userName, @errorState, @errorNumber, @errorSeverity, @errorProcedure, @errorLine, @SQLErrorMessage
+                ErrorNumber, ErrorSeverity, ErrorState, ErrorProcedure, ErrorLine, ErrorMessage )
+        SELECT  @errorNumber, @errorSeverity, @errorState, @errorProcedure, @errorLine, @SQLErrorMessage
          WHERE  @errorNumber IS NOT NULL ;
 
     SELECT  @errorLogID = @@IDENTITY ;

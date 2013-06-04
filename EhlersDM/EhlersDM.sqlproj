@@ -351,7 +351,7 @@
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.AppEmployeeDelete.proc.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.ClientAddUpdate.proc.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.IssueMeetingAddUpdate.proc.sql" />
-    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.processEhlersErrorOld.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.processEhlersError.proc.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.ProjectAddUpdate.proc.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_Document_CreateDocument.proc.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.stp_Document_GetSectionPath.proc.sql" />
@@ -690,9 +690,10 @@
     <Build Include="Schema Objects\dbo\Views\dbo.vw_EducationTeamContactList.view.sql" />
     <Build Include="Schema Objects\dbo\Views\dbo.vw_MarketCommentaryContactList.view.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processRates.proc.sql" />
-    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.processEhlersErrorNew.proc.sql" />
-    <Build Include="Schema Objects\dbo\Tables\dbo.processEhlersErrorNew.proc.sql" />
+    <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.processEhlersErrorExtended.proc.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.SQLErrorLog.table.sql" />
+    <Build Include="Schema Objects\Meta\Tables\Meta.ErrorType.table.sql" />
+    <Build Include="Schema Objects\Meta\Tables\Meta.ErrorTypeRecipient.table.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
