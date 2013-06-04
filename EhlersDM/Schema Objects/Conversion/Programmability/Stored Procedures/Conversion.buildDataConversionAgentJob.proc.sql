@@ -311,12 +311,24 @@ BEGIN
         EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
                                             , @step_name            = N'Execute processBiddingParameters'
                                             , @cmdexec_success_code = 0
-                                            , @on_success_action    = 1
+                                            , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
                                             , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processBiddingParameters" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
+
+
+        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
+                                            , @step_name            = N'Execute processRates'
+                                            , @cmdexec_success_code = 0
+                                            , @on_success_action    = 1
+                                            , @on_success_step_id   = 0
+                                            , @subsystem            = N'CmdExec'
+                                            , @command              = N'sqlcmd -E --d $(DatabaseName) -Q "EXECUTE Conversion.processRates" -b'
+                                            , @flags                = 32 ;
+        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
+
 
 
 --  4)  Add job schedule -- job should execute every two minutes daily between 7:00AM and 9:00PM

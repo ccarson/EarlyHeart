@@ -63,8 +63,21 @@ RETURN
               , ModifiedUser    = cd.ModifiedUser 
           FROM  clientsData AS cd 
    CROSS APPLY  dbo.tvf_CSVSplit( cd.JobFunction , ',' ) AS x
-    INNER JOIN  dbo.JobFunction AS jf ON jf.LegacyValue = x.Item AND jf.IsClient= 1 AND jf.LegacyValue <> '' ) , 
-    
+    INNER JOIN  dbo.JobFunction AS jf ON jf.LegacyValue = x.Item AND jf.IsClient= 1 AND jf.LegacyValue <> ''  
+            UNION ALL 
+        SELECT  LegacyContactID = lc.LegacyContactID
+              , LegacyTableName = lc.LegacyTableName
+              , ContactID       = lc.ContactID
+              , JobFunctionID   = 69
+              , ModifiedDate    = ISNULL( cc.ChangeDate, GETDATE() )
+              , ModifiedUser    = ISNULL( NULLIF( cc.ChangeBy, '' ), 'processJobFunctions' )
+          FROM  edata.ClientContacts  AS cc
+    INNER JOIN  Conversion.LegacyContacts AS lc ON lc.LegacyContactID = cc.ContactID 
+         WHERE  lc.LegacyTableName = 'ClientContacts' AND @Source = 'Legacy'
+           AND  PrimaryContact = 1 
+           AND  cc.ClientId IN ( SELECT ClientID FROM edata.Clients ) ) , 
+           
+           
         converted AS (
         SELECT  LegacyContactID = lc.LegacyContactID
               , LegacyTableName = lc.LegacyTableName
@@ -73,7 +86,7 @@ RETURN
               , ModifiedDate    = cj.ModifiedDate
               , ModifiedUser    = cj.ModifiedUser
           FROM  dbo.ContactJobFunctions   AS cj
-    INNER JOIN  dbo.JobFunction           AS jf ON cj.JobFunctionID = jf.JobFunctionID AND jf.LegacyValue <> ''
+    INNER JOIN  dbo.JobFunction           AS jf ON cj.JobFunctionID = jf.JobFunctionID AND ( jf.LegacyValue <> ''  OR jf.JobFunctionID = 69 )
     INNER JOIN  Conversion.LegacyContacts AS lc ON lc.ContactID = cj.ContactID
          WHERE  cj.Active = 1 AND @Source = 'Converted' ) , 
 

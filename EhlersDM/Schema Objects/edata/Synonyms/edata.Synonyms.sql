@@ -51,3 +51,5 @@ GO
 
 CREATE SYNONYM  edata.Maturities                FOR [$(edata)].[dbo].[Maturities] ;
 GO
+
+CREATE SYNONYM [edata].[Rates]                  FOR [$(edata)].[dbo].[Rates] ;
