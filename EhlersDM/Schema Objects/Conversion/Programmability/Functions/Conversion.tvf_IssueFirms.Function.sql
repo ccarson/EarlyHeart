@@ -35,10 +35,10 @@ RETURN
           FROM  dbo.FirmCategories AS fcs
     INNER JOIN  Conversion.tvf_ConvertedFirmCategories( @Source ) AS tvf
             ON  tvf.FirmID = fcs.FirmID AND tvf.FirmCategoryID = fcs.FirmCategoryID
-    INNER JOIN  dbo.FirmCategory AS fc ON fc.FirmCategoryID = fcs.FirmCategoryID 
-         WHERE  EXISTS ( SELECT 1 FROM edata.IssueProfSvcs AS ips 
-                          WHERE ips.Category = fc.LegacyValue ) 
-            OR  fc.LegacyValue IN ( 'faf', 'ds' ) ) , 
+    INNER JOIN  dbo.FirmCategory AS fc ON fc.FirmCategoryID = fcs.FirmCategoryID
+         WHERE  EXISTS ( SELECT 1 FROM edata.IssueProfSvcs AS ips
+                          WHERE ips.Category = fc.LegacyValue )
+            OR  fc.LegacyValue IN ( 'faf', 'ds' ) ) ,
 
         legacy AS (
         SELECT  IssueID          = ips.IssueID
@@ -50,8 +50,8 @@ RETURN
           FROM  edata.IssueProfSvcs     AS ips
     INNER JOIN  legacyIssues            AS iss ON iss.IssueID = ips.IssueID
     INNER JOIN  firmCategories          AS fcs ON fcs.FirmID = ips.FirmID AND fcs.Category = ips.Category
-         WHERE  @Source = 'Legacy' 
-            UNION ALL 
+         WHERE  @Source = 'Legacy'
+            UNION ALL
         SELECT  IssueID          = iss.IssueID
               , FirmCategoriesID = fcs.FirmCategoriesID
               , FirmID           = fcs.FirmID
@@ -61,8 +61,8 @@ RETURN
           FROM  edata.Issues    AS iss
     INNER JOIN  firmCategories  AS fcs ON fcs.FirmID = iss.FAFirmID AND fcs.Category = 'faf'
     INNER JOIN  legacyIssues    AS leg ON leg.IssueID = iss.IssueID
-         WHERE  @Source = 'Legacy' 
-            UNION ALL 
+         WHERE  @Source = 'Legacy'
+            UNION ALL
         SELECT  IssueID          = iss.IssueID
               , FirmCategoriesID = fcs.FirmCategoriesID
               , FirmID           = fcs.FirmID
@@ -76,11 +76,15 @@ RETURN
 
         converted AS (
         SELECT  IssueID          = isf.IssueID
-              , FirmCategoriesID = fcs.FirmCategoriesID 
+              , FirmCategoriesID = fcs.FirmCategoriesID
               , FirmID           = fcs.FirmID
               , FirmCategoryID   = fcs.FirmCategoryID
               , Category         = fcs.Category
-              , FirmName         = frm.FirmName + ' ' + QUOTENAME ( adr.City + ', ' + adr.State )
+              , FirmName         = CASE fcs.Category
+                                        WHEN 'faf'  THEN frm.FirmName
+                                        WHEN 'ds'   THEN frm.FirmName
+                                        ELSE frm.FirmName + ' ' + QUOTENAME ( adr.City + ', ' + adr.State )
+                                   END
           FROM  dbo.IssueFirms      AS isf
     INNER JOIN  firmCategories      AS fcs ON fcs.FirmCategoriesID = isf.FirmCategoriesID
     INNER JOIN  dbo.Firm            AS frm ON frm.FirmID = fcs.FirmID
@@ -103,5 +107,3 @@ RETURN
 SELECT IssueID, FirmCategoriesID, FirmID, FirmCategoryID, Category, FirmName FROM legacy    UNION ALL
 SELECT IssueID, FirmCategoriesID, FirmID, FirmCategoryID, Category, FirmName FROM converted UNION ALL
 SELECT IssueID, FirmCategoriesID, FirmID, FirmCategoryID, Category, FirmName FROM byIssuer ;
-GO
-
