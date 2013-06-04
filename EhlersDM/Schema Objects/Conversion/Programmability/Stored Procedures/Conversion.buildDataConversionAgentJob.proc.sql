@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE Conversion.buildDataConversionAgentJob ( @productionServer AS SYSNAME
+﻿CREATE PROCEDURE [Conversion].[buildDataConversionAgentJob] ( @productionServer AS SYSNAME
                                                         , @jobOwner         AS SYSNAME )
 AS
 /*
@@ -82,7 +82,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processFirms" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processFirms" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -93,7 +93,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processFirmCategories ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processFirmCategories ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -104,7 +104,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processClients ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processClients ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -115,7 +115,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processClientDisclosure ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processClientDisclosure ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -126,7 +126,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processClientCounties ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processClientCounties ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -137,7 +137,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processClientAnalysts ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processClientAnalysts ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -148,7 +148,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processClientDCs ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processClientDCs ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -159,7 +159,7 @@ BEGIN
                                              , @on_success_action    = 3
                                              , @on_success_step_id   = 0
                                              , @subsystem            = N'CmdExec'
-                                             , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processClientServices ;" -b'
+                                             , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processClientServices ;" -b'
                                              , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -170,7 +170,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processClientCPAs ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processClientCPAs ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -181,7 +181,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processLocalAttorney ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processLocalAttorney ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -192,7 +192,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processElections ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processElections ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -203,7 +203,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processContacts ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processContacts ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -214,7 +214,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processContactMailings ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processContactMailings ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -225,7 +225,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processContactJobFunctions ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processContactJobFunctions ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -236,7 +236,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processAddresses ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processAddresses ;" -b'
                                             , @flags                = 32 ;
 
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
@@ -248,7 +248,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processIssues ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processIssues ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -259,7 +259,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processIssueFirms ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processIssueFirms ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -270,7 +270,7 @@ BEGIN
                                             , @on_success_action    = 1
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processBondAttorney ;" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processBondAttorney ;" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -281,7 +281,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "Execute Conversion.processCalls" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "Execute Conversion.processCalls" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -292,7 +292,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processArbitrageService" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processArbitrageService" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -303,7 +303,7 @@ BEGIN
                                             , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processBiddingHistories" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processBiddingHistories" -b'
                                             , @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
@@ -311,11 +311,21 @@ BEGIN
         EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
                                             , @step_name            = N'Execute processBiddingParameters'
                                             , @cmdexec_success_code = 0
-                                            , @on_success_action    = 1
+                                            , @on_success_action    = 3
                                             , @on_success_step_id   = 0
                                             , @subsystem            = N'CmdExec'
-                                            , @command              = N'sqlcmd -E -d $(DatabaseName) -Q "EXECUTE Conversion.processBiddingParameters" -b'
+                                            , @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processBiddingParameters" -b'
                                             , @flags                = 32 ;
+        IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
+        
+        EXECUTE @rc = msdb.dbo.sp_add_jobstep @job_id               = @jobId
+											, @step_name            = N'Execute processRates'
+											, @cmdexec_success_code = 0
+											, @on_success_action    = 1
+											, @on_success_step_id   = 0
+											, @subsystem            = N'CmdExec'
+											, @command              = N'sqlcmd -E -d Ehlers_Dev -Q "EXECUTE Conversion.processRates" -b'
+											, @flags                = 32 ;
         IF ( @@ERROR <> 0 OR @rc <> 0 ) GOTO QuitWithRollback ;
 
 

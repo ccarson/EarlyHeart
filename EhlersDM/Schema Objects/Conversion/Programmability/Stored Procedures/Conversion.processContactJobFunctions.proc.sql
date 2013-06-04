@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE Conversion.processContactJobFunctions
+﻿CREATE PROCEDURE [Conversion].[processContactJobFunctions]
 AS
 /*
 ************************************************************************************************************************************
@@ -171,6 +171,7 @@ INNER JOIN  Conversion.vw_LegacyContacts AS b ON b.ContactID = a.ContactID ;
           , @droppedCount = @droppedFirmCount + @droppedClientCount
           , @changesCount = @newCount + @droppedCount ;
 
+SELECT * FROM #jobFunctionData ;
 
 --  9)  MERGE #jobFunctionData into dbo.ContactJobFunctions
       WITH  jobFunctions AS (
