@@ -1,5 +1,5 @@
-﻿CREATE TRIGGER  tr_IssueMeeting
-            ON  dbo.IssueMeeting
+﻿CREATE TRIGGER  [dbo].[tr_IssueMeeting]
+            ON  [dbo].[IssueMeeting]
 AFTER INSERT, UPDATE, DELETE
 AS
 /*
@@ -53,7 +53,7 @@ BEGIN TRY
 
             triggerData AS (
             SELECT  TOP 100 PERCENT
-                    iss.IssueID, preSaleMeetingType, PreSaleDate, PreSaleTime, AwardTime
+                    iss.IssueID, preSaleMeetingType, PreSaleDate, PreSaleTime, ConsiderationTime, AwardTime
               FROM  issues                          AS iss
          LEFT JOIN  Conversion.vw_ConvertedMeetings AS cvm ON cvm.IssueID = iss.IssueID
              ORDER  BY IssueID ) ,
@@ -70,6 +70,7 @@ BEGIN TRY
             UPDATE SET      PreSaleMeetingType  = src.PreSaleMeetingType
                           , PreSaleDate         = src.PreSaleDate
                           , PreSaleTime         = src.PreSaleTime
+                          , ConsiderationTime   = src.ConsiderationTime
                           , AwardTime           = src.AwardTime
                           , ChangeDate          = GETDATE()
                           , ChangeBy            = 'CVIssueMeeting' ;

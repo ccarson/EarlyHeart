@@ -1,4 +1,5 @@
-﻿CREATE VIEW Conversion.vw_ConvertedMeetings
+﻿
+CREATE VIEW [Conversion].[vw_ConvertedMeetings]
 /*
 ************************************************************************************************************************************
 
@@ -27,7 +28,8 @@ AS
 
             awardSale AS (
             SELECT  IssueID             = ism.IssueID
-                  , AwardTime           = CONVERT( varchar(30), ism.meetingTime, 100 )
+                  , ConsiderationTime   = CONVERT( varchar(30), ism.MeetingTime, 100 )
+                  , AwardTime           = CONVERT( varchar(30), ism.AwardTime, 100 )
               FROM  dbo.IssueMeeting  AS ism
          LEFT JOIN  dbo.MeetingType   AS mtp ON mtp.MeetingTypeID = ism.MeetingTypeID
              WHERE  ism.MeetingPurposeID = 3 AND ism.MeetingTime IS NOT NULL ) ,
@@ -41,6 +43,7 @@ AS
           , pre.PreSaleMeetingType
           , pre.PreSaleDate
           , pre.PreSaleTime
+          , awd.ConsiderationTime
           , awd.AwardTime
       FROM  issues      AS iss
  LEFT JOIN  preSale     AS pre ON pre.IssueID = iss.IssueID

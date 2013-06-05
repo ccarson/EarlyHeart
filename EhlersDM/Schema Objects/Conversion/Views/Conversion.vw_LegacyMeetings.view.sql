@@ -1,4 +1,5 @@
-﻿CREATE VIEW Conversion.vw_LegacyMeetings
+﻿
+CREATE VIEW [Conversion].[vw_LegacyMeetings]
 /*
 ************************************************************************************************************************************
 
@@ -34,7 +35,7 @@ AS
                   , MeetingPurposeID    = 3
                   , MeetingTypeID       = mtp.MeetingTypeID
                   , MeetingDate         = iss.SaleDate
-                  , MeetingTime         = CAST ( REPLACE(iss.SaleTime, '.', '') AS TIME (7) )
+                  , MeetingTime         = CAST ( REPLACE(iss.ConsiderationTime, '.', '') AS TIME (7) )
                   , AwardTime           = CAST ( REPLACE(iss.AwardTime, '.', '') AS TIME (7) )
                   , ModifiedDate        = ISNULL( iss.ChangeDate, GETDATE() )
                   , ModifiedUser        = ISNULL( NULLIF( LEFT( iss.ChangeBy, 7 ), 'process' ), 'processIssueMeetings' )
