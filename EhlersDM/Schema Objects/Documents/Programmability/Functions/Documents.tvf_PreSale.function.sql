@@ -23,12 +23,10 @@ RETURN
             SELECT  IssueID                 = i.IssueID
                   , IssueAmount             = i.IssueAmount
                   , IssueName               = i.IssueName
-                  , MeetingDate             = im.MeetingDate
-                  , MeetingTime             = im.MeetingTime
                   , OSPrintDate             = i.OSPrintDate
                   , DatedDate               = i.DatedDate
                   , FirstInterestDate       = i.FirstInterestDate
-                  , InterestPaymentFreq     = pf.Value
+                  , InterestPaymentFreq     = i.InterestPaymentFreqID
                   , IssueShortName          = i.IssueShortNameOS
                   , IsMoodyRated            = ir.IsMoodyRated
                   , IsSPRated               = ir.IsSPRated
@@ -48,12 +46,49 @@ RETURN
                   , MethodOfSale            = i.MethodOfSaleID
                   , SecurityType            = i.SecurityTypeID
                   , CallDate                = ic.CallDate
+                  , CallFrequency           = cf.Value
+                  , ARRAType                = ab.ARRATypeID
+                  , ClosingDate             = i.SettlementDate
+                  , DisclosureType          = i.DisclosureTypeID
+                  , ElectionDate            = e.ElectionDate
+                  , FinanceType             = p.FinanceTypeID
+                  , IssueType               = i.IssueTypeID
               FROM  dbo.Issue               AS i
         INNER JOIN  dbo.IssueRating         AS ir ON ir.IssueID = i.IssueID
-         LEFT JOIN  dbo.IssueMeeting        AS im ON im.IssueID = i.IssueID AND im.MeetingPurposeID = 3
         INNER JOIN  dbo.InterestPaymentFreq AS pf ON pf.InterestPaymentFreqID = i.InterestPaymentFreqID
          LEFT JOIN  dbo.IssueCall           AS ic ON ic.IssueID = i.IssueID
+         LEFT JOIN  dbo.ARRABond            AS ab ON ab.IssueID = i.IssueID
+         LEFT JOIN  dbo.IssueElections      AS ie ON ie.IssueID = i.IssueID
+         LEFT JOIN  dbo.Election            AS e  ON e.ElectionID = ie.ElectionID
+         LEFT JOIN  dbo.Purpose             AS p  ON p.IssueID = i.IssueID
+         LEFT JOIN  dbo.CallFrequency       AS cf ON cf.CallFrequencyID = i.CallFrequencyID
              WHERE  i.IssueID = @IssueID ) ,
+
+            awardSaleMeeting AS (
+            SELECT  IssueID                 = i.IssueID
+                  , AwardSaleMeetingDate    = im.MeetingDate
+              FROM  dbo.Issue               AS i
+         LEFT JOIN  dbo.IssueMeeting        AS im ON im.IssueID = i.IssueID AND im.MeetingPurposeID = 3
+             WHERE  i.IssueID = @IssueID ) ,
+
+            preSaleMeeting AS (
+            SELECT  IssueID                 = i.IssueID
+                  , PreSaleMeetingDate      = im.MeetingDate
+              FROM  dbo.Issue               AS i
+         LEFT JOIN  dbo.IssueMeeting        AS im ON im.IssueID = i.IssueID AND im.MeetingPurposeID = 9
+             WHERE  i.IssueID = @IssueID ) ,
+
+            refundingData AS (
+            SELECT  IssueID = @IssueID, isRefunding = CASE COUNT(*) WHEN 0 THEN 0 ELSE 1 END
+              FROM  dbo.Issue AS i
+             WHERE  i.IssueID = @IssueID AND
+                    EXISTS ( SELECT 1 FROM dbo.Purpose p WHERE p.IssueID = i.IssueID AND p.FinanceTypeID IN (1,4,5,6,7,8,9,10,11,12,13,14)) ) ,
+
+            debtLimit AS (
+            SELECT  IssueID = @IssueID, isSubjectToDebtLimit = CASE COUNT(*) WHEN 0 THEN 0 ELSE 1 END
+              FROM  dbo.Issue AS i
+             WHERE  i.IssueID = @IssueID AND
+                    EXISTS ( SELECT 1 FROM dbo.Purpose p WHERE p.IssueID = i.IssueID AND p.SubjectToDebtLimit = 1) ) ,
 
             clientData AS (
             SELECT  IssueID                 = i.IssueID
@@ -119,8 +154,6 @@ RETURN
     SELECT  IssueID                     = ISNULL( id.IssueID, '' )
           , IssueAmount                 = id.IssueAmount
           , IssueName                   = ISNULL( id.IssueName, '' )
-          , MeetingDate                 = ISNULL( id.MeetingDate, '' )
-          , MeetingTime                 = ISNULL( CAST(id.MeetingTime AS datetime), '' )
           , OSPrintDate                 = ISNULL( id.OSPrintDate, '')
           , DatedDate                   = ISNULL( id.DatedDate, '')
           , FirstInterestDate           = ISNULL( id.FirstInterestDate, '')
@@ -137,6 +170,7 @@ RETURN
           , IsTAC                       = ISNULL( id.IsTAC, 0 )
           , BankQualified               = ISNULL( id.BankQualified, '')
           , Callable                    = ISNULL( id.Callable, '')
+          , CallFrequency               = ISNULL( id.CallFrequency, '')          
           , TaxStatus                   = ISNULL( id.TaxStatus, '')
           , FirstCallableMaturity       = ISNULL( id.FirstCallableMaturity, '')
           , TypeOfRedemption            = ISNULL( id.TypeOfRedemption, 0)
@@ -144,6 +178,16 @@ RETURN
           , MethodofSale                = ISNULL( id.MethodOfSale, '')
           , SecurityType                = ISNULL( id.SecurityType, '')
           , CallDate                    = ISNULL( id.CallDate, '')
+          , ARRAType                    = ISNULL( id.ARRAType, '')
+          , ClosingDate                 = ISNULL( id.ClosingDate, '')
+          , DisclosureType              = ISNULL( id.DisclosureType, '')
+          , FinanceType                 = ISNULL( id.FinanceType, '')
+          , IssueType                   = ISNULL( id.IssueType, '')
+          , ElectionDate                = ISNULL( id.ElectionDate, NULL)
+          , AwardSaleMeetingDate        = ISNULL( asm.AwardSaleMeetingDate, NULL)
+          , PreSaleMeetingDate          = ISNULL( psm.PreSaleMeetingDate, NULL)
+          , isRefunding                 = rd.isRefunding
+          , isSubjectToDebtLimit        = dl.isSubjectToDebtLimit
           , SchoolDistrictNumber        = ISNULL( cd.SchoolDistrictNumber, '' )
           , ClientName                  = ISNULL( cd.ClientName, '' )
           , ClientPrefix                = ISNULL( cd.ClientPrefix, '' )
@@ -169,4 +213,8 @@ RETURN
  LEFT JOIN  FA1                     AS fa1 ON fa1.IssueID = i.IssueID
  LEFT JOIN  FA2                     AS fa2 ON fa2.IssueID = i.IssueID
  LEFT JOIN  FA3                     AS fa3 ON fa3.IssueID = i.IssueID
+ LEFT JOIN  refundingData           AS rd  ON rd.IssueID  = i.IssueID
+ LEFT JOIN  debtLimit               AS dl  ON dl.IssueID  = i.IssueID
+ LEFT JOIN  awardSaleMeeting        as asm ON asm.IssueID = i.IssueID
+ LEFT JOIN  preSaleMeeting          as psm ON psm.IssueID = i.IssueID 
      WHERE  i.IssueID = @IssueID ;
