@@ -34,7 +34,7 @@
       <Value>edata_dev</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="PostDeployChanges">
-      <Value>YES</Value>
+      <Value>NO</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="PreDeployChanges">
       <Value>NO</Value>
