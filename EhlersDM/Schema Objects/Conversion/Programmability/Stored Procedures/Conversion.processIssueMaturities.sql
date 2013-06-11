@@ -30,8 +30,8 @@ BEGIN
     IF EXISTS ( SELECT 1 FROM dbo.IssueMaturity )
     BEGIN
         PRINT '    Data already exists on dbo.IssueMaturity -- conversion not executed' ;
-    END
         RETURN ;
+    END
 
 
 
