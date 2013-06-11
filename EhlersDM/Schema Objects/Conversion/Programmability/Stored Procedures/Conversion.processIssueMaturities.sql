@@ -26,11 +26,20 @@ AS
 BEGIN
     SET NOCOUNT ON ;
 
+    /*  if issue maturity has data, do not execute this proc */
+    IF EXISTS ( SELECT 1 FROM dbo.IssueMaturity )
+    BEGIN
+        PRINT '    Data already exists on dbo.IssueMaturity -- conversion not executed' ;
+    END
+        RETURN ;
+
+
+
     DECLARE @IssueMaturityRecords               AS INT = 0
           , @PurposeRecords                     AS INT = 0
           , @PurposeMaturityRecords             AS INT = 0
-          , @PurposeMaturityRefundingRecords    AS INT = 0 
-          , @rc                                 AS INT = 0 
+          , @PurposeMaturityRefundingRecords    AS INT = 0
+          , @rc                                 AS INT = 0
           , @SystemDate                         AS DATETIME = GETDATE() ;
 
 
