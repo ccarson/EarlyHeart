@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE Conversion.reportIssuesErrors
+﻿CREATE PROCEDURE [Conversion].[reportIssuesErrors]
 AS
 /*
 ************************************************************************************************************************************
@@ -21,9 +21,11 @@ AS
     6)  INSERT invalid ObligorClientID issues into @errorRecords
     7)  SELECT error report data from @errorRecords for invalid ObligorClientID records
     8)  Invoke error processing routine to mail out error report
-    9)  Validate control counts
-   10)  Print control totals
-
+    9)
+   10)
+   11)
+   12)  Validate control counts
+   13)  Print control totals
 
     Notes:
 
@@ -41,7 +43,9 @@ BEGIN
     DECLARE @orphanErrorCount   AS INT = 0
           , @orphanErrorActual  AS INT = 0
           , @obligorErrorCount  AS INT = 0
-          , @obligorErrorActual AS INT = 0 ;
+          , @obligorErrorActual AS INT = 0 
+          , @missingIssueCount AS INT = 0 
+          , @missingIssueActual AS INT = 0 ;
 
 
     DECLARE @errorRecords       AS TABLE ( IssueID          INT
@@ -65,12 +69,18 @@ BEGIN TRY
      WHERE  i.ObligorClientId IS NOT NULL
        AND  EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientId = i.ClientID )
        AND  NOT EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientId = i.ObligorClientId ) ;
+       
+     SELECT @missingIssueCount = COUNT(*)
+       FROM Issue AS i 
+       WHERE i.IssueID NOT IN (SELECT IssueID FROM edata.Issues)
 
 
 --  2)  Exit if there are no errors
     IF  ( @orphanErrorCount  = 0 )
         AND
         ( @obligorErrorCount = 0 )
+        AND 
+        ( @missingIssueCount = 0 )
     BEGIN
         PRINT 'No Issue errors found, exiting' ;
     END
@@ -88,6 +98,7 @@ BEGIN TRY
           , ObligorClientID         =  NULL
       FROM  edata.Issues AS i
      WHERE  NOT EXISTS ( SELECT 1 FROM edata.Clients AS c WHERE c.ClientID = i.ClientID ) ;
+     
     SELECT  @orphanErrorActual = @@ROWCOUNT ;
 
 
@@ -122,6 +133,8 @@ BEGIN TRY
         EXECUTE dbo.processEhlersError    @processName
                                         , @errorMessage
                                         , @errorQuery ;
+    
+     DELETE @errorRecords
 
 
 --  6)  INSERT invalid ObligorClientID issues into @errorRecords
@@ -171,12 +184,58 @@ BEGIN TRY
         EXECUTE dbo.processEhlersError    @processName
                                         , @errorMessage
                                         , @errorQuery ;
+                                        
+    DELETE @errorRecords
+ 
+ ---------------------------------------------------------------------------------------------------
+ ---------------------------------------------------------------------------------------------------
+ ---------------------------------------------------------------------------------------------------       
+ --  9)  INSERT MIssing Legacy issues into @errorRecords
+    INSERT  @errorRecords
+    SELECT  IssueID                 =  i.IssueID
+          , IssuerName              =  NULL
+          , IssueName               =  ISNULL( i.IssueName,'' )
+          , DatedDate               =  NULL
+          , IssueStatus             =  NULL
+          , Amount                  =  NULL
+          , ClientID                =  i.ClientId
+          , ObligorClientID         =  NULL
+      FROM  Issue AS i
+     WHERE i.IssueID NOT IN (SELECT IssueID FROM edata.Issues) 
+     
+    SELECT  @missingIssueActual = @@ROWCOUNT ;
 
 
---  9)  Validate control counts
+--  10)  SELECT error report data from @errorRecords for invalid ObligorClientID records
+    SELECT  @errorMessage = '</br><H2><b>These issues do not exist in Legacy system</b></H2></br></br>'
+                          + '<b>Instructions for resolving reported errors:</b></br>'
+                          + '&nbsp;&nbsp;1)Execute deleteIssue stored procedure with the Issue Id</br>'
+          , @errorQuery   = N'<table border="1">' +
+                            N'<tr><th>IssueID</th></tr>' +
+                            CAST ( ( SELECT td = IssueID
+                                       FROM @errorRecords
+                                      ORDER BY 1
+                                        FOR XML PATH('tr'), TYPE ) AS NVARCHAR(MAX) ) +
+                            N'</table>' ;
+
+
+--  11)  Invoke error processing routine to mail out error report
+    IF  ( @missingIssueActual <> 0 )
+        EXECUTE dbo.processEhlersError    @processName
+                                        , @errorMessage
+                                        , @errorQuery ;
+
+
+ ---------------------------------------------------------------------------------------------------
+ ---------------------------------------------------------------------------------------------------
+ ---------------------------------------------------------------------------------------------------                                     
+                                        
+--  12)  Validate control counts
     IF  ( @orphanErrorCount <> @orphanErrorActual )
         OR
         ( @obligorErrorCount <> @obligorErrorActual )
+        OR 
+        ( @missingIssueCount = @missingIssueActual )
     BEGIN
         PRINT 'Control Totals Error!  Please review counts and processing!' ;
         PRINT '@orphanErrorCount         = ' + STR( @orphanErrorCount, 8 ) ;
@@ -184,6 +243,9 @@ BEGIN TRY
         PRINT ''
         PRINT '@obligorErrorCount        = ' + STR( @obligorErrorCount, 8 ) ;
         PRINT '@obligorErrorActual       = ' + STR( @obligorErrorActual, 8 ) ;
+        PRINT ''
+        PRINT '@missingIssueCount        = ' + STR( @missingIssueCount, 8 ) ;
+        PRINT '@missingIssueActual       = ' + STR( @missingIssueActual, 8 ) ;
         PRINT ''
 
         SELECT  @rc = 0 ;
@@ -198,12 +260,14 @@ END CATCH
 
 
 endOfProc:
--- 10)  Print control totals
+-- 13)  Print control totals
     PRINT 'Conversion.reportIssuesErrors ' ;
     PRINT 'CONTROL TOTALS ' ;
     PRINT '    Legacy Issues that can not be converted = ' + STR( @orphanErrorCount, 8 ) ;
     PRINT '' ;
     PRINT '    Legacy Issues with invalid ObligorClientID = ' + STR( @obligorErrorCount, 8 ) ;
+    PRINT '' ;
+    PRINT '    Converted Issues with no Legacy Issue = ' + STR( @missingIssueCount, 8 ) ;
     PRINT '' ;
 
     RETURN @rc ;

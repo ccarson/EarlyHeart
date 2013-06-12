@@ -294,7 +294,9 @@
     <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedContacts.view.sql" />
     <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedElections.view.sql" />
     <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedFirms.view.sql" />
-    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedIssues.view.sql" />
+    <Build Include="Schema Objects\Conversion\Views\Conversion.vw_ConvertedIssues.view.sql">
+      <ApplicationScope>False</ApplicationScope>
+    </Build>
     <Build Include="Schema Objects\Conversion\Views\Conversion.vw_LegacyAddress.view.sql">
       <ApplicationScope>False</ApplicationScope>
     </Build>
