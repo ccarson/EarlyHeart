@@ -75,5 +75,3 @@ AS
  LEFT JOIN  dbo.CallFrequency       AS clf ON clf.CallFrequencyID       = iss.CallFrequencyID
  LEFT JOIN  dbo.DisclosureType      AS dst ON dst.DisclosureTypeID      = iss.DisclosureTypeID
  LEFT JOIN  taxStatusValue          AS tsv ON tsv.DisplayValue          = iss.TaxStatus
-     WHERE  iss.IssueID IN ( SELECT IssueId FROM edata.Issues ) ;
-
