@@ -30,7 +30,7 @@ BEGIN
           , @errorTime          AS VARCHAR (30)     = CONVERT( VARCHAR(30), SYSDATETIME(), 121 )
           , @databaseName       AS NVARCHAR(128)    = DB_NAME()
           , @profile_name       AS SYSNAME          = 'Ehlers SQL Server Data Manager'
-          , @recipients         AS VARCHAR (100)    = 'ccarson@ehlers-inc.com'
+          , @recipients         AS VARCHAR (100)    = 'mkiemen@ehlers-inc.com'
           , @serverName         AS NVARCHAR(128)    = @@SERVERNAME
           , @userName           AS SYSNAME          = dbo.udf_GetSystemUser() ;
 

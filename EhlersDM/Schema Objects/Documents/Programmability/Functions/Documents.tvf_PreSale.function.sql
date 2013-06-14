@@ -51,8 +51,12 @@ RETURN
                   , ClosingDate             = i.SettlementDate
                   , DisclosureType          = i.DisclosureTypeID
                   , ElectionDate            = e.ElectionDate
-                  , FinanceType             = p.FinanceTypeID
                   , IssueType               = i.IssueTypeID
+                  , RatingTypeID            = ir.RatingTypeID
+                  , MinimumBidPercent       = bp.MinimumBidPercent
+                  , BalloonMaturitySchedule = i.BalloonMaturitySchedule
+                  , InterimFinancing        = i.InterimFinancing
+                  , WIGOPlannedAbatement    = i.WIGOPlannedAbatement
               FROM  dbo.Issue               AS i
         INNER JOIN  dbo.IssueRating         AS ir ON ir.IssueID = i.IssueID
         INNER JOIN  dbo.InterestPaymentFreq AS pf ON pf.InterestPaymentFreqID = i.InterestPaymentFreqID
@@ -60,8 +64,8 @@ RETURN
          LEFT JOIN  dbo.ARRABond            AS ab ON ab.IssueID = i.IssueID
          LEFT JOIN  dbo.IssueElections      AS ie ON ie.IssueID = i.IssueID
          LEFT JOIN  dbo.Election            AS e  ON e.ElectionID = ie.ElectionID
-         LEFT JOIN  dbo.Purpose             AS p  ON p.IssueID = i.IssueID
          LEFT JOIN  dbo.CallFrequency       AS cf ON cf.CallFrequencyID = i.CallFrequencyID
+         LEFT JOIN  dbo.BiddingParameter    AS bp ON bp.IssueID = i.IssueID
              WHERE  i.IssueID = @IssueID ) ,
 
             awardSaleMeeting AS (
@@ -84,11 +88,29 @@ RETURN
              WHERE  i.IssueID = @IssueID AND
                     EXISTS ( SELECT 1 FROM dbo.Purpose p WHERE p.IssueID = i.IssueID AND p.FinanceTypeID IN (1,4,5,6,7,8,9,10,11,12,13,14)) ) ,
 
+            currentRefundingData AS (
+            SELECT  IssueID = @IssueID, isCurrentRefunding = CASE COUNT(*) WHEN 0 THEN 0 ELSE 1 END
+              FROM  dbo.Issue AS i
+             WHERE  i.IssueID = @IssueID AND
+                    EXISTS ( SELECT 1 FROM dbo.Purpose p WHERE p.IssueID = i.IssueID AND p.FinanceTypeID IN (4,5,6)) ) ,
+                    
+            advanceRefundingData AS (
+            SELECT  IssueID = @IssueID, isAdvanceRefunding = CASE COUNT(*) WHEN 0 THEN 0 ELSE 1 END
+              FROM  dbo.Issue AS i
+             WHERE  i.IssueID = @IssueID AND
+                    EXISTS ( SELECT 1 FROM dbo.Purpose p WHERE p.IssueID = i.IssueID AND p.FinanceTypeID IN (1,7,8,9,10,11)) ) ,
+                    
             debtLimit AS (
             SELECT  IssueID = @IssueID, isSubjectToDebtLimit = CASE COUNT(*) WHEN 0 THEN 0 ELSE 1 END
               FROM  dbo.Issue AS i
              WHERE  i.IssueID = @IssueID AND
                     EXISTS ( SELECT 1 FROM dbo.Purpose p WHERE p.IssueID = i.IssueID AND p.SubjectToDebtLimit = 1) ) ,
+                    
+            salesTaxRevenueSource AS (
+            SELECT  IssueID = @IssueID, salesTaxRevenueSource = CASE COUNT(*) WHEN 0 THEN 0 ELSE 1 END
+              FROM  dbo.Issue AS i
+             WHERE  i.IssueID = @IssueID AND
+                    EXISTS ( SELECT 1 FROM dbo.Purpose p WHERE p.IssueID = i.IssueID AND p.FundingSourceTypeID = 21) ) ,
 
             clientData AS (
             SELECT  IssueID                 = i.IssueID
@@ -99,6 +121,7 @@ RETURN
                   , JurisdictionTypeID      = c.JurisdictionTypeID
                   , GoverningBoard          = gb.Value
                   , StateFull               = s.FullName
+                  , EhlersJobTeamID         = c.EhlersJobTeamID                  
               FROM  dbo.Issue               AS i
         INNER JOIN  dbo.Client              AS c  ON c.ClientID = i.ClientID
         INNER JOIN  dbo.ClientPrefix        AS cp ON cp.ClientPrefixID = c.ClientPrefixID
@@ -181,13 +204,20 @@ RETURN
           , ARRAType                    = ISNULL( id.ARRAType, '')
           , ClosingDate                 = ISNULL( id.ClosingDate, '')
           , DisclosureType              = ISNULL( id.DisclosureType, '')
-          , FinanceType                 = ISNULL( id.FinanceType, '')
           , IssueType                   = ISNULL( id.IssueType, '')
           , ElectionDate                = ISNULL( id.ElectionDate, NULL)
+          , RatingTypeID                = ISNULL( id.RatingTypeID, '')
+          , MinimumBidPct               = ISNULL( id.MinimumBidPercent, NULL)
+          , BallonMaturitySchedule      = ISNULL( id.BalloonMaturitySchedule, '')
+          , WIGOPlannedAbatement        = ISNULL( id.WIGOPlannedAbatement, '')
+          , InterimFinancing            = ISNULL( id.InterimFinancing, '')
           , AwardSaleMeetingDate        = ISNULL( asm.AwardSaleMeetingDate, NULL)
           , PreSaleMeetingDate          = ISNULL( psm.PreSaleMeetingDate, NULL)
           , isRefunding                 = rd.isRefunding
+          , isCurrentRefunding          = crd.isCurrentRefunding
+          , isAdvanceRefunding          = ard.isAdvanceRefunding
           , isSubjectToDebtLimit        = dl.isSubjectToDebtLimit
+          , salesTaxRevenueSource       = str.salesTaxRevenueSource
           , SchoolDistrictNumber        = ISNULL( cd.SchoolDistrictNumber, '' )
           , ClientName                  = ISNULL( cd.ClientName, '' )
           , ClientPrefix                = ISNULL( cd.ClientPrefix, '' )
@@ -195,6 +225,7 @@ RETURN
           , JurisdictionTypeID          = ISNULL( cd.JurisdictionTypeID, '' )
           , GoverningBoard              = ISNULL( cd.GoverningBoard, '' )
           , Client_StateFull            = ISNULL( cd.StateFull, '' )
+          , EhlersJobTeamID             = ISNULL( cd.EhlersJobTeamID, '' )
           , BA_FirmID                   = ISNULL( bad.FirmID, '' )
           , BA_FirmName                 = ISNULL( bad.FirmName, '' )
           , FA1_FirstName               = ISNULL( fa1.FirstName, '' )
@@ -214,7 +245,10 @@ RETURN
  LEFT JOIN  FA2                     AS fa2 ON fa2.IssueID = i.IssueID
  LEFT JOIN  FA3                     AS fa3 ON fa3.IssueID = i.IssueID
  LEFT JOIN  refundingData           AS rd  ON rd.IssueID  = i.IssueID
+ LEFT JOIN  currentRefundingData    AS crd ON rd.IssueID  = i.IssueID
+ LEFT JOIN  advanceRefundingData    AS ard ON rd.IssueID  = i.IssueID
  LEFT JOIN  debtLimit               AS dl  ON dl.IssueID  = i.IssueID
  LEFT JOIN  awardSaleMeeting        as asm ON asm.IssueID = i.IssueID
- LEFT JOIN  preSaleMeeting          as psm ON psm.IssueID = i.IssueID 
+ LEFT JOIN  preSaleMeeting          as psm ON psm.IssueID = i.IssueID
+ LEFT JOIN  salesTaxRevenueSource   as str ON str.IssueID = i.IssueID
      WHERE  i.IssueID = @IssueID ;
