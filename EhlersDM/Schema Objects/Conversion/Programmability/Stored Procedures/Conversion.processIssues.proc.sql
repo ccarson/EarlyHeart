@@ -68,17 +68,17 @@ BEGIN TRY
           , @errorData              AS VARCHAR (MAX) = NULL ;
 
 
-    DECLARE @changesCount       AS INT = 0
-          , @convertedActual    AS INT = 0
-          , @convertedCount     AS INT = 0
-          , @legacyCount        AS INT = 0
-          , @newCount           AS INT = 0
-          , @recordINSERTs      AS INT = 0
-          , @recordMERGEs       AS INT = 0
-          , @recordUPDATEs      AS INT = 0
-          , @total              AS INT = 0
-          
-          , @updatedCount       AS INT = 0 ;
+    DECLARE @changesCount               AS INT = 0
+          , @convertedActual            AS INT = 0
+          , @convertedCount             AS INT = 0
+          , @convertedNotOnLegacyCount  AS INT = 0
+          , @legacyCount                AS INT = 0
+          , @newCount                   AS INT = 0
+          , @recordINSERTs              AS INT = 0
+          , @recordMERGEs               AS INT = 0
+          , @recordUPDATEs              AS INT = 0
+          , @total                      AS INT = 0
+          , @updatedCount               AS INT = 0 ;
 
 
     DECLARE @controlTotalsError     AS VARCHAR (200)    = N'Control Total Failure:  %s = %d, %s = %d' ;
@@ -143,6 +143,10 @@ BEGIN TRY
     SELECT  @legacyCount        = COUNT(*) FROM Conversion.vw_LegacyIssues ;
     SELECT  @convertedCount     = COUNT(*) FROM Conversion.vw_ConvertedIssues ;
     SELECT  @convertedActual    = @convertedCount ;
+    
+    SELECT  @convertedNotOnLegacyCount = COUNT(*)
+      FROM  Conversion.vw_ConvertedIssues
+     WHERE  issueID NOT IN ( SELECT IssueId FROM Conversion.vw_LegacyIssues ) ;
 
 
 /**/SELECT  @codeBlockNum   = 3
@@ -288,12 +292,13 @@ BEGIN TRY
 /**/SELECT  @codeBlockNum   = 10
 /**/      , @codeBlockDesc  = @codeBlockDesc10 ; -- Control Total Validation
 
-    SELECT @total =  @convertedCount + @recordINSERTs
+    SELECT @total =  @convertedCount + @recordINSERTs ;
     IF  ( @convertedActual <> ( @convertedCount + @recordINSERTs ) )
         RAISERROR( @controlTotalsError, 16, 1, 'Converted Issues', @convertedActual, 'Existing Issues + Inserted Issues', @total ) ;
 
+    SELECT @total =  @convertedActual - @convertedNotOnLegacyCount ;
     IF  ( @convertedActual <> @legacyCount )
-        RAISERROR( @controlTotalsError, 16, 1, 'Converted Issues', @convertedActual, 'Legacy Issues', @legacyCount ) ;
+        RAISERROR( @controlTotalsError, 16, 1, 'Converted Issues', @total, 'Legacy Issues', @legacyCount ) ;
 
     IF  ( @recordINSERTs <> @newCount )
         RAISERROR( @controlTotalsError, 16, 1, 'Inserted Issues', @recordINSERTs,  'Expected Inserts', @newCount ) ;
