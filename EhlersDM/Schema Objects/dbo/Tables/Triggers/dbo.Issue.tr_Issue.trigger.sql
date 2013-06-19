@@ -1,5 +1,5 @@
-﻿CREATE TRIGGER  tr_Issue
-            ON  dbo.Issue
+﻿CREATE TRIGGER  [dbo].[tr_Issue]
+            ON  [dbo].[Issue]
 AFTER INSERT, UPDATE
 AS
 /*
@@ -39,7 +39,7 @@ BEGIN TRY
        SET  GoodFaithPercent = 2.0
       FROM  dbo.Issue AS a
      WHERE  EXISTS ( SELECT 1 FROM inserted AS b
-                      WHERE a.IssueID = b.IssueID AND DATEDIFF( dd, GETDATE(), b.SaleDate ) > 0 AND b.MethodOfSaleID = 1 )
+                      WHERE a.IssueID = b.IssueID AND b.MethodOfSaleID = 1 )
        AND  NOT EXISTS ( SELECT 1 FROM deleted ) ;
 
 
