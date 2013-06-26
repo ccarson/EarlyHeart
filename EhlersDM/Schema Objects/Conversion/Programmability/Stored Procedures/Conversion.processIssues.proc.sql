@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE Conversion.processIssues
+﻿CREATE PROCEDURE [Conversion].[processIssues]
 AS
 /*
 ************************************************************************************************************************************
@@ -121,7 +121,6 @@ BEGIN TRY
                                           , Notes                       VARCHAR (MAX)
                                           , NotesRefundedBy             VARCHAR (MAX)
                                           , NotesRefunds                VARCHAR (MAX)
-                                          , ArbitrageYield              DECIMAL (11,8)
                                           , QualityControlDate          DATETIME
                                           , Purpose                     VARCHAR (MAX)
                                           , ChangeDate                  DATETIME
@@ -177,7 +176,7 @@ BEGIN TRY
     SELECT  IssueID, DatedDate, Amount, ClientID, IssueName, ShortName, IssueStatus, cusip6, IssueType, SaleType
                 , InitialOfferingDocument, TaxStatus, BondForm, BankQualified, SecurityType, SaleDate, SaleTime
                 , SettlementDate, FirstCouponDate, IntPmtFreq, IntCalcMeth, CouponType, Callable, CallFrequency
-                , DisclosureType, PurchasePrice, Notes, NotesRefundedBy, NotesRefunds, ArbitrageYield
+                , DisclosureType, PurchasePrice, Notes, NotesRefundedBy, NotesRefunds
                 , QualityControlDate, Purpose, ChangeDate, ChangeBy, ObligorClientID, EIPInvest
       FROM  Conversion.vw_LegacyIssues AS a
      WHERE  EXISTS ( SELECT 1 FROM @changedIssueIDs AS b
@@ -192,7 +191,7 @@ BEGIN TRY
     SELECT  IssueID, DatedDate, Amount, ClientID, IssueName, ShortName, IssueStatus, cusip6, IssueType, SaleType
                 , InitialOfferingDocument, TaxStatus, BondForm, BankQualified, SecurityType, SaleDate, SaleTime
                 , SettlementDate, FirstCouponDate, IntPmtFreq, IntCalcMeth, CouponType, Callable, CallFrequency
-                , DisclosureType, PurchasePrice, Notes, NotesRefundedBy, NotesRefunds, ArbitrageYield
+                , DisclosureType, PurchasePrice, Notes, NotesRefundedBy, NotesRefunds
                 , QualityControlDate, Purpose, ChangeDate, ChangeBy, ObligorClientID, EIPInvest
       FROM  Conversion.vw_LegacyIssues AS a
      WHERE  EXISTS ( SELECT 1 FROM @changedIssueIDs AS b
@@ -247,7 +246,6 @@ BEGIN TRY
                       , Notes                       = src.Notes
                       , RefundedByNote              = src.NotesRefundedBy
                       , RefundsNote                 = src.NotesRefunds
-                      , ArbitrageYield              = src.ArbitrageYield
                       , QCDate                      = src.QualityControlDate
                       , LongDescription             = src.Purpose
                       , ObligorClientID             = src.ObligorClientID
@@ -263,7 +261,7 @@ BEGIN TRY
                         , SettlementDate, FirstInterestDate, InterestPaymentFreqID
                         , InterestCalcMethodID, InterestTypeID, Callable, CallFrequencyID, DisclosureTypeID
                         , PurchasePrice, Notes, RefundedByNote, RefundsNote
-                        , ArbitrageYield, QCDate, LongDescription, ObligorClientID
+                        , QCDate, LongDescription, ObligorClientID
                         , IsEIPInvest, ModifiedDate, ModifiedUser )
             VALUES ( src.IssueID, src.DatedDate, src.Amount, src.ClientID
                         , src.IssueName, src.ShortName, src.IssueStatus, src.cusip6
@@ -272,7 +270,7 @@ BEGIN TRY
                         , src.SettlementDate, src.FirstCouponDate, src.IntPmtFreq
                         , src.IntCalcMeth, src.CouponType, src.Callable, src.CallFrequency, src.DisclosureType
                         , src.PurchasePrice, src.Notes, src.NotesRefundedBy, src.NotesRefunds
-                        , src.ArbitrageYield, src.QualityControlDate, src.Purpose, src.ObligorClientID
+                        , src.QualityControlDate, src.Purpose, src.ObligorClientID
                         , src.EIPInvest, src.ChangeDate, src.ChangeBy )
     OUTPUT  $action, inserted.IssueID INTO @issueMergeResults ;
     SELECT  @recordMERGEs = @@ROWCOUNT ;
@@ -297,7 +295,7 @@ BEGIN TRY
         RAISERROR( @controlTotalsError, 16, 1, 'Converted Issues', @convertedActual, 'Existing Issues + Inserted Issues', @total ) ;
 
     SELECT @total =  @convertedActual - @convertedNotOnLegacyCount ;
-    IF  ( @convertedActual <> @legacyCount )
+    IF  ( @total <> @legacyCount )
         RAISERROR( @controlTotalsError, 16, 1, 'Converted Issues', @total, 'Legacy Issues', @legacyCount ) ;
 
     IF  ( @recordINSERTs <> @newCount )

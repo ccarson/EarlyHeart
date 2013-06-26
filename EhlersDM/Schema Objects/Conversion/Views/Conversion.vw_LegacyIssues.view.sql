@@ -62,7 +62,6 @@ AS
           , Notes                   =  CAST( ISNULL( iss.Notes, '' ) AS VARCHAR(MAX) )
           , NotesRefundedBy         =  CAST( ISNULL( iss.NotesRefundedBy, '' ) AS VARCHAR(MAX) )
           , NotesRefunds            =  CAST( ISNULL( iss.NotesRefunds, '' ) AS VARCHAR(MAX) )
-          , ArbitrageYield          =  ISNULL( iss.ArbitrageYield, 0.00 )
           , QualityControlDate      =  iss.QualityControlDate
           , Purpose                 =  CAST( ISNULL( iss.Purpose, '' ) AS VARCHAR(MAX) )
           , ChangeDate              =  ISNULL( iss.ChangeDate, GETDATE() )

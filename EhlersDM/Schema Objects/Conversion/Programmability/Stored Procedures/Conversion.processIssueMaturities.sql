@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE Conversion.processIssueMaturities
+﻿CREATE PROCEDURE [Conversion].[processIssueMaturities]
 AS
 /*
 ************************************************************************************************************************************
@@ -76,11 +76,13 @@ BEGIN
     INSERT  dbo.Purpose (
             PurposeID
           , IssueID
+          , PurposeOrder
           , PurposeName
           , ModifiedDate
           , ModifiedUser )
     SELECT  IssueID
           , IssueID
+          , 1
           , CAST( 'Conversion Purpose' AS VARCHAR(150) )
           , GETDATE()
           , 'convertMaturities'

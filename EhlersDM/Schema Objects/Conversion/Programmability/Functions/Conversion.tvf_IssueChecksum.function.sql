@@ -49,7 +49,6 @@ RETURN
               , Notes               =  Notes
               , NotesRefundedBy     =  NotesRefundedBy
               , NotesRefunds        =  NotesRefunds
-              , ArbitrageYield      =  ArbitrageYield
               , QualityControlDate  =  CONVERT( VARCHAR(10), ISNULL( QualityControlDate, '1900-01-01'), 120 )
               , Purpose             =  Purpose
               , ObligorClientID     =  ISNULL( ObligorClientID, 0 )
@@ -85,7 +84,6 @@ RETURN
               , Notes               =  ISNULL( Notes, '' )
               , NotesRefundedBy     =  RefundedByNote
               , NotesRefunds        =  RefundsNote
-              , ArbitrageYield      =  ArbitrageYield
               , QualityControlDate  =  CONVERT( VARCHAR(10), ISNULL( QCDate, '1900-01-01'), 120 )
               , Purpose             =  LongDescription
               , ObligorClientID     =  ISNULL( ObligorClientID, 0 )
@@ -126,7 +124,6 @@ SELECT  IssueID       = IssueID
                                                     +  Notes
                                                     +  NotesRefundedBy
                                                     +  NotesRefunds
-                                                    +  CAST( ArbitrageYield  AS VARCHAR(20) )
                                                     +  QualityControlDate
                                                     +  Purpose
                                                     +  CAST( ObligorClientID AS VARCHAR(20) )

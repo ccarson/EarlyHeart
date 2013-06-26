@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE Import.loadMunexIssuePostBond ( @IssueID          AS VARCHAR(30)
+﻿CREATE PROCEDURE [Import].[loadMunexIssuePostBond] ( @IssueID          AS VARCHAR(30)
                                                , @BondYear         AS VARCHAR(30)
                                                , @ArbitrageYield   AS VARCHAR(30)
                                                , @AICPercent       AS VARCHAR(30)
@@ -28,6 +28,9 @@ BEGIN
 BEGIN TRY
 
 SET NOCOUNT ON ;
+
+    DECLARE @FirstInterestDate AS DATE ;
+
 
     IF  EXISTS ( SELECT  1 FROM dbo.IssuePostBond AS i
                   WHERE  i.IssueID = CAST( @IssueID AS INT ) ) 
@@ -69,6 +72,17 @@ SET NOCOUNT ON ;
           , CAST( @AverageLife      AS DECIMAL(11, 8) )
           , GETDATE()
           , dbo.udf_GetSystemUser() ;
+
+    
+    SELECT  @FirstInterestDate = MIN(InterestDate) 
+      FROM  dbo.PurposeMaturityInterest WHERE PurposeMaturityID IN 
+            ( SELECT PurposeMaturityID FROM dbo.PurposeMaturity WHERE PurposeID IN 
+                ( SELECT PurposeID FROM dbo.Purpose WHERE issueID = CAST( @IssueID AS INT ) ) ) ;
+
+    UPDATE  dbo.Issue
+       SET  FirstInterestDate = @FirstInterestDate
+     WHERE  IssueID = CAST( @IssueID AS INT ) ;
+
 END TRY
 BEGIN CATCH
 END CATCH

@@ -55,7 +55,6 @@ AS
           , Notes                   =  iss.Notes
           , NotesRefundedBy         =  iss.RefundedByNote
           , NotesRefunds            =  iss.RefundsNote
-          , ArbitrageYield          =  iss.ArbitrageYield
           , QualityControlDate      =  iss.QCDate
           , Purpose                 =  iss.LongDescription
           , ChangeDate              =  iss.ModifiedDate

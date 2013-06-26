@@ -1,5 +1,5 @@
-﻿CREATE TRIGGER  [dbo].[tr_Issue]
-            ON  [dbo].[Issue]
+﻿CREATE TRIGGER  dbo.tr_Issue
+            ON  dbo.[Issue]
 AFTER INSERT, UPDATE
 AS
 /*
@@ -85,7 +85,7 @@ BEGIN TRY
                         , SettlementDate, FirstCouponDate, IntPmtFreq
                         , IntCalcMeth, CouponType, CallFrequency, DisclosureType
                         , PurchasePrice, i.Notes, NotesRefundedBy, NotesRefunds
-                        , ArbitrageYield, QualityControlDate, Purpose, i.ChangeDate
+                        , QualityControlDate, Purpose, i.ChangeDate
                         , i.ChangeBy, ObligorClientID, EIPInvest, c.ClientDescriptiveName
               FROM  Conversion.vw_ConvertedIssues AS i 
         INNER JOIN  Conversion.vw_ConvertedClients AS c ON c.ClientID = i.ClientID
@@ -121,7 +121,6 @@ BEGIN TRY
                   , Notes               =  src.Notes
                   , NotesRefundedBy     =  src.NotesRefundedBy
                   , NotesRefunds        =  src.NotesRefunds
-                  , ArbitrageYield      =  src.ArbitrageYield
                   , QualityControlDate  =  src.QualityControlDate
                   , Purpose             =  src.Purpose
                   , ChangeDate          =  src.ChangeDate
@@ -137,7 +136,7 @@ BEGIN TRY
                         , SettlementDate, FirstCouponDate, IntPmtFreq
                         , IntCalcMeth, CouponType, CallFrequency, DisclosureType
                         , PurchasePrice, Notes, NotesRefundedBy, NotesRefunds
-                        , ArbitrageYield, QualityControlDate, Purpose, ChangeDate
+                        , QualityControlDate, Purpose, ChangeDate
                         , ChangeBy, ObligorClientID, EIPInvest, issuername )
             VALUES ( src.IssueID, src.DatedDate, src.Amount, src.ClientID
                         , src.IssueName, src.ShortName, src.IssueStatus, src.cusip6
@@ -146,7 +145,7 @@ BEGIN TRY
                         , src.SettlementDate, src.FirstCouponDate, src.IntPmtFreq
                         , src.IntCalcMeth, src.CouponType, src.CallFrequency, src.DisclosureType
                         , src.PurchasePrice, src.Notes, src.NotesRefundedBy, src.NotesRefunds
-                        , src.ArbitrageYield, src.QualityControlDate, src.Purpose, src.ChangeDate
+                        , src.QualityControlDate, src.Purpose, src.ChangeDate
                         , src.ChangeBy, src.ObligorClientID, src.EIPInvest, src.ClientDescriptiveName ) ;
 
 END TRY
