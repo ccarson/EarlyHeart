@@ -13,6 +13,7 @@
     <TargetDatabase>Ehlers</TargetDatabase>
     <DacApplicationName>Ehlers</DacApplicationName>
     <AssemblyName>Ehlers</AssemblyName>
+    <DacVersion>2.0.0.0</DacVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
