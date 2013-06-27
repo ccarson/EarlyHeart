@@ -1,4 +1,4 @@
-﻿CREATE FUNCTION [Documents].[tvf_PreSale_ForEachPurpose] ( @IssueID AS INT )
+﻿CREATE FUNCTION Documents.tvf_PreSale_ForEachPurpose ( @IssueID AS INT )
 RETURNS TABLE AS
 /*
 ************************************************************************************************************************************

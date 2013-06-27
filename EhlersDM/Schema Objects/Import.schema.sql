@@ -1,17 +1,2 @@
 ﻿CREATE SCHEMA [Import]
-    AUTHORIZATION [dbo];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    AUTHORIZATION [dbo] ;

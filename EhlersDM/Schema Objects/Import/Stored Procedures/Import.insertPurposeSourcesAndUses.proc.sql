@@ -1,9 +1,9 @@
-﻿CREATE PROCEDURE [Import].[insertPurposeSourcesAndUses] ( @SourcesOrUses AS varchar(30)
-                                            , @IssueID      AS VARCHAR (30)
-                                            , @PurposeName  AS VARCHAR (150)
-                                            , @LineItemName AS VARCHAR (100)
-                                            , @DisplayOrder AS VARCHAR (30)
-                                            , @Amount       AS VARCHAR (30) ) 
+﻿CREATE PROCEDURE Import.insertPurposeSourcesAndUses ( @SourcesOrUses    AS VARCHAR (30)
+                                                    , @IssueID          AS VARCHAR (30)
+                                                    , @PurposeName      AS VARCHAR (150)
+                                                    , @LineItemName     AS VARCHAR (100)
+                                                    , @DisplayOrder     AS VARCHAR (30)
+                                                    , @Amount           AS VARCHAR (30) ) 
 AS
 /*
 ************************************************************************************************************************************
@@ -15,10 +15,10 @@ AS
 
     revisor         date                description
     ---------       -----------         ----------------------------
-    ccarson         2013-01-24          created
+    ccarson         2013-06-27          created
 
     Logic Summary:
-    1)  INSERT input data into IssueMaturity ( CASTing relevant data as required )
+    1)  INSERT record into PurposeSources or PurposeUses depending on passed-in input parameter
 
 ************************************************************************************************************************************
 */
@@ -65,5 +65,6 @@ SET NOCOUNT ON ;
      WHERE  @SourcesOrUses = 'Uses' ;
 
 
-
 END
+GO
+

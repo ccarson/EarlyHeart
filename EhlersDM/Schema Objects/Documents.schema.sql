@@ -1,17 +1,2 @@
 ﻿CREATE SCHEMA [Documents]
-    AUTHORIZATION [dbo];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    AUTHORIZATION [dbo] ;

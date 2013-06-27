@@ -1,3 +1,2 @@
 ﻿CREATE SCHEMA [Meta]
-    AUTHORIZATION [dbo];
-
+    AUTHORIZATION [dbo] ;

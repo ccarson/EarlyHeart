@@ -1,12 +1,2 @@
 ﻿CREATE SCHEMA [edata]
-    AUTHORIZATION [dbo];
-
-
-
-
-
-
-
-
-
-
+    AUTHORIZATION [dbo] ;
