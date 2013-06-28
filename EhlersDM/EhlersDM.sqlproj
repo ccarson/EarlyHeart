@@ -144,18 +144,22 @@
     <Folder Include="Database Security\Service Broker\Routes" />
     <Folder Include="Project Scripts" />
     <Folder Include="Database References" />
-    <Folder Include="Project Scripts\IssuesConversion" />
-    <Folder Include="Project Scripts\IssuesConversion\PostDeployChanges" />
-    <Folder Include="Project Scripts\IssuesConversion\PreDeployChanges" />
-    <Folder Include="Project Scripts\IssuesConversion\PostDeploy" />
-    <Folder Include="Project Scripts\IssuesConversion\PreDeploy" />
-    <Folder Include="Project Scripts\IssuesConversion\Publish XML" />
     <Folder Include="Schema Objects\Import" />
     <Folder Include="Schema Objects\Import\Stored Procedures" />
     <Folder Include="Schema Objects\Import\Views" />
     <Folder Include="Schema Objects\edata" />
     <Folder Include="Schema Objects\edata\Synonyms" />
     <Folder Include="Schema Objects\Import\Tables" />
+    <Folder Include="Project Scripts\DM Release 3 - Sprint 1" />
+    <Folder Include="Project Scripts\DM Release 3 - Sprint 1\DataChanges" />
+    <Folder Include="Project Scripts\DM Release 3 - Sprint 1\OtherChanges" />
+    <Folder Include="Project Scripts\DM Release 3 - Sprint 1\PostDeploy" />
+    <Folder Include="Project Scripts\DM Release 3 - Sprint 1\PostDeployChanges" />
+    <Folder Include="Project Scripts\DM Release 3 - Sprint 1\Post-Deployment" />
+    <Folder Include="Project Scripts\DM Release 3 - Sprint 1\PreDeploy" />
+    <Folder Include="Project Scripts\DM Release 3 - Sprint 1\PreDeployChanges" />
+    <Folder Include="Project Scripts\DM Release 3 - Sprint 1\Pre-Deployment" />
+    <Folder Include="Project Scripts\DM Release 3 - Sprint 1\Publish XML" />
   </ItemGroup>
   <ItemGroup>
     <BuildContributorArgument Include="OutDir=$(OutDir)" />
@@ -164,12 +168,12 @@
     <None Include="Database References\edata.dacpac" />
     <None Include="Database References\ServerLogins.dacpac" />
     <None Include="Project Scripts\SetRevisionDate.ps1" />
-    <None Include="Project Scripts\IssuesConversion\Project notes and Comments.comments.txt" />
-    <None Include="Project Scripts\IssuesConversion\Publish XML\UpdateEhlers_Dev.publish.xml" />
-    <None Include="Project Scripts\IssuesConversion\Publish XML\UpdateEhlers_Local.publish.xml" />
-    <None Include="Project Scripts\IssuesConversion\Publish XML\UpdateEhlers_Test.publish.xml" />
-    <None Include="Project Scripts\IssuesConversion\Publish XML\UpdateEhlers_Stage.publish.xml" />
-    <None Include="Project Scripts\IssuesConversion\Publish XML\UpdateEhlers_Production.publish.xml" />
+    <None Include="Project Scripts\DM Release 3 - Sprint 1\Publish XML\UpdateEhlers_Dev.publish.xml" />
+    <None Include="Project Scripts\DM Release 3 - Sprint 1\Publish XML\UpdateEhlers_Local.publish.xml" />
+    <None Include="Project Scripts\DM Release 3 - Sprint 1\Publish XML\UpdateEhlers_Production.publish.xml" />
+    <None Include="Project Scripts\DM Release 3 - Sprint 1\Publish XML\UpdateEhlers_Stage.publish.xml" />
+    <None Include="Project Scripts\DM Release 3 - Sprint 1\Publish XML\UpdateEhlers_Test.publish.xml" />
+    <None Include="Project Scripts\DM Release 3 - Sprint 1\Project notes and Comments.comments.txt" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Schema Objects\Conversion\Programmability\Functions\Conversion.tvf_AddressChecksum.function.sql">
@@ -615,8 +619,6 @@
     <Build Include="Database Security\Database Roles\RoleMemberships.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.buildDataConversionAgentJob.proc.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.buildErrorReportingAgentJob.proc.sql" />
-    <None Include="Project Scripts\IssuesConversion\PostDeploy\PostDeployChanges.script.sql" />
-    <PostDeploy Include="Project Scripts\IssuesConversion\PostDeploy\PostDeployment.script.sql" />
     <Build Include="Schema Objects\Import.schema.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.deleteExistingIssueData.proc.sql" />
     <Build Include="Schema Objects\Import\Views\Import.vw_IssuesData.view.sql" />
@@ -624,16 +626,12 @@
     <Build Include="Schema Objects\Import\Stored Procedures\Import.updateIssueMaturity.proc.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.loadPurposeFromMunex.proc.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeMaturity.proc.sql" />
-    <None Include="Project Scripts\IssuesConversion\PreDeployChanges\PreDeployChangesTemplate.script.sql" />
-    <None Include="Project Scripts\IssuesConversion\PreDeploy\PreDeployChanges.script.sql" />
-    <PreDeploy Include="Project Scripts\IssuesConversion\PreDeploy\PreDeployment.script.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.Report.table.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.ReportCategory.table.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.ReportHistory.table.sql" />
     <Build Include="Schema Objects\edata\Synonyms\edata.Synonyms.sql">
       <ApplicationScope>False</ApplicationScope>
     </Build>
-    <None Include="Project Scripts\IssuesConversion\PostDeployChanges\LoadMiscellaneousFirmCategories.script.sql" />
     <Build Include="Schema Objects\edata.schema.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.Refunding.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.IssueStatutoryAuthority.sql" />
@@ -657,7 +655,6 @@
     <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeMaturityRefunding.proc.sql" />
     <Build Include="Schema Objects\dbo\Tables\dbo.CertificateType.table.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.sp_GetIssueTermGroupTotals.proc.sql" />
-    <None Include="Project Scripts\IssuesConversion\PostDeployChanges\LoadStaticLists.script.sql" />
     <Build Include="Database Security\Users\EhlersReportUser.user.sql" />
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_DCAfterSale.function.sql" />
     <Build Include="Database Security\Users\EhlersSQLUsers.user.sql" />
@@ -668,7 +665,6 @@
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_IssuePayments3UP.function.sql" />
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_OSCoverGeneral.function.sql" />
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_RatingsApplications.function.sql" />
-    <None Include="Project Scripts\IssuesConversion\PostDeployChanges\InsertKansasStateRegistrationFirmCategory.script.sql" />
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_includeWisconsinLanguage.function.sql" />
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_PreSale.function.sql" />
     <Build Include="Schema Objects\dbo\Tables\Triggers\dbo.IssueEhlersEmployees.tr_IssueEhlersEmployees.trigger.sql" />
@@ -692,11 +688,16 @@
     <Build Include="Schema Objects\dbo\Views\dbo.vw_EducationTeamContactList.view.sql" />
     <Build Include="Schema Objects\dbo\Views\dbo.vw_MarketCommentaryContactList.view.sql" />
     <Build Include="Schema Objects\Conversion\Programmability\Stored Procedures\Conversion.processRates.proc.sql" />
-    <None Include="Project Scripts\IssuesConversion\PostDeployChanges\LoadIssueMaturity.script.sql" />
     <Build Include="Schema Objects\Import\Stored Procedures\Import.insertPurposeSourcesAndUses.proc.sql" />
     <Build Include="Schema Objects\dbo\Programmability\Stored Procedures\dbo.usp_InsertNewEhlersEmployee.proc.sql" />
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_DistributionList.function.sql" />
     <Build Include="Schema Objects\Documents\Programmability\Functions\Documents.tvf_PreSale_ForEachPurpose.function.sql" />
+    <None Include="Project Scripts\DM Release 3 - Sprint 1\PostDeploy\PostDeployChanges.script.sql" />
+    <PostDeploy Include="Project Scripts\DM Release 3 - Sprint 1\PostDeploy\PostDeployment.script.sql" />
+    <None Include="Project Scripts\DM Release 3 - Sprint 1\PostDeployChanges\LoadStaticLists.script.sql" />
+    <None Include="Project Scripts\DM Release 3 - Sprint 1\PreDeploy\PreDeployChanges.script.sql" />
+    <PreDeploy Include="Project Scripts\DM Release 3 - Sprint 1\PreDeploy\PreDeployment.script.sql" />
+    <Build Include="Project Scripts\DM Release 3 - Sprint 1\PreDeployChanges\PreDeployChangesTemplate.script.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="edata">
