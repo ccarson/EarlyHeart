@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseName>Ehlers</TargetDatabaseName>
+    <DeployScriptFileName>Ehlers.sql</DeployScriptFileName>
+    <TargetConnectionString>Data Source=EHLERS-SS3;Integrated Security=True;Pooling=False</TargetConnectionString>
+    <ScriptDatabaseOptions>True</ScriptDatabaseOptions>
+    <BlockOnPossibleDataLoss>False</BlockOnPossibleDataLoss>
+    <CreateNewDatabase>False</CreateNewDatabase>
+    <ProfileVersionNumber>1</ProfileVersionNumber>
+    <DeployDatabaseInSingleUserMode>False</DeployDatabaseInSingleUserMode>
+    <BackupDatabaseBeforeChanges>True</BackupDatabaseBeforeChanges>
+    <DropObjectsNotInSource>True</DropObjectsNotInSource>
+    <DropPermissionsNotInSource>False</DropPermissionsNotInSource>
+    <DropRoleMembersNotInSource>False</DropRoleMembersNotInSource>
+    <IgnoreAnsiNulls>False</IgnoreAnsiNulls>
+    <IgnoreFillFactor>False</IgnoreFillFactor>
+    <IgnoreFullTextCatalogFilePath>False</IgnoreFullTextCatalogFilePath>
+    <IgnoreIndexPadding>False</IgnoreIndexPadding>
+    <IgnoreKeywordCasing>False</IgnoreKeywordCasing>
+    <IgnoreQuotedIdentifiers>False</IgnoreQuotedIdentifiers>
+    <IgnoreSemicolonBetweenStatements>False</IgnoreSemicolonBetweenStatements>
+    <IgnoreWhitespace>False</IgnoreWhitespace>
+    <PopulateFilesOnFileGroups>False</PopulateFilesOnFileGroups>
+    <ScriptDeployStateChecks>True</ScriptDeployStateChecks>
+    <ScriptDatabaseCompatibility>False</ScriptDatabaseCompatibility>
+    <TreatVerificationErrorsAsWarnings>True</TreatVerificationErrorsAsWarnings>
+    <IgnorePermissions>True</IgnorePermissions>
+    <IgnoreRoleMembership>True</IgnoreRoleMembership>
+  </PropertyGroup>
+  <ItemGroup>
+    <SqlCmdVariable Include="edata">
+      <Value>edata</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="PostDeployChanges">
+      <Value>YES</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="PreDeployChanges">
+      <Value>NO</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="Server">
+      <Value>EHLERS-SS4</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="SourceDatabase">
+      <Value>Ehlers</Value>
+    </SqlCmdVariable>
+  </ItemGroup>
+</Project>

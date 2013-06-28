@@ -1,0 +1,7 @@
+﻿Issue conversion changes for Ehlers
+
+1)  Add logic to support MunexImport from Excel spreadsheets
+2)  Add one-time script that loads Issue county data into IssueFeeCounties
+
+
+Build scripts are *destructive* -- objects not in project schema are dropped from target database on publish
