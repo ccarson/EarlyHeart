@@ -96,8 +96,8 @@ INNER JOIN  #legacyBiddersData   AS b
 
 
 --  5)  Delete data from current converted tables
-    DELETE  dbo.Bidder ;
     DELETE  dbo.BidMaturity ;
+    DELETE  dbo.Bidder ;
 
 
 --  6)  Reload converted tables with extracted legacy data

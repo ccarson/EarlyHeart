@@ -4,7 +4,7 @@ AS
 /*
 ************************************************************************************************************************************
 
-  Procedure:    dbo.deleteIssue
+  Procedure:    dbo.deletePurpose
      Author:    Chris Carson
     Purpose:    drops a purpose from the Ehlers System
 
@@ -101,10 +101,8 @@ BEGIN TRY
 /**/      , @codeBlockDesc  = @codeBlockDesc06 ; -- DELETE dbo.PaymentTypeVaryingAmount
 
     DELETE  dbo.PaymentTypeVaryingAmount
-      FROM  dbo.PaymentTypeVaryingAmount AS pva
-     WHERE  EXISTS ( SELECT 1 FROM dbo.PaymentTypeVarying AS ptv
-                      WHERE ptv.PaymentTypeVaryingID = pva.PaymentTypeVaryingID
-                        AND ptv.PurposeID = @purposeIDValue )
+     WHERE  PaymentTypeVaryingID IN ( SELECT PaymentTypeVaryingID FROM dbo.PaymentTypeVarying 
+                                       WHERE PurposeID = @purposeIDValue )
        AND  @KeepOrPurge = 'PurgeData' ;
 
 
@@ -119,19 +117,11 @@ BEGIN TRY
 /**/SELECT  @codeBlockNum   = 8
 /**/      , @codeBlockDesc  = @codeBlockDesc08 ; -- DELETE dbo.PurposeMaturityRefunding
 
-      WITH  refundPurposes AS ( 
-            SELECT PurposeID = RefundedPurposeID
-              FROM dbo.Refunding
-             WHERE RefundingPurposeID = @PurposeIDValue
-                    union
-            SELECT @PurposeIDValue ) 
 
     DELETE  dbo.PurposeMaturityRefunding
-      FROM  dbo.PurposeMaturityRefunding AS pmr
-     WHERE  EXISTS ( SELECT 1 
-                       FROM dbo.PurposeMaturity AS pm
-                 INNER JOIN refundPurposes      AS ref ON ref.PurposeID = pm.PurposeID  
-                      WHERE pm.PurposeMaturityID = pmr.PurposeMaturityID ) 
+     WHERE  RefundingID IN ( SELECT RefundingID FROM dbo.Refunding
+                              WHERE RefundingPurposeID = @purposeIDValue
+                                 OR RefundedPurposeID = @purposeIDValue ) ;
 
 
 /**/SELECT  @codeBlockNum   = 9
@@ -143,15 +133,12 @@ BEGIN TRY
             RefundingPurposeID = @purposeIDValue 
 
 
-
 /**/SELECT  @codeBlockNum   = 10
 /**/      , @codeBlockDesc  = @codeBlockDesc10 ; -- DELETE dbo.PurposeMaturityInterest
 
     DELETE  dbo.PurposeMaturityInterest
-      FROM  dbo.PurposeMaturityInterest AS pmi
-     WHERE  EXISTS ( SELECT 1 FROM dbo.PurposeMaturity AS pma
-                      WHERE pma.PurposeMaturityID = pmi.PurposeMaturityID
-                        AND pma.PurposeID = @purposeIDValue ) ;
+     WHERE  PurposeMaturityID IN ( SELECT PurposeMaturityID FROM dbo.PurposeMaturity
+                                    WHERE PurposeID = @purposeIDValue ) ;
 
 
 /**/SELECT  @codeBlockNum   = 12
